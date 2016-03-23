@@ -22,6 +22,15 @@ import org.xml.sax.InputSource;
 
 import Utils.Author;
 import Utils.Utilities;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import net.didion.jwnl.JWNL;
 import readers.Reader;
 //import classifiers.SimpleTableClassifier;
 import stats.Statistics;
@@ -33,7 +42,7 @@ import tablInEx.*;
  * The class takes as input folder with XML documents extracted from PMC database and creates array of Articles {@link Article} as output
  * @author Nikola Milosevic
  */ 
-public class PMCXMLReader implements Reader{
+public class PmcXmlReader implements Reader{
 
 	private String FileName;
 	
@@ -48,6 +57,31 @@ public class PMCXMLReader implements Reader{
 	 * It returns {@link Article} object that contains structured data from article, including tables.
 	 * @return Article
 	 */
+        
+        
+        public static File PmcDowloadXml(String PMCID)throws IOException, MalformedURLException {
+    
+        File xmlfile=new File("/home/gurnoor/NetBeansProjects/XMLTABLE/PMCfiles/"+PMCID+".xml");
+        if (!xmlfile.exists()) {
+				xmlfile.createNewFile();
+			}
+             
+        String API_PMCXML= "http://www.ebi.ac.uk/europepmc/webservices/rest/"+PMCID+"/fullTextXML";
+        URL website = new URL(API_PMCXML);
+        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+        FileOutputStream fos = new FileOutputStream(xmlfile);
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
+     
+        //try {
+	//	JWNL.initialize(new FileInputStream(xmlfile));
+	//	} catch (Exception Ex) {
+	//		System.out.println("JWNL.intialize exception");
+	//	}
+	        return xmlfile;
+        }   
+        
+        
 	public Article Read()
 	{
 		Article art =  new Article(FileName);
@@ -634,6 +668,7 @@ public class PMCXMLReader implements Reader{
 				tables[tableindex].setHasHeader(false);
 				Statistics.TableWithoutHead();
 			}
+                        
 			List<Node> tbody = getChildrenByTagName(tb.get(s), "tbody");
 			if(tbody.size()==0)
 			{
@@ -707,7 +742,7 @@ public class PMCXMLReader implements Reader{
 //				tables[i].printTableStatsToFile("TableStats.txt");
 //			}
 //		}
-
+                ParseTableCaptionandFooterforTraits(article);
 		return article;
 	}
 	
@@ -732,6 +767,50 @@ public class PMCXMLReader implements Reader{
 	    return nodeList;
 	  }
 	
+        /*
+        Parse Table caption for Traits
+        */
+        public static void ParseTableCaptionandFooterforTraits(Article a){
+            
+            
+            String word1="QTL";
+            String word2="trait";
+            //String word3="Quantitavie Trait loci";
+            
+            for (int s = 0; s < a.getTables().length; s++) {
+                if(a.getTables()[s].getTable_caption().toLowerCase().indexOf(word1.toLowerCase())!=-1) 
+                    a.setCotainingTraitTables(true);
+                
+                if(a.getTables()[s].getTable_footer().toLowerCase().indexOf(word1.toLowerCase())!=-1) 
+                    a.setCotainingTraitTables(true);
+                
+                if(a.getTables()[s].getTable_caption().toLowerCase().indexOf(word2.toLowerCase())!=-1) 
+                    a.setCotainingTraitTables(true);
+                if(a.getTables()[s].getTable_footer().toLowerCase().indexOf(word2.toLowerCase())!=-1)                    
+                    a.setCotainingTraitTables(true);
+            }
+            
+        }
+        
+       
+        /**
+        public static void ParseTableHeadersforTraits(Article a){
+            
+            
+            String word1="QTL";
+            String word2="trait";
+            //String word3="Quantitative Trait loci";
+            
+            for (int s = 0; s < a.getTables().length; s++) {
+        
+                if(a.getTables()[s].isHasHeader())
+                {
+                    
+                }
+             
+            
+        }
+        **/
 	
 	
 	

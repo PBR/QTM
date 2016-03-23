@@ -6,6 +6,7 @@
 package tablInEx;
 
 import Utils.Utilities;
+import Writer.ExcelFileWriter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +29,8 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import readers.PMCXMLReader;
+import qtlTMdb.qtlDB;
+import readers.PmcXmlReader;
 import readers.Reader;
 import stats.Statistics;
 
@@ -52,143 +54,82 @@ public class TablInExMainGnr {
 	public static boolean Conceptization = false;
 	public static boolean ExportLinkedData = false;
 	public static String Inpath;
+        
 	public static HashMap<String, Integer> headermap = new HashMap<String, Integer>();
 	public static HashMap<String, Integer> stubmap = new HashMap<String, Integer>();
 	public static LinkedList<String> PMCBMI = new LinkedList<String>();
 	public static LinkedList<stats.TableStats> TStats = new LinkedList<stats.TableStats>();
-    
-    
-    public static void TableCsvFile(Article a, FileWriter writer){
-	
-                for (int s = 0; s < a.getTables().length; s++) {
-                    try {
-                        writer.append(a.getPmc()+"_"+"Table"+s+';');
-                        writer.append(a.getTables()[s].isColSpanning() + ";");
-                        writer.append(a.getTables()[s].isRowSpanning()+ ";");
-                        writer.append(a.getTables()[s].isHasHeader()+ ";");
-                        writer.append("NKnow"+ ";");
-                        writer.append(a.getTables()[s].isHasBody()+ ";");
-                        writer.append(a.getTables()[s].getTable_caption().replaceAll("\\s","_")+ ";");
-                        writer.append(a.getTables()[s].getTable_footer().replaceAll("\\s","_")+ "\n");
-                    } catch (IOException ex) {
-                        Logger.getLogger(TablInExMainGnr.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    }
-                
-                //generate whatever data you want
-    }
-    
-    public static File PMCDowloadXML(String PMCID)throws IOException, MalformedURLException {
-    
-        File xmlfile=new File("/home/gurnoor/NetBeansProjects/XMLTABLE/PMCfiles/"+PMCID+".xml");
-    if (!xmlfile.exists()) {
-				xmlfile.createNewFile();
-			}
-             
-     String API_PMCXML= "http://www.ebi.ac.uk/europepmc/webservices/rest/"+PMCID+"/fullTextXML";
-     URL website = new URL(API_PMCXML);
-     ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-     FileOutputStream fos = new FileOutputStream(xmlfile);
-     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-     fos.close();
-     
-     try {
-			JWNL.initialize(new FileInputStream(xmlfile));
-		} catch (Exception Ex) {
-			System.out.println("JWNL.intialize exception");
-		}
-		
-        return xmlfile;
-    }     
-    
-
-    public static void main(String[] args) throws IOException {
+       
+    public static void main(String[] args) throws IOException{
         
-                //String PMC1="PMC3245175";
-		//String PMC="PMC4266912";
-                
-                String PMCIDS [];
-                PMCIDS= new String[] {"PMC4301655","PMC4266912", "PMC3852376","PMC4321030","PMC4691107","PMC3970963", "PMC4008630", "PMC4726135", "PMC3464107", "PMC4678209", "PMC2271080", "PMC3209458", "PMC2246063", "PMC2652058"};
-                //concept = new ConceptizationStats();
-		// concept2 = new ConceptizationStats();
-
-                    
-                FileWriter writer = new FileWriter("TableProperties.csv");
-                writer.append("Table_id"+';');
-                writer.append("isColSpan"+';');
-                writer.append("isRowSpan"+';');
-                writer.append("HasTableHeader"+';');
-                writer.append("hasmultipletable"+";");
-                writer.append("hastablebody"+";");
-                writer.append("TableCaption"+";");
-                writer.append("Tablefooter"+"\n");
-                
+        if (Arrays.asList(args).contains("-help")) {
+			printHelp();
+			return;
+		}
+        
+        
+        //qtlDB.connectionDB();
+       // qtlDB.createQTLtableAuto();
+        //qtlDB.createQTLtableManual();
+        //qtlDB.insertQTLtableManual();
+        //List of PMCIDS
+        //Example --->//String PMC1="PMC3245175";
+	//String PMC="PMC4266912";
+        String[] pmcIds = args;
+        
+        //pmcIds= new String[] {"PMC4301655","PMC4266912", "PMC3852376","PMC4321030","PMC4691107","PMC3970963", "PMC4008630", "PMC4726135", "PMC3464107", "PMC4678209", "PMC2271080",  "PMC2246063", "PMC2652058"};
+        //pmcIds=new String[]{"PMC4321030"};
+        //Display
+        System.out.println("=============================================");
+        System.out.println("=============================================");
+	System.out.println("Extracting Tables from scientific literature in xml format");
+	System.out.println("=============================================");
 		
-                
-                
-                
-                System.out.println("=============================================");
-		System.out.println("=============================================");
-		System.out.println("____________________________________________________________________________________________________________________________");
+	System.out.println("=============================================");
+	System.out.println("____________________________________________________________________________________________________________________________");
 		
-                File [] XMLPMCS=new File[PMCIDS.length];
-                  
-                for(int i=0; i<PMCIDS.length; i++){
-                   XMLPMCS[i]=PMCDowloadXML(PMCIDS[i]);
-                           
+        //Excel File writer for viewing table properties.
+        ExcelFileWriter.TraitTablesFirstLine("TraitTables.csv");
+        ExcelFileWriter.PropertiesTableFirstLine("TableProperties.csv");
+        
+        
+        //reading xml files with pmc ids
+        File [] XMLfiles=new File[pmcIds.length];
+        
+        for(int i=0; i<pmcIds.length; i++){
+                    XMLfiles[i]=PmcXmlReader.PmcDowloadXml(pmcIds[i]);
                     Article  a = new Article("");
-                
-                    PMCXMLReader P=new PMCXMLReader();
-                    P.init(XMLPMCS[i].getPath());
+                    PmcXmlReader P=new PmcXmlReader();
+                    P.init(XMLfiles[i].getPath());
                     a = P.Read();
-                    
+                    System.out.println(a.getAbstract());
+                    //Write to entries to excel
                     try{
-                
-                    TableCsvFile(a, writer);
+                       ExcelFileWriter.TablePropertiesEntries(a); 
+                       ExcelFileWriter.TraitTablesEntries(a);
                     }
                     catch(NullPointerException e){
-                    
-                    System.out.println(PMCIDS[i]+"is giving problem");
-                }
-                    
-                }
-                        
+                        System.out.println(pmcIds[i]+"is giving problem");
+                    }
+        }
+        
+        ExcelFileWriter.LastLine();
                 
-      
-
-                 writer.flush();
-                 writer.close();
-
-                //System.out.println(a.getAbstract()+"\n\n\n\n*********\n");
-                //System.out.println(a.getAuthors()+"\n\n\n\n*********\n");
+    }      
+    
+    
+    /**
+	 * Prints the help.
+	 */
+    public static void printHelp() {
+		System.out.println("HELP pages for XMLTablReader\r\n");
+		System.out.println("DESCRIPTION");
+		System.out.println("     XMLTable Reader is prime purpose is to extract Tables from articles in xml format. It further, filters QTL/traits from the list of all tables");
+		System.out.println("ARGUMENTS");
+		System.out.println(" Argument should be the list of PMC ids");
+		System.out.println("OUTPUT FILES");
+		System.out.println(" Two Excel Files TableProperties.csv and TraitTables.csv is generated in your current directory.");
                 
-                //System.out.println(a.getTitle()+"\n\n\n\n*********\n");
-                //System.out.println(a.getJournal_name()+"\n\n\n\n*********\n");
-                
-                //System.out.println(P.getNumOfTablesInArticle(a)+"\n\n\n\n*********\n");
-                
-                
-                
-//                for (int s = 0; s < a.getTables().length; s++) {
-//					if (a.getTables()[s].cells == null)
-//						continue;
-//					Cell[][] original_cells = new Cell[a.getTables()[s].cells.length][];
-//                                        System.err.println("I am here");
-//					for (int i = 0; i < a.getTables()[s].cells.length; i++) {
-//						original_cells[i] = new Cell[a.getTables()[s].cells[i].length];
-//						for (int j = 0; j < a.getTables()[s].cells[i].length; j++)
-//							original_cells[i][j] = new Cell(
-//									a.getTables()[s].cells[i][j]);
-//					}
-//					a.getTables()[s].original_cells = original_cells;
-//				}
-                
-                
-                
-                        
-                        
-                
-	
-    }
-
+	}
+    
 }

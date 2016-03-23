@@ -27,7 +27,7 @@ public class Cell {
 	private String head_stub_ref;
 	private String super_row_ref;
 	public LinkedList<String> CellRoles = new LinkedList<String>();
-	public LinkedList<Annotation> annotations = new LinkedList<Annotation>();
+	//public LinkedList<Annotation> annotations = new LinkedList<Annotation>();
 	public LinkedList<String>headers = new LinkedList<String>();
 	public LinkedList<String>stubs = new LinkedList<String>();
 	

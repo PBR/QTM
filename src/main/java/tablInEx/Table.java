@@ -8,6 +8,8 @@ import java.util.LinkedList;
 
 import Utils.Utilities;
 import stats.TableStats;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -20,7 +22,7 @@ public class Table {
 	public TableStats stat;
 	public String PragmaticClass;
 	public boolean isEmptyOnlyHeaders = true;
-	public LinkedList<DataExtractionOutputObj> output = new LinkedList<DataExtractionOutputObj>();
+	//public LinkedList<DataExtractionOutputObj> output = new LinkedList<DataExtractionOutputObj>();
 	public enum StructureType {LIST,MATRIX,SUBHEADER,MULTI,NULL};
 	
 	
@@ -130,6 +132,24 @@ public class Table {
 			Utilities.AppendToFile(fileName, output);
 		}
 	}
+        
+        public boolean isaTraitTable(){
+            String word1="QTL";
+            String word2="trait";
+            //String word3="Quantitavie Trait loci";
+            
+            if(table_caption.toLowerCase().indexOf(word1.toLowerCase())!=-1) 
+                    return true;
+            if(table_caption.toLowerCase().indexOf(word1.toLowerCase())!=-1) 
+                    return true;
+            if(table_caption.toLowerCase().indexOf(word2.toLowerCase())!=-1) 
+                    return true;
+            if(table_caption.toLowerCase().indexOf(word2.toLowerCase())!=-1)                    
+                    return true;
+            return false;
+        }
+        
+        
 	
 	/**
 	 * Creates the cells.
@@ -349,6 +369,25 @@ public class Table {
 	public void setSectionOfTable(String sectionOfTable) {
 		SectionOfTable = sectionOfTable;
 	}
-
-
+        
+        
+        /**
+        public boolean ParseTableHeadingsforTraits(){
+            
+            boolean found=false;
+            //String word1="QTL";
+            String word1="trait";
+            //String word3="Quantitavie Trait loci";
+            if(hasHeader)
+            {
+                
+            }
+            
+            
+            //found=(table_caption.toLowerCase().indexOf(word1.toLowerCase())!=-1) || (table_footer.toLowerCase().indexOf(word1.toLowerCase())!=-1) || (table_caption.toLowerCase().indexOf(word2.toLowerCase())!=-1) || (table_footer.toLowerCase().indexOf(word2.toLowerCase())!=-1)  ;
+            
+            return(found);
+        }
+        * 
+        **/
 }

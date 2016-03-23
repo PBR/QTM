@@ -37,6 +37,7 @@ public class Article {
 	private String journal_name;
 	private String spec_id;
 	private String source;
+        private boolean ContainingTraitTables;
 	
 	
 	//Constructors
@@ -222,6 +223,20 @@ public class Article {
 	public void setSource(String source) {
 		this.source = source;
 	}
+
+    /**
+     * @return the ContainingTraitTables
+     */
+    public boolean isCotainingTraitTables() {
+        return ContainingTraitTables;
+    }
+
+    /**
+     * @param CotainsTraitTables the ContainingTraitTables to set
+     */
+    public void setCotainingTraitTables(boolean CotainsTraitTables) {
+        this.ContainingTraitTables = CotainsTraitTables;
+    }
 
 
 }
