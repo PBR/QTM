@@ -7,11 +7,11 @@ package tablInEx;
 
 import java.util.LinkedList;
 
-import Utils.Utilities;
+import utils.Utilities;
 
 /**
  * The Class Cell. One cell of the table. Contains all necessary information about cell
- * @author Nikola Milosevic
+ *
  */
 public class Cell {
 	

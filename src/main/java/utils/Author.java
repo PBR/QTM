@@ -3,7 +3,7 @@
  * @author gurnoor
  */
 
-package Utils;
+package utils;
 
 import java.util.LinkedList;
 

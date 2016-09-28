@@ -3,7 +3,7 @@
  * To change this template TraitTablefile, choose Tools | Templates
  * and open the template in the editor.
  */
-package Writer;
+package fileWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;

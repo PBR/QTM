@@ -20,8 +20,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import Utils.Author;
-import Utils.Utilities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,6 +33,8 @@ import readers.Reader;
 //import classifiers.SimpleTableClassifier;
 import stats.Statistics;
 import tablInEx.*;
+import utils.Author;
+import utils.Utilities;
 
 
 /**
@@ -407,7 +407,8 @@ public class PmcXmlReader implements Reader{
 		int headrowscount= 0;
 		if(rowshead!=null)
 			headrowscount = rowshead.size();
-		for(int row = 0;row<rowsbody.size();row++)
+		
+                for(int row = 0;row<rowsbody.size();row++)
 		{
 			int cnt=0;
 			List<Node> tds = getChildrenByTagName(rowsbody.get(row), "td");
@@ -644,7 +645,7 @@ public class PmcXmlReader implements Reader{
 			tables[tableindex] = new Table(label);
 			tables[tableindex].setDocumentFileName("PMC"+article.getPmc());
 			tables[tableindex].setXml(Utilities.CreateXMLStringFromSubNode(tablesxml.item(i)));
-			System.out.println("Table title:"+tables[tableindex].getTable_title());
+			System.out.println("Table title:"+tables[tableindex].getTable_label());
 			String caption = readTableCaption(tablesxml.item(i));
 			tables[tableindex].setTable_caption(caption);
 			String foot = ReadTableFooter(tablesxml.item(i));
@@ -690,12 +691,12 @@ public class PmcXmlReader implements Reader{
 			tables[tableindex].setNum_of_columns(num_of_columns);
 			tables[tableindex].setNum_of_rows(num_of_rows);
 			tables[tableindex].CreateCells(num_of_columns, num_of_rows);
-			Cell[][] cells = tables[tableindex].getTable_cells();
-			tables[tableindex] = ProcessTableHeader(article,tables[tableindex],cells, rowshead, headrowscount, num_of_columns);
+			C[][] cells = tables[tableindex].getTable_cells();
+			//tables[tableindex] = ProcessTableHeader(article,tables[tableindex],cells, rowshead, headrowscount, num_of_columns);
 			Statistics.addColumn(num_of_columns);
 			Statistics.addRow(num_of_rows);
-			tables[tableindex] = ProcessTableBody(article,tables[tableindex],cells, rowsbody, headrowscount, num_of_columns);
-			tables[tableindex].setTable_cells(cells);
+			//tables[tableindex] = ProcessTableBody(article,tables[tableindex],cells, rowsbody, headrowscount, num_of_columns);
+			//tables[tableindex].setTable_cells(cells);
 			
                         System.out.println("rowspan: "+tables[tableindex].isRowSpanning());
 			System.out.println("colspan: "+tables[tableindex].isColSpanning());
@@ -706,7 +707,7 @@ public class PmcXmlReader implements Reader{
 			{
 				for(int k = 0; k<cells[j].length;k++)
 				{
-					System.out.println(j+","+k+": "+cells[j][k].getCell_content());
+//					System.out.println(j+","+k+": "+cells[j][k].getcell_value());
 				}
 			}
 			System.out.println("Number of rows: "+num_of_rows);
@@ -723,7 +724,7 @@ public class PmcXmlReader implements Reader{
 				tables[tableindex] = new Table(label);
 				tables[tableindex].setDocumentFileName("PMC"+article.getPmc());
 				tables[tableindex].setXml(Utilities.CreateXMLStringFromSubNode(tablesxml.item(i)));
-				System.out.println("Table title:"+tables[tableindex].getTable_title());
+				System.out.println("Table title:"+tables[tableindex].getTable_label());
 				String caption = readTableCaption(tablesxml.item(i));
 				tables[tableindex].setTable_caption(caption);
 				String foot = ReadTableFooter(tablesxml.item(i));

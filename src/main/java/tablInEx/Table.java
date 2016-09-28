@@ -5,9 +5,13 @@
 package tablInEx;
 
 import java.util.LinkedList;
-
-import Utils.Utilities;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 import stats.TableStats;
+import utils.Utilities;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,11 +21,16 @@ import java.util.regex.Pattern;
  */
 public class Table {
 	
+	private String tableid;
 	private String xml;
 	private String documentFileName;
 	public TableStats stat;
 	public String PragmaticClass;
 	public boolean isEmptyOnlyHeaders = true;
+	private boolean isTraitTable=false;
+	
+	
+	
 	//public LinkedList<DataExtractionOutputObj> output = new LinkedList<DataExtractionOutputObj>();
 	public enum StructureType {LIST,MATRIX,SUBHEADER,MULTI,NULL};
 	
@@ -36,7 +45,7 @@ public class Table {
 	private int num_of_columns;
 	
 	/** The table_title. */
-	private String table_title;
+	private String table_label;
 	
 	/** The table_caption. */
 	private String table_caption;
@@ -57,18 +66,24 @@ public class Table {
 	private StructureType TableStructureType;
 	
 	/** The cells. Cell matrix of the table */
-	public Cell[][] cells;
-	public Cell[][] original_cells;
+	
+        public HC[][] header_cells;
+	public HC[][] header_original_cells;
+	
+        public List<C[]> LOC;
+        
+        public C[][] cells;
+	public C[][] original_cells;
 	
 	//Constructors
 	/**
 	 * Instantiates a new table.
 	 *
-	 * @param Title the title
+	 * @param label the title
 	 */
-	public Table(String Title)
+	public Table(String label)
 	{
-		table_title = Title;
+		table_label = label;
 		hasHeader = true;
 		hasBody = true;
 		isNoXMLTable = false;
@@ -80,13 +95,13 @@ public class Table {
 	/**
 	 * Instantiates a new table.
 	 *
-	 * @param Title the title
+	 * @param label the title
 	 * @param Caption the caption
 	 * @param Footer the footer
 	 */
-	public Table(String Title, String Caption, String Footer)
+	public Table(String label, String Caption, String Footer)
 	{
-		table_title = Title;
+		table_label = label;
 		table_caption = Caption;
 		table_footer = Footer;
 		stat = new TableStats();
@@ -95,15 +110,15 @@ public class Table {
 	/**
 	 * Instantiates a new table.
 	 *
-	 * @param Title the title
+	 * @param label the title
 	 * @param Caption the caption
 	 * @param Footer the footer
 	 * @param Columns the columns
 	 * @param Rows the rows
 	 */
-	public Table(String Title, String Caption, String Footer,  int Columns,int Rows)
+	public Table(String label, String Caption, String Footer,  int Columns,int Rows)
 	{
-		table_title = Title;
+		table_label = label;
 		table_caption = Caption;
 		table_footer = Footer;
 		num_of_rows = Rows;
@@ -117,7 +132,7 @@ public class Table {
 		{
 			String output = "";
 			output+= "File Name: ;"+documentFileName+"\r\n";
-			output+= "Table Name: ;"+table_title+"\r\n";
+			output+= "Table Name: ;"+table_label+"\r\n";
 			output+= "Number of cells: ;"+stat.getNum_of_cells()+"\r\n";
 			output+= "Number of empty cells: ;"+stat.getNum_of_empty_cells()+"\r\n";
 			output+= "Number of pure numeric cells: ;"+stat.getNum_of_pure_numeric_cells()+"\r\n";
@@ -138,13 +153,9 @@ public class Table {
             String word2="trait";
             //String word3="Quantitavie Trait loci";
             
-            if(table_caption.toLowerCase().indexOf(word1.toLowerCase())!=-1) 
+            if(table_caption.toLowerCase().indexOf(word1.toLowerCase())!=-1 || table_caption.toLowerCase().indexOf(word2.toLowerCase())!=-1) 
                     return true;
-            if(table_caption.toLowerCase().indexOf(word1.toLowerCase())!=-1) 
-                    return true;
-            if(table_caption.toLowerCase().indexOf(word2.toLowerCase())!=-1) 
-                    return true;
-            if(table_caption.toLowerCase().indexOf(word2.toLowerCase())!=-1)                    
+            if(table_footer.toLowerCase().indexOf(word1.toLowerCase())!=-1 || table_footer.toLowerCase().indexOf(word2.toLowerCase())!=-1) 
                     return true;
             return false;
         }
@@ -157,19 +168,72 @@ public class Table {
 	 * @param Columns the columns
 	 * @param Rows the rows
 	 */
-	public void CreateCells(int Columns,int Rows )
+        
+        public void CreateHeaderCells(int Rows,int Columns )
 	{
-		cells = new Cell[Rows][Columns];
+		header_cells = new HC[Rows][Columns];
 		for(int i=0;i<Rows;i++)
 		{
 			for(int j=0;j<Columns;j++)
 			{
-				cells[i][j] = new Cell(i,j);
+				header_cells[i][j] = new HC(i,j);
+			}
+		}
+	}
+        
+        public void CreateLOC(int Rows,int Columns )
+	{
+		LOC = new ArrayList<C[]>();
+		for(int i=0;i<Rows;i++)
+		{
+                        C[] Crow=new C[Columns];
+			for(int j=0;j<Columns;j++)
+			{
+				Crow[j] = new C(i,j);
+			}
+                        LOC.add(Crow);
+		}
+	}
+        
+        
+        
+	public void CreateCells(int Rows,int Columns )
+	{
+		cells = new C[Rows][Columns];
+		for(int i=0;i<Rows;i++)
+		{
+			for(int j=0;j<Columns;j++)
+			{
+				cells[i][j] = new C(i,j);
 			}
 		}
 	}
 	
 	//Getters and setters
+
+	
+	
+	public String getTableid() {
+		return tableid;
+	}
+
+	public void setTableid(String tableid) {
+		this.tableid = tableid;
+	}
+
+	
+	
+	public boolean getisTraitTable() {
+		return isTraitTable;
+	}
+
+	public void setisTraitTable(boolean isTraitTable) {
+		this.isTraitTable = isTraitTable;
+	}
+
+
+
+
 	/**
 	 * Gets the num_of_rows.
 	 *
@@ -211,8 +275,8 @@ public class Table {
 	 *
 	 * @return the table_title
 	 */
-	public String getTable_title() {
-		return table_title;
+	public String getTable_label() {
+		return table_label;
 	}
 	
 	/**
@@ -220,8 +284,8 @@ public class Table {
 	 *
 	 * @param table_title the new table_title
 	 */
-	public void setTable_title(String table_title) {
-		this.table_title = table_title;
+	public void setTable_label(String table_label) {
+		this.table_label = table_label;
 	}
 	
 	/**
@@ -265,17 +329,35 @@ public class Table {
 	 *
 	 * @return the table_cells
 	 */
-	public Cell[][] getTable_cells() {
+	public C[][] getTable_cells() {
 		return cells;
 	}
 	
+        public HC[][] getTable_Headercells() {
+		return header_cells;
+	}
+        
+        public List<C[]> getTable_cellList() {
+		return LOC;
+	}
+        
 	/**
 	 * Sets the table_cells.
 	 *
 	 * @param cells the new table_cells
 	 */
-	public void setTable_cells(Cell[][] cells) {
+	
+        public void setTableHeadercells(HC[][] cells) {
+		this.header_cells = cells;
+	}
+        
+        
+        public void setTable_cells(C[][] cells) {
 		this.cells = cells;
+	}
+        
+        public void setTable_cellList(List<C[]> L) {
+		this.LOC=L;
 	}
 
 	public boolean isHasHeader() {
@@ -390,4 +472,185 @@ public class Table {
         }
         * 
         **/
+        
+        public void printTable() throws Exception{
+            
+            int hrows=0;
+            while(hrows<this.header_cells.length){
+                for(int cols=0;cols<this.num_of_columns;cols++){
+                    System.out.print(this.header_cells[hrows][cols].getHeadercell_value()+"("+this.header_cells[hrows][cols].getHeaderCell_type()+")"+"\t");
+                }
+                System.out.print("\n");
+                hrows++;
+            }
+            
+            int rows=0;
+            while(rows<this.cells.length){
+                for(int cols=0;cols<this.num_of_columns;cols++){
+                    System.out.print(this.cells[rows][cols].getcell_value()+"("+this.cells[rows][cols].getCell_type()+")"+"\t");
+                }
+                System.out.print("\n");
+                rows++;
+            }
+            
+            System.out.print("********"+"\n\n\n");
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+     public Table removeEmptyRows(){
+         C[][] cells=this.getTable_cells();
+         HC[][] hCells=this.getTable_Headercells();
+         
+         
+         
+         int rows=cells.length;
+         int cols=this.num_of_columns;         
+         //number of empty cells is k
+         
+         C[] nonEmptyCells= new C[cols];         
+         //HC[][] newhCells=new HC[hCells.length][];
+         
+         for(int i=0;i<rows;i++){
+            int k=0;
+            for(int j=0;j<cols;j++){
+                 if(cells[i][j].getcell_value() == "" ||   cells[i][j].getcell_value()== null || cells[i][j].getCell_type()== "Empty"){  
+                     System.out.println("I is "+i+" J is "+j+"value is"+ cells[i][j].getcell_value()+" type is "+cells[i][j].getCell_type()  );
+                     k++;
+                 }
+                     
+            }
+                if(k==cols){
+                    continue;
+                }
+                else{
+                    for(int j=0;j<cols;j++){
+                        nonEmptyCells[j]=cells[i][j];
+                    
+                }
+                
+                
+            }
+                
+         } 
+         
+         //this.setTable_cells(nonEmptyCells);
+         return this;
+     }   
+                
+      
+     public Table tableClassification(){
+              //C[][] cells=this.getTable_cells();
+              HC[][] hCells=this.getTable_Headercells();
+              
+              int rows=cells.length;
+              int cols=this.num_of_columns;   
+              
+            HashMap<String, Integer> ColTypes = new HashMap<String, Integer>();  
+                for(int j=0;j<cols;j++){
+                	
+                ColTypes.put("Partially Numeric",0);
+                ColTypes.put("Numeric",0);
+                ColTypes.put("Text",0);
+                ColTypes.put("Empty",0);
+            
+                for(int i=0;i<rows;i++){
+                    if(cells[i][j].getCell_type()=="Numeric"){
+                         ColTypes.put("Numeric",ColTypes.get("Numeric")+1);
+                    }
+                    else if(cells[i][j].getCell_type()=="Partially Numeric"){
+                         ColTypes.put("Partially Numeric",ColTypes.get("Partially Numeric")+1);
+                    }
+                    else if(cells[i][j].getCell_type()=="Text"){
+                         ColTypes.put("Text",ColTypes.get("Text")+1);
+                    }
+                    else if(cells[i][j].getCell_type()=="Empty"){
+                         ColTypes.put("Empty",ColTypes.get("Empty")+1);
+                    }
+              
+                } 
+                
+                
+                
+                String word1="qtl";
+                String word2="trait";
+                
+                
+                    
+                    
+                                
+                if(ColTypes.get("Empty")==rows){
+                     for(int k=0;k<hCells.length;k++){
+                        hCells[k][j].setHeaderCell_type("Empty");
+                    }   
+                }
+                
+                if(ColTypes.get("Numeric")==0 && ColTypes.get("Partially Numeric")==0){
+                    for(int k=0;k<hCells.length;k++){
+                        hCells[k][j].setHeaderCell_type("QTL property");
+                    }
+                }
+                
+                if(ColTypes.get("Text")==0){
+                    for(int k=0;k<hCells.length;k++){
+                        hCells[k][j].setHeaderCell_type("QTL value");
+                    }
+                }
+                
+                
+               // Check?? 
+               int countwords=0;
+                for(int k=0;k<hCells.length;k++){
+                   try{
+                       if(hCells[k][j].getHeadercell_value().toLowerCase().indexOf(word1)!=-1 || hCells[k][j].getHeadercell_value().toLowerCase().indexOf(word2)!=-1)
+                        countwords++;
+                   }
+                   catch(NullPointerException e){
+                       System.out.printf("*cannot classify heading on "+ k+ "row and "+j+"column\n" );
+                       //System.out.printf(hCells[k][j].getHeadercell_value());
+                   }
+                   
+                }
+                if(countwords>0){
+                    for(int k=0;k<hCells.length;k++){
+                        hCells[k][j].setHeaderCell_type("QTL descriptor");
+                    }
+                }
+                
+                for(int k=0;k<hCells.length;k++){
+                    //System.out.println("$$here");
+                    
+                    if(hCells[k][j].getHeaderCell_type()== null){
+                        
+                        hCells[k][j].setHeaderCell_type("NotIdentified");
+                    } 
+                
+                
+                
+                }    
+     
+            } 
+                
+                    
+                
+                
+                
+            this.setTableHeadercells(hCells);
+            
+            return this;
+     
+      }
+     
+     
+     
+     
+     
+     
+     
+        
 }

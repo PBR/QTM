@@ -5,9 +5,11 @@
 
 package tablInEx;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Vector;
 
-import Utils.Author;
+import utils.Author;
 
 
 /**
@@ -37,9 +39,33 @@ public class Article {
 	private String journal_name;
 	private String spec_id;
 	private String source;
-        private boolean ContainingTraitTables;
+	private boolean ContainingTraitTables;
+	private int numQTLtables;
+	private HashMap<String, String> abbreviations;
 	
 	
+	public HashMap<String, String> getAbbreviations() {
+		return abbreviations;
+	}
+
+	public void setAbbreviations(HashMap<String, String> abbreviations) {
+		this.abbreviations = abbreviations;
+	}
+
+	public int getNumQTLtables() {
+		return numQTLtables;
+	}
+
+	public void setNumQTLtables() {
+		int i=0;
+		for (Table t : this.tables) {
+			System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
+			if(t.getisTraitTable()==true)
+				i++;
+		} 
+		this.numQTLtables=i;
+	}
+
 	//Constructors
 	public Article(String filename)
 	{

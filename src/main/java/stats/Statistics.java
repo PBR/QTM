@@ -5,10 +5,10 @@
 
 package stats;
 
-import Utils.Utilities;
 import tablInEx.Cell;
 import tablInEx.TablInExMainGnr;
 import tablInEx.Table;
+import utils.Utilities;
 
 /**
  * 

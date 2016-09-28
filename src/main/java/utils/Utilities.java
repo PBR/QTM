@@ -3,7 +3,7 @@
  * @author gurnoor
  */
 
-package Utils;
+package utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -100,83 +100,83 @@ public class Utilities {
 
 	}
 
-	public static Table FixTablesHeader(Table table) {
-		Cell[][] cells = table.cells;
-		int oldNumofHeaderRows = table.stat.getNum_of_header_rows();
-		int oldNumOfBodyRows = table.stat.getNum_of_body_rows();
-		if (cells == null)
-			return table;
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i] == null && cells[i].length <= 0)
-				continue;
-			try{
-				cells[i][0].isIs_header();
-			}catch(ArrayIndexOutOfBoundsException ex)
-			{
-				continue;
-			}
-			if (cells[i][0].isIs_header())
-				continue;
-			if (isEmptyRow(cells[i]) && cells[i][0].isBreakingLineOverRow()
-					&& i - 2 >= 0 && cells[i - 2][0].isIs_header()
-					&& isOneCellFilledRow(cells[i - 1])) {
-				for (int k = 0; k < cells[i].length; k++) {
-					for (int j = i - 2; j <= i; j++) {
-						if (cells[j][k].isIs_header())
-							continue;
-						cells[j][k].setIs_header(false);
-						cells[j][k].setIs_subheader(true);
-					}
-				}
-				table.stat.setNum_of_header_rows(table.stat
-						.getNum_of_header_rows() + 2);
-				table.stat
-						.setNum_of_body_rows(table.stat.getNum_of_body_rows() - 2);
-			}
-
-			else if (isEmptyRow(cells[i])
-					&& cells[i][0].isBreakingLineOverRow() && i - 2 >= 0
-					&& cells[i - 2][0].isIs_header()) {
-				for (int k = 0; k < cells[i].length; k++) {
-					for (int j = i - 2; j <= i; j++) {
-						cells[j][k].setIs_header(true);
-					}
-				}
-				table.stat.setNum_of_header_rows(table.stat
-						.getNum_of_header_rows() + 2);
-				table.stat
-						.setNum_of_body_rows(table.stat.getNum_of_body_rows() - 2);
-			}
-
-			else if (isEmptyRow(cells[i])
-					&& cells[i][0].isBreakingLineOverRow() && i - 3 >= 0
-					&& cells[i - 3][0].isIs_header()) {
-				for (int k = 0; k < cells[i].length; k++) {
-					for (int j = i - 3; j <= i; j++) {
-						cells[j][k].setIs_header(true);
-					}
-				}
-				table.stat.setNum_of_header_rows(table.stat
-						.getNum_of_header_rows() + 3);
-				table.stat
-						.setNum_of_body_rows(table.stat.getNum_of_body_rows() - 3);
-			}
-		}
-
-		if (table.stat.getNum_of_header_rows() > cells.length) {
-			for (int i = oldNumofHeaderRows; i < cells.length; i++) {
-				for (int j = 0; j < cells[i].length; j++) {
-					cells[i][j].setIs_header(false);
-				}
-			}
-			table.stat.setNum_of_header_rows(oldNumofHeaderRows);
-			table.stat.setNum_of_body_rows(oldNumOfBodyRows);
-		}
-
-		table.setTable_cells(cells);
-
-		return table;
-	}
+//	public static Table FixTablesHeader(Table table) {
+//		Cell[][] cells = table.cells;
+//		int oldNumofHeaderRows = table.stat.getNum_of_header_rows();
+//		int oldNumOfBodyRows = table.stat.getNum_of_body_rows();
+//		if (cells == null)
+//			return table;
+//		for (int i = 0; i < cells.length; i++) {
+//			if (cells[i] == null && cells[i].length <= 0)
+//				continue;
+//			try{
+//				cells[i][0].isIs_header();
+//			}catch(ArrayIndexOutOfBoundsException ex)
+//			{
+//				continue;
+//			}
+//			if (cells[i][0].isIs_header())
+//				continue;
+//			if (isEmptyRow(cells[i]) && cells[i][0].isBreakingLineOverRow()
+//					&& i - 2 >= 0 && cells[i - 2][0].isIs_header()
+//					&& isOneCellFilledRow(cells[i - 1])) {
+//				for (int k = 0; k < cells[i].length; k++) {
+//					for (int j = i - 2; j <= i; j++) {
+//						if (cells[j][k].isIs_header())
+//							continue;
+//						cells[j][k].setIs_header(false);
+//						cells[j][k].setIs_subheader(true);
+//					}
+//				}
+//				table.stat.setNum_of_header_rows(table.stat
+//						.getNum_of_header_rows() + 2);
+//				table.stat
+//						.setNum_of_body_rows(table.stat.getNum_of_body_rows() - 2);
+//			}
+//
+//			else if (isEmptyRow(cells[i])
+//					&& cells[i][0].isBreakingLineOverRow() && i - 2 >= 0
+//					&& cells[i - 2][0].isIs_header()) {
+//				for (int k = 0; k < cells[i].length; k++) {
+//					for (int j = i - 2; j <= i; j++) {
+//						cells[j][k].setIs_header(true);
+//					}
+//				}
+//				table.stat.setNum_of_header_rows(table.stat
+//						.getNum_of_header_rows() + 2);
+//				table.stat
+//						.setNum_of_body_rows(table.stat.getNum_of_body_rows() - 2);
+//			}
+//
+//			else if (isEmptyRow(cells[i])
+//					&& cells[i][0].isBreakingLineOverRow() && i - 3 >= 0
+//					&& cells[i - 3][0].isIs_header()) {
+//				for (int k = 0; k < cells[i].length; k++) {
+//					for (int j = i - 3; j <= i; j++) {
+//						cells[j][k].setIs_header(true);
+//					}
+//				}
+//				table.stat.setNum_of_header_rows(table.stat
+//						.getNum_of_header_rows() + 3);
+//				table.stat
+//						.setNum_of_body_rows(table.stat.getNum_of_body_rows() - 3);
+//			}
+//		}
+//
+//		if (table.stat.getNum_of_header_rows() > cells.length) {
+//			for (int i = oldNumofHeaderRows; i < cells.length; i++) {
+//				for (int j = 0; j < cells[i].length; j++) {
+//					cells[i][j].setIs_header(false);
+//				}
+//			}
+//			table.stat.setNum_of_header_rows(oldNumofHeaderRows);
+//			table.stat.setNum_of_body_rows(oldNumOfBodyRows);
+//		}
+//
+//		table.setTable_cells(cells);
+//
+//		return table;
+//	}
 
 	/**
 	 * Checks if is string numeric.
@@ -191,6 +191,9 @@ public class Utilities {
 		} catch (NumberFormatException nfe) {
 			return false;
 		}
+                catch(NullPointerException e){
+                    return false;
+                }
 		return true;
 	}
 
