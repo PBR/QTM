@@ -90,6 +90,7 @@ public class PmcMetaReader implements Reader {
 
 			//MetaData
 			art = ParseMetaData(art, parse, xmlString);
+			
 			//Ful-Text
 			art = ParsePlainText(art, parse, xmlString);
 			
@@ -113,6 +114,8 @@ public class PmcMetaReader implements Reader {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		art.setNumQTLtables();
+		System.out.println("NUMBER OF QTL TABLESSS:" + art.getNumQTLtables());
 		return art;
 	}
 
