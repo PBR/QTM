@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import utils.Utilities;
@@ -47,31 +48,30 @@ public class C {
 	/**trait Ontology */
 	private String toAnnotaion;
 	
+	
+	private JSONObject Annotations=new JSONObject();
+	
+	private String abbreviated_value;
+	
+	
+	public String getAbbreviated_value() {
+		return abbreviated_value;
+	}
+
+	public void setAbbreviated_value(String abbreviated_value) {
+		abbreviated_value = abbreviated_value;
+	}
+	
+	public JSONObject getAnnotations() {
+		return Annotations;
+	}
+
+	public void setAnnotations(JSONObject annotations) {
+		Annotations = annotations;
+	}
+
 	public String getSpAnnotaion(){
-		JSONParser parser = new JSONParser();
-		
-		try{
-		Object obj = parser.parse(new FileReader("/home/gurnoor/workspace/XMLTAB/Dictionaries/spDictionary.json"));
-        
-		org.json.simple.JSONObject j = (org.json.simple.JSONObject) obj;
-		
-		Set<String> totalkeys = j.keySet();
-        
-		
-		Iterator<String> keys=totalkeys.iterator();
-        while( keys.hasNext() ) {
-            String key = (String)keys.next();
-                       
-            if(this.cell_value.matches(j.get(key).toString())){
-            	this.spAnnotaion=key;
-            }
-        }
-		}
-		catch(Exception e){
-			this.spAnnotaion="";
-		}
-        
-        return this.spAnnotaion;
+		return spAnnotaion;
 	}
 
 	public void setSpAnnotaion(String spAnno){
@@ -243,15 +243,6 @@ public class C {
                 
                 if(cell_type==null)
                     cell_type=this.getCell_type();
-
-                try{
-                	if(spAnnotaion==null)
-            			spAnnotaion=this.getSpAnnotaion();	
-                }
-                catch(Exception e){
-                	System.out.println(e.getMessage());
-                }
-
 	}
      
 	

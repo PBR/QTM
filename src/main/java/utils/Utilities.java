@@ -31,7 +31,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import tablInEx.Cell;
+import tablInEx.C;
 //import tablInEx.TablInExMain;
 import tablInEx.TablInExMainGnr;
 import tablInEx.Table;
@@ -72,33 +72,33 @@ public class Utilities {
 		return sortedMap;
 	}
 
-	public static boolean isEmptyRow(Cell[] cells) {
+	public static boolean isEmptyRow(C[] cells) {
 		for (int i = 0; i < cells.length; i++) {
-			if (!Utilities.isSpaceOrEmpty(cells[i].getCell_content()))
+			if (!Utilities.isSpaceOrEmpty(cells[i].getcell_value()))
 				return false;
 		}
 		return true;
 	}
 
-	public static boolean isOneCellFilledRow(Cell[] cells) {
-		int filledCells = 0;
-		if (cells.length == 1)
-			return false;
-
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i].isIs_columnspanning()
-					&& cells[i].getCells_columnspanning() == cells.length)
-				return true;
-			if (!isSpaceOrEmpty(cells[i].getCell_content())) {
-				filledCells++;
-			}
-		}
-		if (filledCells == 1)
-			return true;
-		else
-			return false;
-
-	}
+//	public static boolean isOneCellFilledRow(C[] cells) {
+//		int filledCells = 0;
+//		if (cells.length == 1)
+//			return false;
+//
+//		for (int i = 0; i < cells.length; i++) {
+//			if (cells[i].isIs_columnspanning()
+//					&& cells[i].getCells_columnspanning() == cells.length)
+//				return true;
+//			if (!isSpaceOrEmpty(cells[i].getCell_content())) {
+//				filledCells++;
+//			}
+//		}
+//		if (filledCells == 1)
+//			return true;
+//		else
+//			return false;
+//
+//	}
 
 //	public static Table FixTablesHeader(Table table) {
 //		Cell[][] cells = table.cells;

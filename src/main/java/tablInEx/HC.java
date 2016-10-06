@@ -7,6 +7,8 @@ package tablInEx;
 
 import java.util.LinkedList;
 
+import org.json.simple.JSONObject;
+
 import utils.Utilities;
 
 /**
@@ -27,7 +29,27 @@ public class HC {
         /** The cell_content. */
 	private String Headercell_value;
 	
+	private JSONObject Annotations=new JSONObject();
 	
+	private String abbreviated_value;
+	
+	
+	public String getAbbreviated_value() {
+		return abbreviated_value;
+	}
+
+	public void setAbbreviated_value(String abbreviated_value) {
+		abbreviated_value = abbreviated_value;
+	}
+
+	public JSONObject getAnnotations() {
+		return Annotations;
+	}
+
+	public void setAnnotations(JSONObject annotations) {
+		Annotations = annotations;
+	}
+
 	//Constructors
 	/**
 	 * Instantiates a new cell.

@@ -31,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import qtlTMdb.qtlDB;
 import readers.PmcMetaReader;
-import readers.PmcXmlReader;
 import readers.Reader;
 import stats.Statistics;
 import utils.Utilities;
@@ -72,12 +71,18 @@ public class TablInExMainGnr {
 
 			P.init(XMLfiles[i].getPath());
 			a = P.Read();
-
-			a.setNumQTLtables();
 			
-			//System.out.println(a.getPlain_text() + "\n\n" + "NUMBER OF QTL TABLESSS:" + a.getNumQTLtables());
+			System.out.println("\n\n$$$Abbreviation annotation$$$");
+			a=Annotator.AbbrevAnnotator.AbbreviationAnnotator(a);
+			
+		
+			System.out.println("\n\n$$$Ontology based annotation$$$");
+			a=Annotator.OntologybasedAnnotator.OA(a);
+			
+		
+		
 		}
-
+		
 		ExcelFileWriter.LastLine();
 
 	}

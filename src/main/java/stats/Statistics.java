@@ -5,7 +5,7 @@
 
 package stats;
 
-import tablInEx.Cell;
+import tablInEx.C;
 import tablInEx.TablInExMainGnr;
 import tablInEx.Table;
 import utils.Utilities;
@@ -352,77 +352,77 @@ public class Statistics {
 	 * @param cell the cell
 	 * @return the table
 	 */
-	public static Table statisticsForCell(Table table, Cell cell)
-	{
-		total_num_of_cells++;
-		table.stat.AddCell();
-		if(cell.isIs_header())
-		{
-			total_num_of_header_cells++;
-		}
-		num_of_chars_in_cells+=cell.getCell_content().length();
-		if(cell.getCell_content().trim().equalsIgnoreCase(" ") || cell.getCell_content().trim().equalsIgnoreCase("") || (((int)cell.getCell_content().trim().charAt(0))== 160))
-		{
-			num_of_empty_cells++;
-			table.stat.AddEmptyCell();
-			cell.setCell_content("");
-			if(cell.isIs_header())
-				table.stat.AddHeaderEmptyCell();
-			
-		}
-		else
-		{
-			num_of_chars_in_nonempty_cells+=cell.getCell_content().length();
-		}
-		if(Utilities.isNumeric(cell.getCell_content()))
-		{
-			num_of_pure_numeric_cells++;
-			num_of_numeric_cells++;
-			
-			table.stat.AddPureNumericCell();
-			
-			num_of_chars_in_pure_numeric_cells+=cell.getCell_content().length();
-			num_of_chars_in_numeric_cells+=cell.getCell_content().length();
-		}
-		
-		int numbers = 0;
-		int chars = 0;
-		String tempCellVal = cell.getCell_content().replaceAll("[\\s\\xA0]","");
-		for(int i=0;i<tempCellVal.length();i++)
-		{
-			if(Utilities.isNumeric(tempCellVal.substring(i, i+1)) )
-			{
-				numbers++;
-			}
-			else
-			{
-				chars++;
-			}
-		}
-		float proportion = (float)numbers / (chars+numbers);
-		//part numeric cell
-		if(proportion>0.49 && !Utilities.isNumeric(cell.getCell_content()))
-		{
-			num_of_numeric_cells++;
-			num_of_part_numeric_cells++;
-			
-			table.stat.AddPartNumericCell();
-			
-			num_of_chars_in_numeric_cells+=cell.getCell_content().length();
-			num_of_chars_in_part_numeric_cells+=cell.getCell_content().length();
-		}
-		if(proportion<=0.49 && !Utilities.isNumeric(cell.getCell_content()))
-		{
-			//text cell
-			num_of_pure_text_cells++;
-			
-			table.stat.AddTextCell();
-			
-			num_of_chars_in_pure_text_cells+=cell.getCell_content().length();
-		}
-		
-		return table;
-	}
+//	public static Table statisticsForCell(Table table, C cell)
+//	{
+//		total_num_of_cells++;
+//		table.stat.AddCell();
+//		if(cell.isIs_header())
+//		{
+//			total_num_of_header_cells++;
+//		}
+//		num_of_chars_in_cells+=cell.getcell_value().length();
+//		if(cell.getcell_value().trim().equalsIgnoreCase(" ") || cell.getcell_value().trim().equalsIgnoreCase("") || (((int)cell.getcell_value().trim().charAt(0))== 160))
+//		{
+//			num_of_empty_cells++;
+//			table.stat.AddEmptyCell();
+//			cell.setCell_content("");
+//			if(cell.isIs_header())
+//				table.stat.AddHeaderEmptyCell();
+//			
+//		}
+//		else
+//		{
+//			num_of_chars_in_nonempty_cells+=cell.getcell_value()_Value().length();
+//		}
+//		if(Utilities.isNumeric(cell.getcell_value()_Value()))
+//		{
+//			num_of_pure_numeric_cells++;
+//			num_of_numeric_cells++;
+//			
+//			table.stat.AddPureNumericCell();
+//			
+//			num_of_chars_in_pure_numeric_cells+=cell.getcell_value()_Value().length();
+//			num_of_chars_in_numeric_cells+=cell.getcell_value()_Value().length();
+//		}
+//		
+//		int numbers = 0;
+//		int chars = 0;
+//		String tempCellVal = cell.getcell_value()_Value().replaceAll("[\\s\\xA0]","");
+//		for(int i=0;i<tempCellVal.length();i++)
+//		{
+//			if(Utilities.isNumeric(tempCellVal.substring(i, i+1)) )
+//			{
+//				numbers++;
+//			}
+//			else
+//			{
+//				chars++;
+//			}
+//		}
+//		float proportion = (float)numbers / (chars+numbers);
+//		//part numeric cell
+//		if(proportion>0.49 && !Utilities.isNumeric(cell.getcell_value()_Value()))
+//		{
+//			num_of_numeric_cells++;
+//			num_of_part_numeric_cells++;
+//			
+//			table.stat.AddPartNumericCell();
+//			
+//			num_of_chars_in_numeric_cells+=cell.getcell_value()_Value().length();
+//			num_of_chars_in_part_numeric_cells+=cell.getcell_value()_Value().length();
+//		}
+//		if(proportion<=0.49 && !Utilities.isNumeric(cell.getcell_value()_Value()))
+//		{
+//			//text cell
+//			num_of_pure_text_cells++;
+//			
+//			table.stat.AddTextCell();
+//			
+//			num_of_chars_in_pure_text_cells+=cell.getcell_value()_Value().length();
+//		}
+//		
+//		return table;
+//	}
 	
 	
 	/**
