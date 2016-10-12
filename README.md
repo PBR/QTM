@@ -1,14 +1,19 @@
-TablesinXMI - A program to read Tables from scientific articles in xml format. This program saves Tables in bject structure. Also, filtering QTL tables from the list of Tables.
+TablesinXMI - A program to read Tables from scientific articles in xml format. 
 ===============================================
+This program saves Tables in Oject structure. Filters out tables containing data related to QTL informtaion.
+
 
 Requirements
 ------------
 Java 1.7
-Dictionaries 
+
+Examlple
+---------
+
+
 
 Arguements
 ------------
-
 
 Default:    List of PMC ids
 
@@ -22,5 +27,3 @@ ScreenOutput
 -------------
 Cells and stats of Table Data
 
-
-# TABLESinXMI
