@@ -39,7 +39,7 @@ public class Article {
 	private String journal_name;
 	private String spec_id;
 	private String source;
-	private boolean ContainingTraitTables;
+	private boolean hasTraitTables;
 	private int numQTLtables;
 	private HashMap<String, String> abbreviations;
 	
@@ -254,14 +254,14 @@ public class Article {
      * @return the ContainingTraitTables
      */
     public boolean isCotainingTraitTables() {
-        return ContainingTraitTables;
+        return hasTraitTables;
     }
 
     /**
      * @param CotainsTraitTables the ContainingTraitTables to set
      */
     public void setCotainingTraitTables(boolean CotainsTraitTables) {
-        this.ContainingTraitTables = CotainsTraitTables;
+        this.hasTraitTables = CotainsTraitTables;
     }
 
 

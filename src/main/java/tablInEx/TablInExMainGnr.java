@@ -58,10 +58,13 @@ public class TablInExMainGnr {
 				"____________________________________________________________________________________________________________________________");
 
 		// Excel File writer for viewing table properties.
-		ExcelFileWriter.TraitTablesFirstLine("TraitTables.csv");
-		ExcelFileWriter.PropertiesTableFirstLine("TableProperties.csv");
+		// ExcelFileWriter.TraitTablesFirstLine("TraitTables.csv");
+		// ExcelFileWriter.PropertiesTableFirstLine("TableProperties.csv");
 
 		// reading xml files with pmc ids **CHECK**
+
+		qtlDB.createTables();
+
 		File[] XMLfiles = new File[pmcIds.length];
 
 		for (int i = 0; i < pmcIds.length; i++) {
@@ -70,20 +73,38 @@ public class TablInExMainGnr {
 			PmcMetaReader P = new PmcMetaReader();
 
 			P.init(XMLfiles[i].getPath());
+
 			a = P.Read();
-			
+
+			System.out.println("\n\nInsert entry to the TisDB \n\n ");
+   			qtlDB.insertArticleEntry(a);
+
 			System.out.println("\n\n$$$Abbreviation annotation$$$");
-			a=Annotator.AbbrevAnnotator.AbbreviationAnnotator(a);
+			a = Annotator.AbbrevAnnotator.AbbreviationAnnotator(a);
+
+//			System.out.println("\n\n$$$Ontology based annotation$$$");
+//			a = Annotator.OntologybasedAnnotator.OA(a);
+
+//			System.out.println("\n\n\nTable Headers");			
+//			for (Table t : a.getTables()) {
+//				for (String col : t.getTableHeadersColumns()) {
+//					System.out.println(col);
+//				}
+//			}
 			
-		
-			System.out.println("\n\n$$$Ontology based annotation$$$");
-			a=Annotator.OntologybasedAnnotator.OA(a);
+//			for(Table t : a.getTables()){
+//				for (Columns c: t.getTableCol()){
+//					System.out.println(c.getHeader());
+//					for(String s: c.getRowEntries()){
+//						System.out.println(s);
+//					}
+//				}
+//			}
 			
-		
 		
 		}
-		
-		ExcelFileWriter.LastLine();
+
+		// ExcelFileWriter.LastLine();
 
 	}
 
