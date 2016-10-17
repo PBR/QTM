@@ -106,7 +106,7 @@ public class qtlDB {
 				String insertArticleTable = "INSERT INTO articles Values('" + articleID + "','" + articleTitle + "');";
 				stmt.executeUpdate(insertArticleTable);
 				
-				System.out.println("Article entries inserted in the DB");
+				System.out.println("Article entries inserted in the DB"+"\t"+articleID);
 				
 				for (String key : a.getAbbreviations().keySet()) {
 
@@ -114,7 +114,7 @@ public class qtlDB {
 							+ "','" + key + "','" + articleID + "');";
 					stmt.executeUpdate(insertAbrevTable);
 				}
-				System.out.println("Abbreviation entries inserted in the DB");
+				//System.out.println("Abbreviation entries inserted in the DB");
 				
 				
 				// QTL table entries
@@ -128,25 +128,31 @@ public class qtlDB {
 								+ numofRows + ",'" + articleID + "');";
 						stmt.executeUpdate(insertQTLTable);
 						
-						System.out.println("QTLTable entries inserted in the DB");
+						//System.out.println("QTLTable entries inserted in the DB");
 						
 						
 						for(Columns col: t.getTableCol()){
 							String insertColTable = "INSERT INTO columnEntries(colId,colHeader,colType,tableId) Values('"+col.getColID() +"','" + col.getHeader() + "','" + col.getColumns_type() + "','"
 									+ t.getTableid()+ "');";
 							stmt.executeUpdate(insertColTable);
-							System.out.println("Col entries inserted in the DB");
+							//System.out.println("Col entries inserted in the DB");
 						
 						
 							for(Cell cel:col.getRowcell()){
+								try{
+								if(cel.getcell_value()!= null){
 								String insertCellTable = "INSERT INTO cellEntries(rowNumber, cellValue, cellType, colId) Values(" + cel.getRow_number() + ",'" + cel.getcell_value()+ "','"
-								+cel.getCell_type()+"','"+col.getColID() + "');";
+										+cel.getCell_type()+"','"+col.getColID() + "');";
 								stmt.executeUpdate(insertCellTable);
 								
-								System.out.println("Cell entries inserted in the DB");
+								//System.out.println("Cell entries inserted in the DB"+cel.getRow_number());
+								
 							 
 							}
+							}catch(Exception e){
 								
+							}
+							}		
 						
 													
 						
@@ -162,11 +168,13 @@ public class qtlDB {
 				stmt.close();
 				c.close();
 			}
-		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
-		}
-		System.out.println("entry inserted into QTL Manual successfully");
+		 
+		System.out.println("entry inserted into DB successfully");
+		System.exit(0);
+	}catch(Exception e){
+		System.out.println("Error in DB"+e.getMessage());
+		System.exit(0);
+	}
 	}
 
 }

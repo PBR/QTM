@@ -98,18 +98,25 @@ public class TableParser {
 
 				tables[tableindex] = ParseTableCaptionandTableHeadingsforTraitRelatedWords(tables[tableindex]);
 
-				// entering table values of num of rows and cols
-				tables[tableindex]
-						.setNum_of_rows(tables[tableindex].header_cells.length + tables[tableindex].cells.length);
-				tables[tableindex].setNum_of_columns(numofCol);
-				System.out.println("Number of Rows in the complete Table"+tables[tableindex].getTable_label()+" is: " + tables[tableindex].getNum_of_rows());
-				System.out.println("Number of Cols in the complete Table"+tables[tableindex].getTable_label()+" is: " + tables[tableindex].getNum_of_columns());
+				
+				if (tables[tableindex].isaTraitTable()) {
 
-				tables[tableindex] = tables[tableindex].tableClassification();
-				System.out.println("after classification");
-				tables[tableindex].printTable();
+					// entering table values of num of rows and cols
+					tables[tableindex]
+							.setNum_of_rows(tables[tableindex].header_cells.length + tables[tableindex].cells.length);
+					tables[tableindex].setNum_of_columns(numofCol);
+					System.out.println("Number of Rows in the complete Table" + tables[tableindex].getTable_label()
+							+ " is: " + tables[tableindex].getNum_of_rows());
+					System.out.println("Number of Cols in the complete Table" + tables[tableindex].getTable_label()
+							+ " is: " + tables[tableindex].getNum_of_columns());
 
-				tableindex++;
+					tables[tableindex] = tables[tableindex].tableClassification();
+					System.out.println("after classification");
+					tables[tableindex].printTable();
+
+					tableindex++;
+				}
+
 			}
 
 		}
@@ -276,12 +283,10 @@ public class TableParser {
 	public static Table ProcessTableHeader(Table table, int numberofCol, List<Node> thead) {
 		List<Node> headerRows = null;
 
-		String [] HeaderCols = new String[numberofCol];
-		//String [] HeaderCols = {};
-		Columns [] tableCol = new Columns[numberofCol];
-		
-		
-		
+		String[] HeaderCols = new String[numberofCol];
+		// String [] HeaderCols = {};
+		Columns[] tableCol = new Columns[numberofCol];
+
 		// Check if Header is empty
 		if (thead.size() > 0) {
 			for (int j = 0; j < thead.size(); j++) {
@@ -307,7 +312,8 @@ public class TableParser {
 					List<Node> th = null;
 					th = getChildrenByTagName(headerRows.get(k), "th");
 
-					//System.out.println("----------------------------header cells Size" + th.size());
+					// System.out.println("----------------------------header
+					// cells Size" + th.size());
 
 					for (int l = 0; l < th.size(); l++) {
 						int rowspan = 1;
@@ -321,10 +327,10 @@ public class TableParser {
 						try {
 							rowspan = Utilities
 									.getFirstValue(th.get(l).getAttributes().getNamedItem("rowspan").getNodeValue());
-							
+
 						} catch (NullPointerException e) {
 
-							//System.out.println("Rowspan not mentioned");
+							// System.out.println("Rowspan not mentioned");
 						}
 
 						try {
@@ -333,32 +339,34 @@ public class TableParser {
 
 						} catch (NullPointerException e) {
 
-							//System.out.println("Colspan not mentioned");
+							// System.out.println("Colspan not mentioned");
 						}
 
-						
-						// System.out.print("rowSpan is" + rowspan + "\t colspan is " + colspan + "\t\n\n");
+						// System.out.print("rowSpan is" + rowspan + "\t colspan
+						// is " + colspan + "\t\n\n");
 
 						if (rowspan == 1 && colspan == 1) {
-							//System.out.println("I am here %%%%%%%%%&&&&&&&&&&&&");
+							// System.out.println("I am here
+							// %%%%%%%%%&&&&&&&&&&&&");
 							HeaderCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent());
-							
-							if(HeaderCols[colLine] == null)
-								HeaderCols[colLine]=th.get(l).getTextContent();
-							else								
-								HeaderCols[colLine]=HeaderCols[colLine]+" "+th.get(l).getTextContent();
-							
+
+							if (HeaderCols[colLine] == null)
+								HeaderCols[colLine] = th.get(l).getTextContent();
+							else
+								HeaderCols[colLine] = HeaderCols[colLine] + " " + th.get(l).getTextContent();
+
 							colLine++;
 						} else if (rowspan == 1 && colspan > 1) {
-							//System.out.println("I am here $$$$$$$$$$$$&&&&&&&&&&&&");
+							// System.out.println("I am here
+							// $$$$$$$$$$$$&&&&&&&&&&&&");
 							for (int n = colLine; n < colLine + colspan; n++) {
-								
+
 								HeaderCells[rowLine][n].setHeadercell_values(th.get(l).getTextContent());
-								
-								if(HeaderCols[n]== null)
-									HeaderCols[n]=th.get(l).getTextContent();
-								else								
-									HeaderCols[n]=HeaderCols[n]+" "+th.get(l).getTextContent();
+
+								if (HeaderCols[n] == null)
+									HeaderCols[n] = th.get(l).getTextContent();
+								else
+									HeaderCols[n] = HeaderCols[n] + " " + th.get(l).getTextContent();
 							}
 							colLine += colspan;
 						} else if (rowspan > 1 && colspan == 1) {
@@ -368,28 +376,26 @@ public class TableParser {
 							for (int m = rowLine + 1; m < rowLine + rowspan; m++) {
 								// HeaderCells[m][colLine].setHeadercell_values(th.get(l).getTextContent());
 								HeaderCells[m][colLine].setHeadercell_values("            ");
-								
-								if(HeaderCols[colLine]== null)
-									HeaderCols[colLine]=th.get(l).getTextContent();
-								else								
-									HeaderCols[colLine]=HeaderCols[colLine]+" "+th.get(l).getTextContent();
+
+								if (HeaderCols[colLine] == null)
+									HeaderCols[colLine] = th.get(l).getTextContent();
+								else
+									HeaderCols[colLine] = HeaderCols[colLine] + " " + th.get(l).getTextContent();
 							}
 							colLine++;
 						}
 					}
 				}
-				
-				
-				for(int i=0; i < numberofCol; i ++ ){
-					HeaderCols[i]= HeaderCols[i].trim();
-					
-					tableCol[i]=new Columns();
+
+				for (int i = 0; i < numberofCol; i++) {
+					HeaderCols[i] = HeaderCols[i].trim();
+
+					tableCol[i] = new Columns();
 					tableCol[i].setHeader(HeaderCols[i]);
-					
-					tableCol[i].setColID(table.getTableid()+"_"+(i+1));
+
+					tableCol[i].setColID(table.getTableid() + "_" + (i + 1));
 				}
-				
-				
+
 				table.setTableHeadersColumns(HeaderCols);
 				table.setTableCol(tableCol);
 				table.setTableHeadercells(HeaderCells);
@@ -426,14 +432,13 @@ public class TableParser {
 	 * @return the table
 	 */
 	public static Table ProcessTableBody(Table table, int numberofCol, List<Node> tbody) {
-		
+
 		List<Node> Rows = null;
 
-		
-		Columns[] tableCol= new Columns[numberofCol];
-				
-		tableCol=table.getTableCol();
-		
+		Columns[] tableCol = new Columns[numberofCol];
+
+		tableCol = table.getTableCol();
+
 		// Check if Header is empty
 		if (tbody.size() > 0) {
 			for (int j = 0; j < tbody.size(); j++) {
@@ -441,16 +446,13 @@ public class TableParser {
 
 				System.out.println("Number of Rows in Table body are" + Rows.size());
 
-				
-				for( Columns C : tableCol){
-					C.RowEntries=new String[Rows.size()];
-					C.Rowcell=new Cell[Rows.size()];
+				for (Columns C : tableCol) {
+					C.RowEntries = new String[Rows.size()];
+					C.Rowcell = new Cell[Rows.size()];
 				}
-				
-				
-				
+
 				System.out.println("Number of Columns in Table body are" + numberofCol);
-				
+
 				// create empty cells
 				table.CreateCells(Rows.size(), numberofCol);
 				// table.CreateLOC(Rows.size(),numberofCol);
@@ -459,7 +461,7 @@ public class TableParser {
 				// List<C[]> LOC=table.getTable_cellList();
 
 				// System.out.println("&&"+LOC.size());
-				//System.out.println("//" + Cells[0].length);
+				// System.out.println("//" + Cells[0].length);
 
 				int rowLine = 0;
 				int colLine = 0;
@@ -486,38 +488,39 @@ public class TableParser {
 						} catch (NullPointerException e) {
 							// continue;
 						}
-
+						
+						
 						if (rowLine < Rows.size() || colLine < numberofCol) {
 							if (rowspan == 1 && colspan == 1) {
-								
+
 								Cells[rowLine][colLine].setcell_values(td.get(l).getTextContent());
-								
-								Cell Entry= new Cell(rowLine,td.get(l).getTextContent());
-								tableCol[colLine].Rowcell[rowLine]=new Cell(Entry);
-								
-								if(tableCol[colLine].getRowEntries()[rowLine] == null)
-									tableCol[colLine].getRowEntries()[rowLine]=td.get(l).getTextContent();
+
+								Cell Entry = new Cell(rowLine, td.get(l).getTextContent());
+								tableCol[colLine].Rowcell[rowLine] = new Cell(Entry);
+
+								if (tableCol[colLine].getRowEntries()[rowLine] == null)
+									tableCol[colLine].getRowEntries()[rowLine] = td.get(l).getTextContent();
 								else
-									tableCol[colLine].getRowEntries()[rowLine]=tableCol[colLine].getRowEntries()[rowLine]+" "+td.get(l).getTextContent();
-								
-								
+									tableCol[colLine]
+											.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine] + " "
+													+ td.get(l).getTextContent();
+
 								colLine++;
 							} else if (rowspan > 1 && colspan == 1) {
 								// forloop rowspan
 								for (int m = rowLine; m < rowLine + rowspan; m++) {
 									Cells[m][colLine].setcell_values(td.get(l).getTextContent());
 									// System.out.println("@@@@@"+td.get(l).getTextContent());
-									
-									Cell Entry= new Cell(m,td.get(l).getTextContent());
-									tableCol[colLine].Rowcell[m]=new Cell(Entry);
-									
-									if(tableCol[colLine].getRowEntries()[m] == null)
-										tableCol[colLine].getRowEntries()[m]=td.get(l).getTextContent();
+
+									Cell Entry = new Cell(m, td.get(l).getTextContent());
+									tableCol[colLine].Rowcell[m] = new Cell(Entry);
+
+									if (tableCol[colLine].getRowEntries()[m] == null)
+										tableCol[colLine].getRowEntries()[m] = td.get(l).getTextContent();
 									else
-										tableCol[colLine].getRowEntries()[m]=tableCol[colLine].getRowEntries()[m]+" "+td.get(l).getTextContent();
-									
-									
-									
+										tableCol[colLine].getRowEntries()[m] = tableCol[colLine].getRowEntries()[m]
+												+ " " + td.get(l).getTextContent();
+
 								}
 								colLine++;
 							} else if (rowspan == 1 && colspan > 1) {
@@ -528,31 +531,29 @@ public class TableParser {
 								for (int n = colLine; n < colLine + colspan; n++) {
 									Cells[rowLine][n].setcell_values(td.get(l).getTextContent());
 									// System.out.println("//////"+td.get(l).getTextContent());
-									
-									Cell Entry= new Cell(rowLine, td.get(l).getTextContent());
-									tableCol[n].Rowcell[rowLine]=new Cell(Entry);
-									
-									
-									if(tableCol[n].getRowEntries()[rowLine] == null)
-										tableCol[n].getRowEntries()[rowLine]=td.get(l).getTextContent();
+
+									Cell Entry = new Cell(rowLine, td.get(l).getTextContent());
+									tableCol[n].Rowcell[rowLine] = new Cell(Entry);
+
+									if (tableCol[n].getRowEntries()[rowLine] == null)
+										tableCol[n].getRowEntries()[rowLine] = td.get(l).getTextContent();
 									else
-										tableCol[n].getRowEntries()[rowLine]=tableCol[colLine].getRowEntries()[rowLine]+" "+td.get(l).getTextContent();
-									
-									
-									
+										tableCol[n]
+												.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine]
+														+ " " + td.get(l).getTextContent();
+
 								}
 								colLine += colspan;
+							} else if (rowspan > 1 && colspan > 1) {
+								for (int m = rowLine; m < rowLine + rowspan; m++) {
+									for (int n = colLine; n < colLine + colspan; n++) {
+										Cells[m][n].setcell_values(td.get(l).getTextContent());
+									}
+								}
+
+								colLine += colspan;
 							}
-							 else if(rowspan > 1 && colspan > 1) {
-							 for (int m=rowLine; m < rowLine + rowspan; m++){
-								 for (int n=colLine; n < colLine + colspan; n++){
-									 Cells[m][n].setcell_values(td.get(l).getTextContent());
-								 }
-							 	}
-							 
-							 colLine += colspan;
-							 }
-							 
+
 						}
 					}
 
@@ -560,7 +561,7 @@ public class TableParser {
 
 				table.setTable_cells(Cells);
 
-				//System.out.println("***body Tables***");
+				// System.out.println("***body Tables***");
 				// for(int p=0;p<Rows.size();p++){
 				// for(int q=0;q<numberofCol;q++){
 				// System.out.print(table.cells[p][q].getcell_value()+"("+table.cells[p][q].getCell_type()+")"+"\t");
@@ -571,7 +572,8 @@ public class TableParser {
 
 			}
 
-		}return table;
+		}
+		return table;
 
 	}
 
@@ -600,7 +602,7 @@ public class TableParser {
 	 */
 	public static Table ParseTableCaptionandTableHeadingsforTraitRelatedWords(Table table) {
 		List<String> HeaderList = new ArrayList<String>();
-		
+
 		for (HC[] hrow : table.header_cells) {
 			for (HC header : hrow) {
 				try {

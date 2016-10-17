@@ -59,11 +59,17 @@ public class Article {
 	public void setNumQTLtables() {
 		int i=0;
 		for (Table t : this.tables) {
-			System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
-			if(t.getisTraitTable()==true)
+			//System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
+			try{
+			if(t.getisTraitTable()==true){
+				System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
 				i++;
-		} 
-		this.numQTLtables=i;
+		}
+		}catch(NullPointerException e){
+			
+		}
+		}
+			this.numQTLtables=i;
 	}
 
 	//Constructors

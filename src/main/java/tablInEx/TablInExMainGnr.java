@@ -79,8 +79,8 @@ public class TablInExMainGnr {
 			System.out.println("\n\nInsert entry to the TisDB \n\n ");
    			qtlDB.insertArticleEntry(a);
 
-			System.out.println("\n\n$$$Abbreviation annotation$$$");
-			a = Annotator.AbbrevAnnotator.AbbreviationAnnotator(a);
+//			System.out.println("\n\n$$$Abbreviation annotation$$$");
+//			a = Annotator.AbbrevAnnotator.AbbreviationAnnotator(a);
 
 //			System.out.println("\n\n$$$Ontology based annotation$$$");
 //			a = Annotator.OntologybasedAnnotator.OA(a);
