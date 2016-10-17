@@ -13,7 +13,7 @@ Stato
 
 Examlple
 ---------
-
+java -jar TablesinXMI.jar PMC4266912
 
 
 Arguements
