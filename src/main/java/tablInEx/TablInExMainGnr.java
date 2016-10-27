@@ -16,10 +16,15 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashMap;
+<<<<<<< HEAD
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Set;
+=======
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 import net.didion.jwnl.JWNL;
 import java.io.FileOutputStream;
@@ -29,12 +34,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+<<<<<<< HEAD
 import java.security.Key;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
 
+=======
+import java.util.logging.Level;
+import java.util.logging.Logger;
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 import qtlTMdb.qtlDB;
 import readers.PmcMetaReader;
 import readers.Reader;
@@ -84,6 +94,7 @@ public class TablInExMainGnr {
 
 			System.out.println("\n\nInsert entry to the TisDB \n\n ");
    			qtlDB.insertArticleEntry(a);
+<<<<<<< HEAD
    			
    			System.out.println("Finding traits nows");
    			qtlDB.InsertTraitEntry(a);
@@ -102,6 +113,8 @@ public class TablInExMainGnr {
 //   				System.out.println(t.getOtherProperties());
 //   				
 //   			}
+=======
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 //			System.out.println("\n\n$$$Abbreviation annotation$$$");
 //			a = Annotator.AbbrevAnnotator.AbbreviationAnnotator(a);

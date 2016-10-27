@@ -5,6 +5,7 @@
  */
 package qtlTMdb;
 
+<<<<<<< HEAD
 import java.nio.channels.CancelledKeyException;
 import java.sql.*;
 import java.util.HashMap;
@@ -14,11 +15,21 @@ import java.util.Set;
 
 import org.json.simple.JSONObject;
 
+=======
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 import tablInEx.Article;
 import tablInEx.Cell;
 import tablInEx.Columns;
 import tablInEx.Table;
+<<<<<<< HEAD
 import tablInEx.Trait;
+=======
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 /**
  *
@@ -34,7 +45,11 @@ public class qtlDB {
 			Class.forName("org.sqlite.JDBC");
 
 			String sJDBC = "jdbc:sqlite";
+<<<<<<< HEAD
 			String sTempDb = "TixDB.db";
+=======
+			String sTempDb = "Tix.db";
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 			String sDBUrl = sJDBC + ":" + sTempDb;
 
@@ -55,7 +70,13 @@ public class qtlDB {
 				Statement stmt = null;
 				stmt = c.createStatement();
 				stmt.setQueryTimeout(30);
+<<<<<<< HEAD
 
+=======
+				// String sql = "CREATE TABLE IF NOT EXISTS Articles " + "(AID
+				// INTEGER PRIMARY KEY AUTOINCREMENT,"
+				// + "PMCID Text NOT NULL," + " Tittle TEXT NOT NULL); ";
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 				String ArticleTable = "CREATE TABLE IF NOT EXISTS articles(pmcId Text PRIMARY KEY NOT NULL,"
 						+ " tittle TEXT); ";
 				stmt.executeUpdate(ArticleTable);
@@ -85,6 +106,7 @@ public class qtlDB {
 				stmt.executeUpdate(cellETable);
 				System.out.println("Column Entry Table created successfully");
 
+<<<<<<< HEAD
 				String traitTable = "CREATE TABLE IF NOT EXISTS traits"
 						+ "(TraitId INTEGER PRIMARY KEY  AUTOINCREMENT NULL, TraitName Text, TraitValues  TEXT,"
 						+ "TraitProperties TEXT, OtherProperties TEXT, pmcId TEXT, FOREIGN KEY(pmcId) REFERENCES articles(pmcId)"
@@ -92,6 +114,8 @@ public class qtlDB {
 				stmt.executeUpdate(traitTable);
 				System.out.println("Trait Table created successfully");
 
+=======
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 				stmt.close();
 				c.close();
 
@@ -105,6 +129,7 @@ public class qtlDB {
 
 	public static void insertArticleEntry(Article a) {
 		try {
+<<<<<<< HEAD
 			if (connectionDB() & isArticleEntryAlredyIn(a, c) == false) {
 				Statement articlestmt = null;
 				articlestmt = c.createStatement();
@@ -120,32 +145,53 @@ public class qtlDB {
 
 				Statement cellstmt = null;
 				cellstmt = c.createStatement();
+=======
+			if (connectionDB()) {
+				Statement stmt = null;
+				stmt = c.createStatement();
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 				// Article Table entry
 				String articleID = a.getPmc();
 				String articleTitle = a.getTitle();
 
 				String insertArticleTable = "INSERT INTO articles Values('" + articleID + "','" + articleTitle + "');";
+<<<<<<< HEAD
 				articlestmt.executeUpdate(insertArticleTable);
 
 				System.out.println("Article entries inserted in the DB" + "\t" + articleID);
 
+=======
+				stmt.executeUpdate(insertArticleTable);
+				
+				System.out.println("Article entries inserted in the DB"+"\t"+articleID);
+				
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 				for (String key : a.getAbbreviations().keySet()) {
 
 					String insertAbrevTable = "INSERT INTO abbreviations Values('" + a.getAbbreviations().get(key)
 							+ "','" + key + "','" + articleID + "');";
+<<<<<<< HEAD
 					abbrevstmt.executeUpdate(insertAbrevTable);
 				}
 				abbrevstmt.close();
 				// System.out.println("Abbreviation entries inserted in the
 				// DB");
 
+=======
+					stmt.executeUpdate(insertAbrevTable);
+				}
+				//System.out.println("Abbreviation entries inserted in the DB");
+				
+				
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 				// QTL table entries
 				for (Table t : a.getTables()) {
 					if (t.isaTraitTable()) {
 						String tableID = t.getTableid();
 						int numofCol = t.getNum_of_columns();
 						int numofRows = t.getNum_of_rows();
+<<<<<<< HEAD
 
 						String insertQTLTable = "INSERT INTO qtlTables Values('" + tableID + "'," + numofCol + ","
 								+ numofRows + ",'" + articleID + "');";
@@ -319,6 +365,60 @@ public class qtlDB {
 		}
 		return check;
 
+=======
+					
+						String insertQTLTable = "INSERT INTO qtlTables Values('" + tableID + "'," + numofCol + ","
+								+ numofRows + ",'" + articleID + "');";
+						stmt.executeUpdate(insertQTLTable);
+						
+						//System.out.println("QTLTable entries inserted in the DB");
+						
+						
+						for(Columns col: t.getTableCol()){
+							String insertColTable = "INSERT INTO columnEntries(colId,colHeader,colType,tableId) Values('"+col.getColID() +"','" + col.getHeader() + "','" + col.getColumns_type() + "','"
+									+ t.getTableid()+ "');";
+							stmt.executeUpdate(insertColTable);
+							//System.out.println("Col entries inserted in the DB");
+						
+						
+							for(Cell cel:col.getRowcell()){
+								try{
+								if(cel.getcell_value()!= null){
+								String insertCellTable = "INSERT INTO cellEntries(rowNumber, cellValue, cellType, colId) Values(" + cel.getRow_number() + ",'" + cel.getcell_value()+ "','"
+										+cel.getCell_type()+"','"+col.getColID() + "');";
+								stmt.executeUpdate(insertCellTable);
+								
+								//System.out.println("Cell entries inserted in the DB"+cel.getRow_number());
+								
+							 
+							}
+							}catch(Exception e){
+								
+							}
+							}		
+						
+													
+						
+						}
+						
+						
+						
+						
+						
+					}
+				}
+
+				stmt.close();
+				c.close();
+			}
+		 
+		System.out.println("entry inserted into DB successfully");
+		System.exit(0);
+	}catch(Exception e){
+		System.out.println("Error in DB"+e.getMessage());
+		System.exit(0);
+	}
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 	}
 
 }

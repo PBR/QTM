@@ -69,11 +69,19 @@ public class TableParser {
 				tables[tableindex].setTableid(
 						tables[tableindex].getDocumentFileName().concat("_" + tables[tableindex].getTable_label()));
 
+<<<<<<< HEAD
 				String caption = readTableCaption(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
 				System.out.println("Caption: " + caption);
 				tables[tableindex].setTable_caption(caption);
 
 				String foot = ReadTableFooter(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
+=======
+				String caption = readTableCaption(tablesxml.item(i));
+				System.out.println("Caption: " + caption);
+				tables[tableindex].setTable_caption(caption);
+
+				String foot = ReadTableFooter(tablesxml.item(i));
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 				tables[tableindex].setTable_footer(foot);
 				System.out.println("Foot: " + foot);
 
@@ -348,12 +356,21 @@ public class TableParser {
 						if (rowspan == 1 && colspan == 1) {
 							// System.out.println("I am here
 							// %%%%%%%%%&&&&&&&&&&&&");
+<<<<<<< HEAD
 							HeaderCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 
 							if (HeaderCols[colLine] == null)
 								HeaderCols[colLine] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 							else
 								HeaderCols[colLine] = HeaderCols[colLine] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+=======
+							HeaderCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent());
+
+							if (HeaderCols[colLine] == null)
+								HeaderCols[colLine] = th.get(l).getTextContent();
+							else
+								HeaderCols[colLine] = HeaderCols[colLine] + " " + th.get(l).getTextContent();
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 							colLine++;
 						} else if (rowspan == 1 && colspan > 1) {
@@ -361,17 +378,27 @@ public class TableParser {
 							// $$$$$$$$$$$$&&&&&&&&&&&&");
 							for (int n = colLine; n < colLine + colspan; n++) {
 
+<<<<<<< HEAD
 								HeaderCells[rowLine][n].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 
 								if (HeaderCols[n] == null)
 									HeaderCols[n] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 								else
 									HeaderCols[n] = HeaderCols[n] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+=======
+								HeaderCells[rowLine][n].setHeadercell_values(th.get(l).getTextContent());
+
+								if (HeaderCols[n] == null)
+									HeaderCols[n] = th.get(l).getTextContent();
+								else
+									HeaderCols[n] = HeaderCols[n] + " " + th.get(l).getTextContent();
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 							}
 							colLine += colspan;
 						} else if (rowspan > 1 && colspan == 1) {
 							// System.out.println("9999" +
 							// th.get(l).getTextContent());
+<<<<<<< HEAD
 							HeaderCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 							for (int m = rowLine + 1; m < rowLine + rowspan; m++) {
 								// HeaderCells[m][colLine].setHeadercell_values(th.get(l).getTextContent());
@@ -381,6 +408,17 @@ public class TableParser {
 									HeaderCols[colLine] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 								else
 									HeaderCols[colLine] = HeaderCols[colLine] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+=======
+							HeaderCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent());
+							for (int m = rowLine + 1; m < rowLine + rowspan; m++) {
+								// HeaderCells[m][colLine].setHeadercell_values(th.get(l).getTextContent());
+								HeaderCells[m][colLine].setHeadercell_values("            ");
+
+								if (HeaderCols[colLine] == null)
+									HeaderCols[colLine] = th.get(l).getTextContent();
+								else
+									HeaderCols[colLine] = HeaderCols[colLine] + " " + th.get(l).getTextContent();
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 							}
 							colLine++;
 						}
@@ -388,12 +426,17 @@ public class TableParser {
 				}
 
 				for (int i = 0; i < numberofCol; i++) {
+<<<<<<< HEAD
 					try{
 					HeaderCols[i] = HeaderCols[i].trim();
 					}catch(Exception e){
 						HeaderCols[i]="";
 					}
 					
+=======
+					HeaderCols[i] = HeaderCols[i].trim();
+
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 					tableCol[i] = new Columns();
 					tableCol[i].setHeader(HeaderCols[i]);
 
@@ -497,6 +540,7 @@ public class TableParser {
 						if (rowLine < Rows.size() || colLine < numberofCol) {
 							if (rowspan == 1 && colspan == 1) {
 
+<<<<<<< HEAD
 								Cells[rowLine][colLine].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 
 								Cell Entry = new Cell(rowLine, td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
@@ -508,11 +552,25 @@ public class TableParser {
 									tableCol[colLine]
 											.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine] + " "
 													+ td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+=======
+								Cells[rowLine][colLine].setcell_values(td.get(l).getTextContent());
+
+								Cell Entry = new Cell(rowLine, td.get(l).getTextContent());
+								tableCol[colLine].Rowcell[rowLine] = new Cell(Entry);
+
+								if (tableCol[colLine].getRowEntries()[rowLine] == null)
+									tableCol[colLine].getRowEntries()[rowLine] = td.get(l).getTextContent();
+								else
+									tableCol[colLine]
+											.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine] + " "
+													+ td.get(l).getTextContent();
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 								colLine++;
 							} else if (rowspan > 1 && colspan == 1) {
 								// forloop rowspan
 								for (int m = rowLine; m < rowLine + rowspan; m++) {
+<<<<<<< HEAD
 									Cells[m][colLine].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 									// System.out.println("@@@@@"+td.get(l).getTextContent());
 
@@ -524,6 +582,19 @@ public class TableParser {
 									else
 										tableCol[colLine].getRowEntries()[m] = tableCol[colLine].getRowEntries()[m]
 												+ " " + td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+=======
+									Cells[m][colLine].setcell_values(td.get(l).getTextContent());
+									// System.out.println("@@@@@"+td.get(l).getTextContent());
+
+									Cell Entry = new Cell(m, td.get(l).getTextContent());
+									tableCol[colLine].Rowcell[m] = new Cell(Entry);
+
+									if (tableCol[colLine].getRowEntries()[m] == null)
+										tableCol[colLine].getRowEntries()[m] = td.get(l).getTextContent();
+									else
+										tableCol[colLine].getRowEntries()[m] = tableCol[colLine].getRowEntries()[m]
+												+ " " + td.get(l).getTextContent();
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 								}
 								colLine++;
@@ -533,6 +604,7 @@ public class TableParser {
 
 								// forloop colspan
 								for (int n = colLine; n < colLine + colspan; n++) {
+<<<<<<< HEAD
 									Cells[rowLine][n].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 									// System.out.println("//////"+td.get(l).getTextContent());
 
@@ -545,13 +617,31 @@ public class TableParser {
 										tableCol[n]
 												.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine]
 														+ " " + td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+=======
+									Cells[rowLine][n].setcell_values(td.get(l).getTextContent());
+									// System.out.println("//////"+td.get(l).getTextContent());
+
+									Cell Entry = new Cell(rowLine, td.get(l).getTextContent());
+									tableCol[n].Rowcell[rowLine] = new Cell(Entry);
+
+									if (tableCol[n].getRowEntries()[rowLine] == null)
+										tableCol[n].getRowEntries()[rowLine] = td.get(l).getTextContent();
+									else
+										tableCol[n]
+												.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine]
+														+ " " + td.get(l).getTextContent();
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 								}
 								colLine += colspan;
 							} else if (rowspan > 1 && colspan > 1) {
 								for (int m = rowLine; m < rowLine + rowspan; m++) {
 									for (int n = colLine; n < colLine + colspan; n++) {
+<<<<<<< HEAD
 										Cells[m][n].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+=======
+										Cells[m][n].setcell_values(td.get(l).getTextContent());
+>>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 									}
 								}
 
