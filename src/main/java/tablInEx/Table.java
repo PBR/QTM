@@ -4,7 +4,6 @@
  */
 package tablInEx;
 
-import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -597,7 +596,6 @@ public class Table {
 			String word1 = "qtl";
 			String word2 = "trait";
 
-<<<<<<< HEAD
 			float totalNumeric= (float) ColTypes.get("Numeric")/ (float) (tc[l].getRowcell().length - ColTypes.get("Empty"));
 			float totalPartiallyNumeric= (float) ColTypes.get("Partially Numeric")/ (float) (tc[l].getRowcell().length - ColTypes.get("Empty"));
 			float totalText= (float) ColTypes.get("Text")/(float)  ( tc[l].getRowcell().length - ColTypes.get("Empty")) ;
@@ -642,22 +640,6 @@ public class Table {
 							countwords++;
 					}
 				} catch (NullPointerException e) {
-=======
-			if (ColTypes.get("Empty") == tc[l].getRowcell().length)
-				tc[l].setColumns_type("Empty");
-			if (ColTypes.get("Numeric") == 0 && ColTypes.get("Partially Numeric") == 0)
-				tc[l].setColumns_type("QTL property");
-			if (ColTypes.get("Text") == 0)
-				tc[l].setColumns_type("QTL value");
-
-			// Check??
-			int countwords = 0;
-			try {
-				if (tc[l].getHeader().toLowerCase().indexOf(word1) != -1
-						|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word2) != -1)
-					countwords++;
-			} catch (NullPointerException e) {
->>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 				System.out.printf("*cannot classify heading on " + l + "column\n");
 			}
 
@@ -693,7 +675,6 @@ public class Table {
 			String word1 = "qtl";
 			String word2 = "trait";
 
-<<<<<<< HEAD
 			float totalNumeric= (float) ColTypes.get("Numeric")/ (float) (rows - ColTypes.get("Empty"));
 			float totalPartiallyNumeric= (float) ColTypes.get("Partially Numeric")/ (float) (rows - ColTypes.get("Empty"));
 			float totalText= (float) ColTypes.get("Text")/(float)  ( rows - ColTypes.get("Empty")) ;
@@ -716,8 +697,6 @@ public class Table {
 				
 			
 			
-=======
->>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 			if (ColTypes.get("Empty") == rows) {
 				for (int k = 0; k < hCells.length; k++) {
 					hCells[k][j].setHeaderCell_type("Empty");
@@ -740,19 +719,12 @@ public class Table {
 			int countwords = 0;
 			for (int k = 0; k < hCells.length; k++) {
 				try {
-<<<<<<< HEAD
 					if(hCells[k][j].getHeaderCell_type().equals("QTL property")){
 						if (hCells[k][j].getHeadercell_value().toLowerCase().indexOf(word1) != -1
 							|| hCells[k][j].getHeadercell_value().toLowerCase().indexOf(word2) != -1)
 						countwords++;
 					}
 				}catch (NullPointerException e) {
-=======
-					if (hCells[k][j].getHeadercell_value().toLowerCase().indexOf(word1) != -1
-							|| hCells[k][j].getHeadercell_value().toLowerCase().indexOf(word2) != -1)
-						countwords++;
-				} catch (NullPointerException e) {
->>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 					System.out.printf("*cannot classify heading on " + k + "row and " + j + "column\n");
 					// System.out.printf(hCells[k][j].getHeadercell_value());
 				}

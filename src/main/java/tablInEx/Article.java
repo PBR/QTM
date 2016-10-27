@@ -5,15 +5,10 @@
 
 package tablInEx;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-=======
-import java.util.HashMap;
-import java.util.LinkedList;
->>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 import java.util.Vector;
 
 import utils.Author;
@@ -49,7 +44,6 @@ public class Article {
 	private boolean hasTraitTables;
 	private int numQTLtables;
 	private HashMap<String, String> abbreviations;
-<<<<<<< HEAD
 	private List<Trait> traits = new ArrayList<Trait>();
 	
 	
@@ -61,10 +55,6 @@ public class Article {
 		this.traits = traits;
 	}
 
-=======
-	
-	
->>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 	public HashMap<String, String> getAbbreviations() {
 		return abbreviations;
 	}

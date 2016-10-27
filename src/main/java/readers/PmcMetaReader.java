@@ -419,11 +419,7 @@ public class PmcMetaReader implements Reader {
 
 	public static File PmcDowloadXml(String PMCID) throws IOException, MalformedURLException {
 
-<<<<<<< HEAD
 		File xmlfile = new File("PMCfiles/" + PMCID + ".xml");
-=======
-		File xmlfile = new File("/home/gurnoor/workspace/XMLTAB/PMCfiles/" + PMCID + ".xml");
->>>>>>> 025220fcdbca83bb152b8ed35365aa011b3d41ba
 
 		if (!xmlfile.exists()) {
 			xmlfile.createNewFile();
