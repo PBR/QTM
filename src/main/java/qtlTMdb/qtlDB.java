@@ -7,9 +7,12 @@ package qtlTMdb;
 
 import java.nio.channels.CancelledKeyException;
 import java.sql.*;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
@@ -34,7 +37,7 @@ public class qtlDB {
 			Class.forName("org.sqlite.JDBC");
 
 			String sJDBC = "jdbc:sqlite";
-			String sTempDb = "TixDB.db";
+			String sTempDb = "TixNewDB.db";
 
 			String sDBUrl = sJDBC + ":" + sTempDb;
 
@@ -75,13 +78,13 @@ public class qtlDB {
 
 				String colETable = "CREATE TABLE IF NOT EXISTS columnEntries"
 						+ "(colId TEXT PRIMARY KEY NOT NULL, colHeader  TEXT,"
-						+ "colType Text, tableId TEXT, FOREIGN KEY(tableId) REFERENCES qtlTables(tableID)" + "); ";
+						+ "colType Text, colAnnotations TEXT, tableId TEXT, FOREIGN KEY(tableId) REFERENCES qtlTables(tableID)" + "); ";
 				stmt.executeUpdate(colETable);
 				System.out.println("Column Entry Table created successfully");
 
 				String cellETable = "CREATE TABLE IF NOT EXISTS cellEntries"
 						+ "(cellId INTEGER PRIMARY KEY  AUTOINCREMENT NULL, rowNumber INT, cellValue  TEXT,"
-						+ "cellType Text, colId TEXT, FOREIGN KEY(colId) REFERENCES columnEntries(colId)" + "); ";
+						+ "cellType Text, cellAnnotations TEXT, colId TEXT, FOREIGN KEY(colId) REFERENCES columnEntries(colId)" + "); ";
 				stmt.executeUpdate(cellETable);
 				System.out.println("Column Entry Table created successfully");
 
@@ -209,6 +212,68 @@ public class qtlDB {
 
 		}
 	}
+	
+	
+	
+	public static void TablesReclassify(Article a){
+		System.out.println("reclassifying the entries in the databases");
+		try {
+			HashMap<String, Integer> AnnotatedCols = new HashMap<String, Integer>();
+			if (connectionDB()) {
+				Statement stmt1 = null;
+				Statement stmt2 = null;
+				Statement stmt3 = null;
+				Statement stmt4 = null;
+				
+				stmt1 = c.createStatement();
+				stmt2 = c.createStatement();
+				stmt3 = c.createStatement();
+				stmt4 = c.createStatement();
+				
+				for(Table t: a.getTables()){
+					if(t.isaTraitTable()){
+					String sql1 ="select colId,colType from columnEntries where colType in ('QTL property', 'QTL descriptor') AND tableId ='"+t.getTableid()+"';";
+					System.out.println(" reclassifying table"+ t.getTableid());
+					ResultSet rs1 = stmt1.executeQuery(sql1);
+					
+					while (rs1.next()){
+						String colId=rs1.getString("colId");
+						String sql2= "select count(cellId) from cellEntries where colId = '"+colId+"' and cellAnnotations != '' or cellAnnotations != null;";
+						ResultSet rs2= stmt2.executeQuery(sql2);
+						int numofAnnotatedcolumns=rs2.getInt("count(cellId)");
+						AnnotatedCols.put(colId, numofAnnotatedcolumns);
+							
+					}
+					//maximum annotated column
+					String maxAnnotatedCol = Collections.max(AnnotatedCols.keySet());
+					
+					while (rs1.next()){
+						String colId=rs1.getString("colId");
+						String colType=rs1.getString("colType");
+						if(colId==maxAnnotatedCol && colType=="QTL descriptor")
+							continue;
+						else if(colId!=maxAnnotatedCol && colType=="QTL descriptor"){
+							String sql3= "update columnEntries SET colType='QTL property' where colId = '"+colId +"';";
+							stmt3.executeUpdate(sql3);
+						}
+						else if(colId==maxAnnotatedCol && colType!="QTL descriptor"){
+							String sql4= "update columnEntries SET colType='QTL descriptor' where colId = '"+colId +"';";
+							stmt4.executeUpdate(sql4);
+						}
+						
+					}
+					
+					
+				}
+				}
+				c.close();
+				
+			}
+			}catch (SQLException e) {
+
+				e.printStackTrace();
+			}
+	}
 
 	public static void InsertTraitEntry(Article a) {
 		try {
@@ -224,7 +289,7 @@ public class qtlDB {
 				List<Trait> traits = a.getTraits();
 				
 				
-				String sql1 = "select cellValue,colId,rowNumber from cellEntries where cellType !='Empty' AND colId in (select colId from columnEntries where colType='QTL descriptor' AND colId like '"+a.getPmc()+"%')";
+				String sql1 = "select cellValue,colId,rowNumber from cellEntries where cellType !='Empty' AND colId in (select colId from columnEntries where colType='QTL descriptor' AND colId like '"+a.getPmc()+"%');";
 				ResultSet rs1 = stmt1.executeQuery(sql1);
 
 				while (rs1.next()) {

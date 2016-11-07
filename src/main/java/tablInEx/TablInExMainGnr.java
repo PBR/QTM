@@ -8,7 +8,9 @@ package tablInEx;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 
 import qtlTMdb.qtlDB;
 import readers.PmcMetaReader;
@@ -52,16 +54,40 @@ public class TablInExMainGnr {
 
 			P.init(XMLfiles[i].getPath());
 
+			//Parsing meta-data, cell entries and finding the abbreviations  
 			a = P.Read();
 
+			//inserting enteries in the data base
 			System.out.println("\n\nInsert entry to the TisDB \n\n ");
    			qtlDB.insertArticleEntry(a);
    			
-   			System.out.println("Finding traits nows");
-   			qtlDB.InsertTraitEntry(a);
+   			//System.out.println("Finding traits nows");
+   			//qtlDB.InsertTraitEntry(a);
    			
-   			System.out.println("***************");
-   			System.out.println("Traits founds in Article"+a.getPmc());
+   			//System.out.println("***************");
+   			//System.out.println("Traits founds in Article"+a.getPmc());
+   			
+   			
+   			//copy all the abbreviations from the data base to the synonyms file of solar 
+   			solrTagger.AbbrevAnnotaions.AbbreviationtoSolarSysnonyms(a);
+   			System.out.println("added abbreviations to the synonym file");
+   			
+			
+   			//annotating Column entries with STATO, 
+   			
+			
+   			//annotating Cell entries with TO and SP Ontologies
+   			solrTagger.AnnotateCellEntries.AnnotateColumnHeadings();
+   			
+   			
+   			//reclassify
+   			qtlDB.TablesReclassify(a);
+   			
+   			
+   			
+   			//rdfy
+   			
+   			
    			
 //   			for (Trait t: a.getTraits()){
 //   				System.out.println("Trait is "+t.getTraitName() );
