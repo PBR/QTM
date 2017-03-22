@@ -1,19 +1,20 @@
-TablesinXMI - A program to read Tables from scientific articles in xml format. 
+QTLTABLEMiner++ -  Semantic-mining of QTL tables in scientific articles 
 ===============================================
-This program parses Tables from scitific literature and filters out tables containing data related to QTL informtaion.
+A quantitative trait locus (QTL) is a region on  the genome that correlates with variation in a phenotype. A significant amount of experimental information about QTL studies are implicitly described in tables of  scientific publications. QTLTableMiner++, is a java based tool that extracts QTL information from (heterogeneous) tables and semantically annotates their content.
+
 
 Requirements
 ------------
 Java 1.7
 SQLite
-Plant Ontology
+Apache Solr
 Crop Ontology (SP)
 Trait Ontology
 Stato
 
 Examlple
 ---------
-java -jar TablesinXMI.jar PMC4266912
+java -jar QTM.jar PMC4266912
 
 
 Arguements
