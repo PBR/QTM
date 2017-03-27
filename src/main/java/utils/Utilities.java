@@ -31,10 +31,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import tablInEx.C;
-//import tablInEx.TablInExMain;
-import tablInEx.TablInExMainGnr;
-import tablInEx.Table;
+import qtm.C;
+import qtm.qtmMain;
+import qtm.Table;
 
 /**
  * The Class Utilities.
@@ -244,7 +243,7 @@ public class Utilities {
 
 	public static String getString(Node xml) {
 		String result = "";
-		if (TablInExMainGnr.doXMLInput) {
+		if (qtmMain.doXMLInput) {
 			result = CreateXMLStringFromSubNodeWithoutDeclaration(xml);
 		} else {
 			result = xml.getTextContent();

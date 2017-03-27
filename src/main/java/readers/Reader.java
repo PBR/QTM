@@ -4,7 +4,7 @@
  * 
  */
 package readers;
-import tablInEx.*;
+import qtm.*;
 
 public interface Reader {
 	

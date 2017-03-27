@@ -9,8 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tablInEx.Article;
-import tablInEx.TablInExMainGnr;
+
+import qtm.Article;
+import qtm.qtmMain;
 
 /**
  *

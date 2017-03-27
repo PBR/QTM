@@ -1,12 +1,15 @@
-package abbrviation;
+package abbreviation;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AbbrevExpander {
 
@@ -34,28 +37,7 @@ public class AbbrevExpander {
 		return false;
 	}
 
-	private void loadTrueDefinitions(String inFile) {
-		String abbrString, defnString, str = "";
-		Vector entry;
-		HashMap definitions = mTestDefinitions;
 
-		try {
-			BufferedReader fin = new BufferedReader(new FileReader(inFile));
-			while ((str = fin.readLine()) != null) {
-				int j = str.indexOf(delimiter);
-				abbrString = str.substring(0, j).trim();
-				defnString = str.substring(j, str.length()).trim();
-				entry = (Vector) definitions.get(abbrString);
-				if (entry == null)
-					entry = new Vector();
-				entry.add(defnString);
-				definitions.put(abbrString, entry);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println(str);
-		}
-	}
 
 	private boolean isTrueDefinition(String shortForm, String longForm) {
 		Vector entry;
@@ -131,7 +113,7 @@ public class AbbrevExpander {
 									shortForm = "";
 							}
 							if (isValidShortForm(shortForm)) {
-								HashMap<String, String> singlePair = extractAbbrPair(shortForm.trim(), longForm.trim());
+								HashMap<String, String> singlePair = extractAbbrPair(getOnlyStrings(shortForm.trim()), longForm.trim());
 								abbrev.putAll(singlePair);
 
 							}
@@ -153,9 +135,19 @@ public class AbbrevExpander {
 			System.out.println(currSentence);
 			System.out.println(tmpIndex);
 		}
+		
 		return abbrev;
 	}
 
+	
+	
+	public static String getOnlyStrings(String s) {
+	    Pattern pattern = Pattern.compile("[^a-z A-Z]");
+	    Matcher matcher = pattern.matcher(s);
+	    String number = matcher.replaceAll("");
+	    return number;
+	 }
+	
 	private String findBestLongForm(String shortForm, String longForm) {
 		int sIndex;
 		int lIndex;
@@ -212,8 +204,8 @@ public class AbbrevExpander {
 				System.out.println(shortForm + delimiter + bestLongForm + delimiter + "FP");
 			}
 		} else {
-			Singlepairs.put(bestLongForm,shortForm);
-			//Singlepairs.put(shortForm,bestLongForm);
+			//Singlepairs.put(bestLongForm,shortForm);
+			Singlepairs.put(shortForm,bestLongForm);
 			//System.out.println(shortForm + delimiter + bestLongForm);
 
 		}

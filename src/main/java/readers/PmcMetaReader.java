@@ -12,8 +12,11 @@ import java.io.FileWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,8 +26,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.helpers.DefaultHandler;
 
-import abbrviation.AbbrevExpander;
+import abbreviation.AbbrevExpander;
+import abbreviation.AbbrevExpander_TableFooters;
+import qtm.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,7 +41,6 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import readers.Reader;
-import tablInEx.*;
 import utils.Author;
 import utils.Utilities;
 
@@ -51,6 +56,7 @@ public class PmcMetaReader implements Reader {
 	private String FileName;
 
 	private AbbrevExpander abbreviator;
+	private AbbrevExpander_TableFooters abbreviator_TableFooter;
 	
 	public void init(String file_name) {
 		setFileName(file_name);
@@ -78,7 +84,7 @@ public class PmcMetaReader implements Reader {
 					continue;
 				xmlString += line + '\n';
 			}
-			// System.out.println(xml);
+			//System.out.println(xmlString);
 
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -86,19 +92,28 @@ public class PmcMetaReader implements Reader {
 			factory.setValidating(false);
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			InputSource is = new InputSource(new StringReader(xmlString));
+			
 			Document parse = builder.parse(is);
 
+			
 			//MetaData
 			art = ParseMetaData(art, parse, xmlString);
 			
 			//Ful-Text
 			art = ParsePlainText(art, parse, xmlString);
+			//System.out.println(art.getPlain_text());
+			
+
 			
 			//abbreviations
 			char deliminator='\t';
-			abbreviator=new AbbrevExpander();
-			art.setAbbreviations(abbreviator.extractAbbrPairs(art.getPlain_text()));
 			
+			abbreviator=new AbbrevExpander();
+			HashMap<String, String> abbreviationsFound= new HashMap<String,String>();
+			
+			abbreviationsFound=abbreviator.extractAbbrPairs(art.getPlain_text());
+			
+			art.setAbbreviations(abbreviationsFound);
 			System.out.println("\n$$$$$Abbreviations$$$$$$$$");
 			for(String key: art.getAbbreviations().keySet()){
 				System.out.println(key+deliminator+art.getAbbreviations().get(key));						
@@ -107,12 +122,31 @@ public class PmcMetaReader implements Reader {
 			System.out.println("\n\n");
 			
 			
-			
 			//Tables			
 			art = TableParser.ParseTables(art, parse);
 			
+			
+			
+//			for(Table t: art.getTables()){
+//				abbreviator_TableFooter=new AbbrevExpander_TableFooters();
+//				HashMap<String, String> abbreviationsinTableFooter= new HashMap<String,String>();
+//				abbreviationsinTableFooter=abbreviator_TableFooter.extractAbbrPairs(t.getTable_footer().replaceAll("\n"," "));
+//				
+//				Iterator it=abbreviationsinTableFooter.entrySet().iterator();
+//				while(it.hasNext()){
+//					Map.Entry pair = (Map.Entry)it.next();
+//					abbreviationsFound.putIfAbsent(pair.getKey().toString(),pair.getValue().toString());
+//					
+//				}
+//			}
+				
+				
+			
+			
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			System.out.println("Problem in reading xml file");
 		}
 		art.setNumQTLtables();
 		System.out.println("NUMBER OF QTL TABLESSS:" + art.getNumQTLtables());
@@ -309,6 +343,11 @@ public class PmcMetaReader implements Reader {
 				if (pmc != null)
 					System.out.println(pmc);
 			}
+			if (article_id.item(j).getAttributes() != null
+					&& article_id.item(j).getAttributes().getNamedItem("pub-id-type") != null
+					&& article_id.item(j).getAttributes().getNamedItem("pub-id-type").getNodeValue().equals("doi")) {
+					art.setDoi(article_id.item(j).getTextContent());
+			}
 		}
 
 		String[] affilis = GetAffiliations(parse);
@@ -384,7 +423,7 @@ public class PmcMetaReader implements Reader {
 		try {
 			
 			Writer writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream("/home/gurnoor/workspace/XMLTAB/textFiles/" + art.getPmc() + ".txt"),
+					new FileOutputStream("/home/gurnoor/workspace/TABLESinXMI/textFiles/" + art.getPmc() + ".txt"),
 					"utf-8"));
 			writer.write(text);
 			writer.close();

@@ -2,7 +2,7 @@
  *
  * @author gurnoor
  */
-package tablInEx;
+package qtm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -553,7 +553,6 @@ public class Table {
 
 	public Table tableClassification() {
 		// C[][] cells=this.getTable_cells();
-		HC[][] hCells = this.getTable_Headercells();
 
 		Columns[] tc = this.getTableCol();
 
@@ -571,19 +570,19 @@ public class Table {
 			ColTypes.put("Empty", 0);
 			//System.out.println("Row length is " + tc[l].getRowcell().length);
 			try{
-			for (int k = 0; k < tc[l].getRowcell().length; k++) {
+			for (int k = 0; k < tc[l].getcelz().length; k++) {
 				//System.out.println("k is" + k);
 				// System.out.println("l is" +l +"\t "+ k+"\t"+
 				// tc[l].getRowcell()[k].getcell_value());
-				if (tc[l].getRowcell()[k].getCell_type() == "Numeric") {
+				if (tc[l].getcelz()[k].getCell_type() == "Numeric") {
 						ColTypes.put("Numeric", ColTypes.get("Numeric") + 1);
-					} else if (tc[l].getRowcell()[k].getCell_type() == "Partially Numeric") {
+					} else if (tc[l].getcelz()[k].getCell_type() == "Partially Numeric") {
 						ColTypes.put("Partially Numeric", ColTypes.get("Partially Numeric") + 1);
-					} else if (tc[l].getRowcell()[k].getCell_type() == "Text") {
+					} else if (tc[l].getcelz()[k].getCell_type() == "Text") {
 
 						ColTypes.put("Text", ColTypes.get("Text") + 1);
 						//System.out.println("$$$$ I am here now $$$$" + "\t" + ColTypes.get("Text"));
-					} else if (tc[l].getRowcell()[k].getCell_type() == "Empty") {
+					} else if (tc[l].getcelz()[k].getCell_type() == "Empty") {
 						ColTypes.put("Empty", ColTypes.get("Empty") + 1);
 					}
 				
@@ -592,22 +591,18 @@ public class Table {
 				
 			}
 
-			//System.out.println("$$$$ I am here $$$$");
 			String word1 = "qtl";
 			String word2 = "trait";
+			String word3 = "phenotype";
+			
+			
+			float totalNumeric= (float) ColTypes.get("Numeric")/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
+			float totalPartiallyNumeric= (float) ColTypes.get("Partially Numeric")/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
+			float totalText= (float) ColTypes.get("Text")/(float)  ( tc[l].getcelz().length - ColTypes.get("Empty")) ;
+			
 
-			float totalNumeric= (float) ColTypes.get("Numeric")/ (float) (tc[l].getRowcell().length - ColTypes.get("Empty"));
-			float totalPartiallyNumeric= (float) ColTypes.get("Partially Numeric")/ (float) (tc[l].getRowcell().length - ColTypes.get("Empty"));
-			float totalText= (float) ColTypes.get("Text")/(float)  ( tc[l].getRowcell().length - ColTypes.get("Empty")) ;
 			
-//			System.out.println("****");
-//			System.out.println("total Numeric is "+totalNumeric);
-//			System.out.println("total partiallyNumeric is "+totalPartiallyNumeric);
-//			System.out.println("total text is "+totalText);
-//			
-//			System.out.println("****");
-			
-			if(totalNumeric >= 0.75)
+			if(totalNumeric >= 0.60)
 				tc[l].setColumns_type("QTL value");
 			else
 				tc[l].setColumns_type("QTL property");
@@ -628,15 +623,21 @@ public class Table {
 
 			
 			
-			// Check??
-			
-			
 			int countwords = 0;
 			try {
 				
 					if(tc[l].getColumns_type().equals("QTL property")){
+						
+						for (int k = 0; k < tc[l].getcelz().length; k++) {
+								if (tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word1) != -1 || tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word2) != -1 || tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word3) != -1){
+									countwords++;
+								}
+						}
+						
 						if (tc[l].getHeader().toLowerCase().indexOf(word1) != -1
-								|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word2) != -1)
+								|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word2) != -1
+								|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word3) != -1
+								)
 							countwords++;
 					}
 				} catch (NullPointerException e) {
@@ -652,103 +653,6 @@ public class Table {
 
 		}
 
-		for (int j = 0; j < cols; j++) {
-
-			ColTypes.put("Partially Numeric", 0);
-			ColTypes.put("Numeric", 0);
-			ColTypes.put("Text", 0);
-			ColTypes.put("Empty", 0);
-
-			for (int i = 0; i < rows; i++) {
-				if (cells[i][j].getCell_type() == "Numeric") {
-					ColTypes.put("Numeric", ColTypes.get("Numeric") + 1);
-				} else if (cells[i][j].getCell_type() == "Partially Numeric") {
-					ColTypes.put("Partially Numeric", ColTypes.get("Partially Numeric") + 1);
-				} else if (cells[i][j].getCell_type() == "Text") {
-					ColTypes.put("Text", ColTypes.get("Text") + 1);
-				} else if (cells[i][j].getCell_type() == "Empty") {
-					ColTypes.put("Empty", ColTypes.get("Empty") + 1);
-				}
-
-			}
-
-			String word1 = "qtl";
-			String word2 = "trait";
-
-			float totalNumeric= (float) ColTypes.get("Numeric")/ (float) (rows - ColTypes.get("Empty"));
-			float totalPartiallyNumeric= (float) ColTypes.get("Partially Numeric")/ (float) (rows - ColTypes.get("Empty"));
-			float totalText= (float) ColTypes.get("Text")/(float)  ( rows - ColTypes.get("Empty")) ;
-			
-			
-			if(totalNumeric >= 0.75){
-				for (int k = 0; k < hCells.length; k++) {
-					hCells[k][j].setHeaderCell_type("QTL value");
-				}}
-			else{
-				for (int k = 0; k < hCells.length; k++) {
-					hCells[k][j].setHeaderCell_type("QTL property");
-				}
-			}
-			if(totalText >= 0.75){
-				for (int k = 0; k < hCells.length; k++) {
-					hCells[k][j].setHeaderCell_type("QTL property");
-				}
-			}
-				
-			
-			
-			if (ColTypes.get("Empty") == rows) {
-				for (int k = 0; k < hCells.length; k++) {
-					hCells[k][j].setHeaderCell_type("Empty");
-				}
-			}
-
-			if (ColTypes.get("Numeric") == 0 && ColTypes.get("Partially Numeric") == 0) {
-				for (int k = 0; k < hCells.length; k++) {
-					hCells[k][j].setHeaderCell_type("QTL property");
-				}
-			}
-
-			if (ColTypes.get("Text") == 0) {
-				for (int k = 0; k < hCells.length; k++) {
-					hCells[k][j].setHeaderCell_type("QTL value");
-				}
-			}
-
-			// Check??
-			int countwords = 0;
-			for (int k = 0; k < hCells.length; k++) {
-				try {
-					if(hCells[k][j].getHeaderCell_type().equals("QTL property")){
-						if (hCells[k][j].getHeadercell_value().toLowerCase().indexOf(word1) != -1
-							|| hCells[k][j].getHeadercell_value().toLowerCase().indexOf(word2) != -1)
-						countwords++;
-					}
-				}catch (NullPointerException e) {
-					System.out.printf("*cannot classify heading on " + k + "row and " + j + "column\n");
-					// System.out.printf(hCells[k][j].getHeadercell_value());
-				}
-
-			}
-			if (countwords > 0) {
-				for (int k = 0; k < hCells.length; k++) {
-					hCells[k][j].setHeaderCell_type("QTL descriptor");
-				}
-			}
-
-			for (int k = 0; k < hCells.length; k++) {
-				// System.out.println("$$here");
-
-				if (hCells[k][j].getHeaderCell_type() == null) {
-
-					hCells[k][j].setHeaderCell_type("NotIdentified");
-				}
-
-			}
-
-		}
-
-		this.setTableHeadercells(hCells);
 
 		return this;
 

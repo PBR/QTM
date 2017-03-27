@@ -3,7 +3,7 @@
  * @author gurnoor
  */
 
-package tablInEx;
+package qtm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +25,9 @@ public class Article {
 	private String venue;
 	private String pmid;
 	private String pmc;
+	private String doi;
+	
+
 	private String pissn;
 	private String eissn;
 	private String file_name;
@@ -93,6 +96,13 @@ public class Article {
 		return title;
 	}
 
+	public String getDoi() {
+		return doi;
+	}
+
+	public void setDoi(String doi) {
+		this.doi = doi;
+	}
 	public void setTitle(String title) {
 		this.title = title;
 	}

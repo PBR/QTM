@@ -1,4 +1,4 @@
-package tablInEx;
+package qtm;
 
 public class Columns {
 
@@ -17,9 +17,9 @@ public class Columns {
 	
 	private String Columns_type="";
 	
-	public String[] RowEntries; 
+	public String[] Entries; 
 	
-	public Cell[] Rowcell;
+	public Cell[] celz;
 
 	public Columns() {
 		// TODO Auto-generated constructor stub
@@ -35,12 +35,12 @@ public class Columns {
 //		}
 	
 
-	public Cell[] getRowcell() {
-		return Rowcell;
+	public Cell[] getcelz() {
+		return celz;
 	}
 
-	public void setRowcell(Cell[] rowcell) {
-		Rowcell = rowcell;
+	public void setcelz(Cell[] c) {
+		celz = c;
 	}
 
 	
@@ -62,12 +62,12 @@ public class Columns {
 	}
 	
 	public String[] getRowEntries() {
-		return RowEntries;
+		return Entries;
 	}
 
 
 	public void setRowEntries(String[] rowEntries) {
-		RowEntries = rowEntries;
+		Entries = rowEntries;
 	}
 
 	

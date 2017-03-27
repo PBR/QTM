@@ -3,7 +3,7 @@
  * @author gurnoor
  */
 
-package tablInEx;
+package qtm;
 
 import org.json.simple.JSONObject;
 import utils.Utilities;

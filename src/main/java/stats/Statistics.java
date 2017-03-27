@@ -5,9 +5,8 @@
 
 package stats;
 
-import tablInEx.C;
-import tablInEx.TablInExMainGnr;
-import tablInEx.Table;
+import qtm.qtmMain;
+import qtm.Table;
 import utils.Utilities;
 
 /**
@@ -441,27 +440,27 @@ public class Statistics {
 		int totalNumOfRows=0;
 		int totalNumOfColumns = 0;
 		
-		for(int i = 0; i<TablInExMainGnr.TStats.size();i++){
-			total_num_cells_for_sd+=TablInExMainGnr.TStats.get(i).getNum_of_cells_unproc();
-			totalNumOfRows+=TablInExMainGnr.TStats.get(i).getNum_of_body_rows()+TablInExMainGnr.TStats.get(i).getNum_of_header_rows();
-			totalNumOfColumns+=TablInExMainGnr.TStats.get(i).getNum_columns();
+		for(int i = 0; i<qtmMain.TStats.size();i++){
+			total_num_cells_for_sd+=qtmMain.TStats.get(i).getNum_of_cells_unproc();
+			totalNumOfRows+=qtmMain.TStats.get(i).getNum_of_body_rows()+qtmMain.TStats.get(i).getNum_of_header_rows();
+			totalNumOfColumns+=qtmMain.TStats.get(i).getNum_columns();
 		}
-		mean_num_of_cells_with_sd = (float)total_num_cells_for_sd / TablInExMainGnr.TStats.size();
-		mean_num_of_rows = (float)totalNumOfRows / TablInExMainGnr.TStats.size();
-		mean_num_of_columns = (float)totalNumOfColumns / TablInExMainGnr.TStats.size();
+		mean_num_of_cells_with_sd = (float)total_num_cells_for_sd / qtmMain.TStats.size();
+		mean_num_of_rows = (float)totalNumOfRows / qtmMain.TStats.size();
+		mean_num_of_columns = (float)totalNumOfColumns / qtmMain.TStats.size();
 		
 		//float differences[] = new float[TablInExMain.TStats.size()];
 		float sum = 0;
 		float sum_rows = 0;
 		float sum_columns = 0;
-		for(int i = 0; i<TablInExMainGnr.TStats.size();i++){
-			sum += (float) Math.pow((TablInExMainGnr.TStats.get(i).getNum_of_cells_unproc()-mean_num_of_cells_with_sd),2);
-			sum_rows += (float) Math.pow((TablInExMainGnr.TStats.get(i).getNum_of_body_rows()+TablInExMainGnr.TStats.get(i).getNum_of_header_rows()-mean_num_of_rows),2);
-			sum_columns+=(float) Math.pow((TablInExMainGnr.TStats.get(i).getNum_columns()-mean_num_of_columns),2);
+		for(int i = 0; i<qtmMain.TStats.size();i++){
+			sum += (float) Math.pow((qtmMain.TStats.get(i).getNum_of_cells_unproc()-mean_num_of_cells_with_sd),2);
+			sum_rows += (float) Math.pow((qtmMain.TStats.get(i).getNum_of_body_rows()+qtmMain.TStats.get(i).getNum_of_header_rows()-mean_num_of_rows),2);
+			sum_columns+=(float) Math.pow((qtmMain.TStats.get(i).getNum_columns()-mean_num_of_columns),2);
 		}
-		SD_mean_num_of_rows = (float) Math.sqrt((float)sum_rows/TablInExMainGnr.TStats.size());
-		SD_mean_num_of_columns = (float) Math.sqrt((float)sum_columns/TablInExMainGnr.TStats.size());
-		mean_num_of_cells_sd = (float) Math.sqrt((float)sum/TablInExMainGnr.TStats.size());
+		SD_mean_num_of_rows = (float) Math.sqrt((float)sum_rows/qtmMain.TStats.size());
+		SD_mean_num_of_columns = (float) Math.sqrt((float)sum_columns/qtmMain.TStats.size());
+		mean_num_of_cells_sd = (float) Math.sqrt((float)sum/qtmMain.TStats.size());
 		mean_number_of_cells = (float) total_num_of_cells / usefulTables;
 		mean_number_of_header_cells = (float) total_num_of_header_cells / usefulTables;
 		mean_number_of_header_rows = (float) total_num_of_header_rows / (usefulTables-tables_without_head);

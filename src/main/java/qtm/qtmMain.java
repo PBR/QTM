@@ -3,19 +3,16 @@
  * @author gurnoor
  */
 
-package tablInEx;
+package qtm;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Set;
-
 import qtlTMdb.qtlDB;
 import readers.PmcMetaReader;
 
-public class TablInExMainGnr {
+public class qtmMain {
 
 	public static boolean learnheaders = false;
 	public static boolean doXMLInput = false;
@@ -27,106 +24,64 @@ public class TablInExMainGnr {
 
 	public static void main(String[] args) throws IOException {
 
-		String[] pmcIds = args;
+		//intialisation
+		qtlDB.createTables();
+		
+		
+		String[] pmcIds = args;// pmcIds = new String[]{"PMC4540768"};
 
-		// pmcIds = new String[]{"PMC4540768"};
-
+		
+		
 		System.out.println("=============================================");
-		System.out.println("Extracting Tables from scientific literature in xml format");
+		System.out.println("QTLTableMiner++ semantic mininig of QTL Tables from scientific articles");
 		System.out.println("=============================================");
 		System.out.println(
 				"____________________________________________________________________________________________________________________________");
 
-		// Excel File writer for viewing table properties.
-		// ExcelFileWriter.TraitTablesFirstLine("TraitTables.csv");
-		// ExcelFileWriter.PropertiesTableFirstLine("TableProperties.csv");
-
-		// reading xml files with pmc ids **CHECK**
-
-		qtlDB.createTables();
-
-		File[] XMLfiles = new File[pmcIds.length];
-
+		//Step1:  reading xml files with pmc ids 		
+		File[] xmlFiles = new File[pmcIds.length];
+		Article[] articles=new Article[pmcIds.length]; 
 		for (int i = 0; i < pmcIds.length; i++) {
-			XMLfiles[i] = PmcMetaReader.PmcDowloadXml(pmcIds[i]);
-			Article a = new Article("");
+			xmlFiles[i] = PmcMetaReader.PmcDowloadXml(pmcIds[i]);
+			articles[i] = new Article("");
 			PmcMetaReader P = new PmcMetaReader();
-
-			P.init(XMLfiles[i].getPath());
+			
+			P.init(xmlFiles[i].getPath());
 
 			//Parsing meta-data, cell entries and finding the abbreviations  
-			a = P.Read();
-
-			//inserting enteries in the data base
-			System.out.println("\n\nInsert entry to the TisDB \n\n ");
-   			qtlDB.insertArticleEntry(a);
-   			
-   			//System.out.println("Finding traits nows");
-   			//qtlDB.InsertTraitEntry(a);
-   			
-   			//System.out.println("***************");
-   			//System.out.println("Traits founds in Article"+a.getPmc());
-   			
-   			
-   			//copy all the abbreviations from the data base to the synonyms file of solar 
-   			solrTagger.AbbrevAnnotaions.AbbreviationtoSolarSysnonyms(a);
-   			System.out.println("added abbreviations to the synonym file");
-   			
-			
-   			//annotating Column entries with STATO, 
-   			
-			
-   			//annotating Cell entries with TO and SP Ontologies
-   			solrTagger.AnnotateCellEntries.AnnotateColumnHeadings();
-   			
-   			
-   			//reclassify
-   			qtlDB.TablesReclassify(a);
-   			
-   			
-   			
-   			//rdfy
-   			
-   			
-   			
-//   			for (Trait t: a.getTraits()){
-//   				System.out.println("Trait is "+t.getTraitName() );
-//   				
-//   				System.out.println("Trait Properties");
-//   				System.out.println(t.getTraitProperties());
-//   				System.out.println("Trait Values");
-//   				System.out.println(t.getTraitValues());
-//   				System.out.println("Other Trait properties");
-//   				System.out.println(t.getOtherProperties());
-//   				
-//   			}
-
-//			System.out.println("\n\n$$$Abbreviation annotation$$$");
-//			a = Annotator.AbbrevAnnotator.AbbreviationAnnotator(a);
-
-//			System.out.println("\n\n$$$Ontology based annotation$$$");
-//			a = Annotator.OntologybasedAnnotator.OA(a);
-
-//			System.out.println("\n\n\nTable Headers");			
-//			for (Table t : a.getTables()) {
-//				for (String col : t.getTableHeadersColumns()) {
-//					System.out.println(col);
-//				}
-//			}
-			
-//			for(Table t : a.getTables()){
-//				for (Columns c: t.getTableCol()){
-//					System.out.println(c.getHeader());
-//					for(String s: c.getRowEntries()){
-//						System.out.println(s);
-//					}
-//				}
-//			}
-			
-		
+			articles[i] = P.Read();
 		}
+		
+		
+		//STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
+			solrTagger.AbbrevAnnotaions.AbbreviationtoSolarSysnonyms(articles);
+			try{
+			System.out.println("Restarting Solr");
+			Process p=Runtime.getRuntime().exec(new String[] {"bash","-c","/opt/solr/bin/plants restart"});
+			p.waitFor();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			
+			//STEP3
+			//inserting enteries in the data base
+			System.out.println("\n\nInsert entry to the TixDB \n\n ");
+   			qtlDB.insertArticleEntry(articles);
+   			
+   			
+   			
+   			//STEP4
+   			//insert in Trait Table
+   			System.out.println("Finding traits nows");
+   			qtlDB.InsertTraitEntry(articles);
+   			
+   			//STEP5
+   			//insert in Trait Values and Trait Properties
+   			qtlDB.insertTraitValuesandTraitProperties(articles);
 
-		// ExcelFileWriter.LastLine();
+   			
+   			
 
 	}
 
