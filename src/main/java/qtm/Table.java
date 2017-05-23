@@ -4,9 +4,11 @@
  */
 package qtm;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import stats.TableStats;
 import utils.Utilities;
@@ -161,12 +163,24 @@ public class Table {
 		String word2 = "trait";
 		// String word3="Quantitavie Trait loci";
 
-		if (table_caption.toLowerCase().indexOf(word1.toLowerCase()) != -1
-				|| table_caption.toLowerCase().indexOf(word2.toLowerCase()) != -1)
+		if (this.table_caption.toLowerCase().indexOf(word1.toLowerCase()) != -1
+				|| this.table_caption.toLowerCase().indexOf(word2.toLowerCase()) != -1)
 			return true;
-		if (table_footer.toLowerCase().indexOf(word1.toLowerCase()) != -1
-				|| table_footer.toLowerCase().indexOf(word2.toLowerCase()) != -1)
+		if (this.table_footer.toLowerCase().indexOf(word1.toLowerCase()) != -1
+				|| this.table_footer.toLowerCase().indexOf(word2.toLowerCase()) != -1)
 			return true;
+		Columns tc[] = this.getTableCol();
+		String word3 = "phenotype";
+		for (Columns col : tc) {
+			if (col.getColumns_type().indexOf("QTL value") == -1) {
+				if (col.getHeader().toLowerCase().indexOf(word1.toLowerCase()) != -1
+						|| col.getHeader().toLowerCase().indexOf(word2.toLowerCase()) != -1
+						|| col.getHeader().toLowerCase().indexOf(word3.toLowerCase()) != -1) {
+					return true;
+				}
+			}
+		}
+
 		return false;
 	}
 
@@ -512,6 +526,27 @@ public class Table {
 
 		System.out.print("********" + "\n\n\n");
 	}
+	
+	public void printTable2() throws Exception {
+
+		
+		for(Columns c:this.getTableCol()){
+			System.out.print(c.getHeader()+ "("
+					+ c.getColumns_type() + ")" + "\t");
+		}
+		System.out.print("\n");
+		int i=0;
+		while(i<this.num_of_rows){
+		for(Columns c:this.getTableCol()){
+			System.out.print(c.getcelz()[i].getcell_value()+"(" + c.getcelz()[i].getCell_type()
+			+ ")" + "\t");
+		}
+		System.out.print("\n");
+		i++;
+		}
+		
+		System.out.print("********" + "\n\n\n");
+	}
 
 	public Table removeEmptyRows() {
 		C[][] cells = this.getTable_cells();
@@ -561,86 +596,84 @@ public class Table {
 
 		HashMap<String, Integer> ColTypes = new HashMap<String, Integer>();
 
-		//System.out.println("HEreeeeeeeeeeeee"+tc[0].getRowcell()[61].getcell_value());
+		// System.out.println("HEreeeeeeeeeeeee"+tc[0].getRowcell()[61].getcell_value());
 		for (int l = 0; l < tc.length; l++) {
 			ColTypes.clear();
 			ColTypes.put("Partially Numeric", 0);
 			ColTypes.put("Numeric", 0);
 			ColTypes.put("Text", 0);
 			ColTypes.put("Empty", 0);
-			//System.out.println("Row length is " + tc[l].getRowcell().length);
-			try{
-			for (int k = 0; k < tc[l].getcelz().length; k++) {
-				//System.out.println("k is" + k);
-				// System.out.println("l is" +l +"\t "+ k+"\t"+
-				// tc[l].getRowcell()[k].getcell_value());
-				if (tc[l].getcelz()[k].getCell_type() == "Numeric") {
+			// System.out.println("Row length is " + tc[l].getRowcell().length);
+			try {
+				for (int k = 0; k < tc[l].getcelz().length; k++) {
+					// System.out.println("k is" + k);
+					// System.out.println("l is" +l +"\t "+ k+"\t"+
+					// tc[l].getRowcell()[k].getcell_value());
+					if (tc[l].getcelz()[k].getCell_type() == "Numeric") {
 						ColTypes.put("Numeric", ColTypes.get("Numeric") + 1);
 					} else if (tc[l].getcelz()[k].getCell_type() == "Partially Numeric") {
 						ColTypes.put("Partially Numeric", ColTypes.get("Partially Numeric") + 1);
 					} else if (tc[l].getcelz()[k].getCell_type() == "Text") {
 
 						ColTypes.put("Text", ColTypes.get("Text") + 1);
-						//System.out.println("$$$$ I am here now $$$$" + "\t" + ColTypes.get("Text"));
+						// System.out.println("$$$$ I am here now $$$$" + "\t" +
+						// ColTypes.get("Text"));
 					} else if (tc[l].getcelz()[k].getCell_type() == "Empty") {
 						ColTypes.put("Empty", ColTypes.get("Empty") + 1);
 					}
-				
-			}
-			}catch(NullPointerException e){
-				
+
+				}
+			} catch (NullPointerException e) {
+
 			}
 
 			String word1 = "qtl";
 			String word2 = "trait";
 			String word3 = "phenotype";
-			
-			
-			float totalNumeric= (float) ColTypes.get("Numeric")/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
-			float totalPartiallyNumeric= (float) ColTypes.get("Partially Numeric")/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
-			float totalText= (float) ColTypes.get("Text")/(float)  ( tc[l].getcelz().length - ColTypes.get("Empty")) ;
-			
 
-			
-			if(totalNumeric >= 0.60)
+			float totalNumeric = (float) ColTypes.get("Numeric")
+					/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
+			float totalPartiallyNumeric = (float) ColTypes.get("Partially Numeric")
+					/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
+			float totalText = (float) ColTypes.get("Text") / (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
+
+			if (totalNumeric >= 0.60)
 				tc[l].setColumns_type("QTL value");
 			else
 				tc[l].setColumns_type("QTL property");
-			
-			//if(totalText >= 0.75)
-			//	tc[l].setColumns_type("QTL property");
-			
-			
-			//if (ColTypes.get("Empty") == tc[l].getRowcell().length)
-				//tc[l].setColumns_type("Empty");
-			
-			
-			//if (ColTypes.get("Numeric") == 0 && ColTypes.get("Partially Numeric") == 0)
-				//tc[l].setColumns_type("QTL property");
-					
-		//	if (ColTypes.get("Text") == 0)
-			//	tc[l].setColumns_type("QTL value");
 
-			
-			
+			// if(totalText >= 0.75)
+			// tc[l].setColumns_type("QTL property");
+
+			// if (ColTypes.get("Empty") == tc[l].getRowcell().length)
+			// tc[l].setColumns_type("Empty");
+
+			// if (ColTypes.get("Numeric") == 0 && ColTypes.get("Partially
+			// Numeric") == 0)
+			// tc[l].setColumns_type("QTL property");
+
+			// if (ColTypes.get("Text") == 0)
+			// tc[l].setColumns_type("QTL value");
+
 			int countwords = 0;
 			try {
-				
-					if(tc[l].getColumns_type().equals("QTL property")){
-						
-						for (int k = 0; k < tc[l].getcelz().length; k++) {
-								if (tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word1) != -1 || tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word2) != -1 || tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word3) != -1){
-									countwords++;
-								}
-						}
-						
-						if (tc[l].getHeader().toLowerCase().indexOf(word1) != -1
-								|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word2) != -1
-								|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word3) != -1
-								)
+
+				if (tc[l].getColumns_type().equals("QTL property")) {
+
+					for (int k = 0; k < tc[l].getcelz().length; k++) {
+						if (tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word1) != -1
+								|| tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word2) != -1
+								|| tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word3) != -1) {
 							countwords++;
+						}
 					}
-				} catch (NullPointerException e) {
+
+					if (tc[l].getHeader().toLowerCase().indexOf(word1) != -1
+							|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word2) != -1
+							|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word3) != -1)
+						countwords++;
+				}
+			} catch (NullPointerException e) {
 				System.out.printf("*cannot classify heading on " + l + "column\n");
 			}
 
@@ -653,6 +686,45 @@ public class Table {
 
 		}
 
+		// filter out 1 QTL descriptor based on annotations
+		int num_QTLdescriptors = 0;
+		List<Integer> QTLdescriptorPosition = new ArrayList<Integer>();
+		for (int l = 0; l < tc.length; l++) {
+			if (tc[l].getColumns_type().equals("QTL descriptor")) {
+				num_QTLdescriptors++;
+				QTLdescriptorPosition.add(l);
+			}
+		}
+
+		if (num_QTLdescriptors > 1) {
+			Iterator<Integer> myListIterator = QTLdescriptorPosition.iterator();
+			int bestmatch = QTLdescriptorPosition.get(0);
+			int numofbestmatchAnnotations = 0;
+
+			try {
+				while (myListIterator.hasNext()) {
+					int numofannotatedTerms = 0;
+					Integer j = myListIterator.next();
+					tc[j].setColumns_type("QTL property");
+					for (int k = 0; k < tc[j].getcelz().length; k++) {
+						String QTLannotation = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2.processString(
+								tc[j].getcelz()[k].getcell_value().toLowerCase(), "terms", "LONGEST_DOMINANT_RIGHT",
+								"dictionary");
+						if (QTLannotation != "") {
+							numofannotatedTerms++;
+						}
+					}
+
+					if (numofannotatedTerms > numofbestmatchAnnotations) {
+						numofbestmatchAnnotations = numofannotatedTerms;
+						bestmatch = j;
+					}
+				}
+				tc[bestmatch].setColumns_type("QTL descriptor");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		return this;
 

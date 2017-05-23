@@ -7,9 +7,11 @@ package qtm;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
-import qtlTMdb.qtlDB;
+
+import qtldb.qtlDB;
 import readers.PmcMetaReader;
 
 public class qtmMain {
@@ -64,25 +66,30 @@ public class qtmMain {
 			}
 			
 			
-			//STEP3
-			//inserting enteries in the data base
+			//STEP3 Inserting enteries in the data base
 			System.out.println("\n\nInsert entry to the TixDB \n\n ");
    			qtlDB.insertArticleEntry(articles);
    			
    			
    			
-   			//STEP4
-   			//insert in Trait Table
+   			//STEP4 Insert in Trait Table
    			System.out.println("Finding traits nows");
    			qtlDB.InsertTraitEntry(articles);
    			
-   			//STEP5
-   			//insert in Trait Values and Trait Properties
+   			//STEP5 Insert in Trait Values and Trait Properties
    			qtlDB.insertTraitValuesandTraitProperties(articles);
-
    			
    			
-
+   			//step6 Mine Trait-Gene / Trait-Marker relationships from Trait Properties
+   			qtlDB.insertQTLTable();
+   			
+   			try{
+   	   			qtlDB.c.close();
+   	   			}catch(SQLException e){
+   	   				System.out.println("SQL Exception is clossing the conection");
+   	   				e.printStackTrace();
+   	   			}
+   			
 	}
 
 }

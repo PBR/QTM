@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import qtlTMdb.qtlDB;
+import qtldb.qtlDB;
 
 public class AnnotateColumEntries {
 //	public static Connection c=qtlDB.c;

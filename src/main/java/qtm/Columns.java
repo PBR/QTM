@@ -3,14 +3,6 @@ package qtm;
 public class Columns {
 
 	private String colID;
-	
-	public String getColID() {
-		return colID;
-	}
-
-	public void setColID(String colID) {
-		this.colID = colID;
-	}
 
 
 	private String Header="";
@@ -21,6 +13,16 @@ public class Columns {
 	
 	public Cell[] celz;
 
+	
+	public String getColID() {
+		return colID;
+	}
+
+	public void setColID(String colID) {
+		this.colID = colID;
+	}
+
+	
 	public Columns() {
 		// TODO Auto-generated constructor stub
 	}

@@ -19,7 +19,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.sqlite.util.StringUtils;
 
-import qtlTMdb.qtlDB;
+import qtldb.qtlDB;
 import qtm.Article;
 
 public class Annotate {

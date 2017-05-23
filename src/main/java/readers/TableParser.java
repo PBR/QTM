@@ -343,7 +343,11 @@ public class TableParser {
 
 					List<Node> th = null;
 					th = getChildrenByTagName(headerRows.get(k), "th");
-
+					
+					if(th.isEmpty()){
+						th = getChildrenByTagName(headerRows.get(k), "td");
+					}
+					
 					// System.out.println("----------------------------header
 					// cells Size" + th.size());
 
@@ -361,8 +365,6 @@ public class TableParser {
 									.getFirstValue(th.get(l).getAttributes().getNamedItem("rowspan").getNodeValue());
 
 						} catch (NullPointerException e) {
-
-							// System.out.println("Rowspan not mentioned");
 						}
 
 						try {
@@ -370,13 +372,11 @@ public class TableParser {
 									.getFirstValue(th.get(l).getAttributes().getNamedItem("colspan").getNodeValue());
 
 						} catch (NullPointerException e) {
-
-							// System.out.println("Colspan not mentioned");
 						}
 
-						// System.out.print("rowSpan is" + rowspan + "\t colspan
-						// is " + colspan + "\t\n\n");
-
+						
+						
+						
 						if (rowspan == 1 && colspan == 1) {
 							// System.out.println("I am here
 							// %%%%%%%%%&&&&&&&&&&&&");
@@ -526,6 +526,10 @@ public class TableParser {
 						}
 						
 						
+						if(tableCol[colLine].celz[rowLine]!=null && rowLine < Rows.size()) //|| tableCol[colLine].celz[rowLine]!=null
+							colLine++;
+						//System.out.println("row line is::: \t\t "+rowLine +"\t\t col line is"+colLine+"value is \t"+td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+						
 						if (rowLine < Rows.size() || colLine < numberofCol) {
 							if (rowspan == 1 && colspan == 1) {
 
@@ -540,7 +544,7 @@ public class TableParser {
 									tableCol[colLine]
 											.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine] + " "
 													+ td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
-
+								
 								colLine++;
 							} else if (rowspan > 1 && colspan == 1) {
 								// forloop rowspan
@@ -548,15 +552,18 @@ public class TableParser {
 									c[m][colLine].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 									// System.out.println("@@@@@"+td.get(l).getTextContent());
 
+									//System.out.print("m is "+m +"\t::");
 									Cell Entry = new Cell(m, td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 									tableCol[colLine].celz[m] = new Cell(Entry);
-
+									System.out.println(tableCol[colLine].celz[m].getcell_value());
+									
 									if (tableCol[colLine].getRowEntries()[m] == null)
 										tableCol[colLine].getRowEntries()[m] = td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 									else
 										tableCol[colLine].getRowEntries()[m] = tableCol[colLine].getRowEntries()[m]
 												+ " " + td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
-
+									
+									System.out.println("Row span entry"+td.get(l).getTextContent());
 								}
 								colLine++;
 							} else if (rowspan == 1 && colspan > 1) {

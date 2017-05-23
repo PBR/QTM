@@ -1,0 +1,1 @@
+select * from qtl where tableId like 'PMC5145867_Table 3' and traitUri not  like 'http%'
