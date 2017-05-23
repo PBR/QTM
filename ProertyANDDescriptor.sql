@@ -1,1 +1,0 @@
-select cellValue,colId,rowNumber from cellEntries where cellType !='Empty' AND colId in (select colId from columnEntries where colType='QTL descriptor');
