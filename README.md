@@ -1,32 +1,24 @@
-QTLTABLEMiner++ -  Semantic-mining of QTL tables in scientific articles 
-===============================================
-A quantitative trait locus (QTL) is a region on  the genome that correlates with variation in a phenotype. A significant amount of experimental information about QTL studies are implicitly described in tables of  scientific publications. QTLTableMiner++, is a java based tool that extracts QTL information from (heterogeneous) tables and semantically annotates their content.
+QTL TableMiner++
+================
+A significant amount of experimental information about [_Quantitative Trait Locus_](https://en.wikipedia.org/wiki/Quantitative_trait_locus) (QTL) studies are described in tables of scientific articles. Briefly, a QTL is a genomic region that correlates with a trait (phenotype). _QTL TableMiner++_ is a command-line tool that can retrieve and semantically annotate results of QTL mapping experiments commonly "buried" in (heterogenous) tables. It requires full-text articles (in XML) available from the [Europe PMC](https://europepmc.org/) repository of life sciences literature.
 
 
 Requirements
 ------------
-Java 1.7
-SQLite
-Apache Solr
-Crop Ontology (SP)
-Trait Ontology
-Stato
+* Java 1.7
+* SQLite 3.x
+* Apache Solr 6.x
+* Ontologies/dictionaries (e.g. [Plant Trait Ontology](http://www.ontobee.org/ontology/PATO), [STATistics Ontology](http://www.ontobee.org/ontology/STATO), [ChEBI](https://www.ebi.ac.uk/chebi/))
+* full-text article(s) in XML
 
-Examlple
----------
-java -jar QTM.jar PMC4266912
-
-
-Arguements
+Installation
 ------------
 
-Default:    List of PMC ids
 
--help  :    for using helps
+Example use
+-----------
 
+* _Input_: one or more articles in XML files or PMC IDs
+* _Output_: tabulated data in CSV and/or SQLite database file (*.db)
 
-Output
--------------
-Tix.db(SQLiteDB file containing a database of the knowledge mined from the tables.)
-
-
+`java -jar QTM.jar PMC4266912`
