@@ -15,9 +15,9 @@ import qtm.Article;
 import qtm.C;
 import qtm.Cell;
 import qtm.Columns;
-import qtm.HC;
+import qtm.Hc;
 import qtm.Table;
-import stats.Statistics;
+//import stats.Statistics;
 import utils.Utilities;
 
 /**
@@ -37,7 +37,7 @@ public class TableParser {
 	 *            - Document which is being parsed
 	 * @return populated Article
 	 */
-	public static Article ParseTables(Article article, Document parse) throws Exception {
+	public static Article parseTables(Article article, Document parse) throws Exception {
 
 		// read table-wrap in xml
 		NodeList tablesxml = parse.getElementsByTagName("table-wrap");
@@ -52,18 +52,18 @@ public class TableParser {
 		// Iterate over <table-wrap></table-wrap>
 		for (int i = 0; i < tablesxml.getLength(); i++) {
 
-			List<Node> tb = getChildrenByTagName(tablesxml.item(i),"table");
-			System.out.println("---------"+tb.size());
+			List<Node> tableTags = getChildrenByTagName(tablesxml.item(i),"table");
+			System.out.println("---------"+tableTags.size());
 			
-			if(tb.size()==0){
-				tb.clear();
+			if(tableTags.size()==0){
+				tableTags.clear();
 				List<Node> alternative = getChildrenByTagName(tablesxml.item(i),"alternatives");
-				System.out.println("---------alternative"+alternative.size());
+				//System.out.println("---------alternative"+alternative.size());
 				
 				if(alternative.size()>0){
 					for(int p=0; p < alternative.size(); p++ ){
-					List<Node> tb2 = getChildrenByTagName(alternative.get(p),"table");
-					tb=tb2;
+					List<Node> tableTags2 = getChildrenByTagName(alternative.get(p),"table");
+					tableTags=tableTags2;
 					}
 					
 				}
@@ -71,7 +71,7 @@ public class TableParser {
 			}
 			
 			
-			for (int s = 0; s < tb.size(); s++) {
+			for (int s = 0; s < tableTags.size(); s++) {
 			
 					
 				String label = readTableLabel(tablesxml.item(i));
@@ -81,11 +81,11 @@ public class TableParser {
 				tables[tableindex].setDocumentFileName(article.getPmc());
 
 				// table in xml
-				tables[tableindex].setXml(Utilities.CreateXMLStringFromSubNode(tablesxml.item(i)));
+				tables[tableindex].setXml(Utilities.createXMLStringFromSubNode(tablesxml.item(i)));
 
 				System.out.println("Table label:" + tables[tableindex].getTable_label());
 
-				if(tb.size()>1){
+				if(tableTags.size()>1){
 					
 				tables[tableindex].setTableid(
 						tables[tableindex].getDocumentFileName().concat("_" + tables[tableindex].getTable_label()).concat("_"+s));
@@ -99,14 +99,14 @@ public class TableParser {
 				System.out.println("Caption: " + caption);
 				tables[tableindex].setTable_caption(caption);
 
-				String foot = ReadTableFooter(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
+				String foot = readTableFooter(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
 				tables[tableindex].setTable_footer(foot);
 				System.out.println("Foot: " + foot);
 
-				List<Node> thead = getChildrenByTagName(tb.get(s), "thead");
-				List<Node> tbody = getChildrenByTagName(tb.get(s), "tbody");
+				List<Node> thead = getChildrenByTagName(tableTags.get(s), "thead");
+				List<Node> tbody = getChildrenByTagName(tableTags.get(s), "tbody");
 
-				int numofCol = CountColumns(tbody, thead);
+				int numofCol = countColumns(tbody, thead);
 
 				if (numofCol == 0) {
 					System.out.println("Table cannot be processed as number of colums are zero");
@@ -119,10 +119,10 @@ public class TableParser {
 					break;
 				}
 
-				tables[tableindex] = ProcessTableHeader(tables[tableindex], numofCol, thead);
-				tables[tableindex] = ProcessTableBody(tables[tableindex], numofCol, tbody);
+				tables[tableindex] = processTableHeader(tables[tableindex], numofCol, thead);
+				tables[tableindex] = processTableBody(tables[tableindex], numofCol, tbody);
 
-				tables[tableindex] = ParseTableCaptionandTableHeadingsforTraitRelatedWords(tables[tableindex]);
+				tables[tableindex] = parseTableCaptionandTableHeadingsforTraitRelatedWords(tables[tableindex]);
 
 				
 				if (tables[tableindex].isaTraitTable()) {
@@ -217,7 +217,7 @@ public class TableParser {
 	 *            the tablesxml node
 	 * @return the string
 	 */
-	public static String ReadTableFooter(Node tablesxmlNode) {
+	public static String readTableFooter(Node tablesxmlNode) {
 		String foot = "";
 		List<Node> nl = getChildrenByTagName(tablesxmlNode, "table-wrap-foot");
 		if (nl.size() >= 1) {
@@ -235,7 +235,7 @@ public class TableParser {
 	 *            the rowshead
 	 * @return the int
 	 */
-	public static int CountColumns(List<Node> tbody, List<Node> thead) {
+	public static int countColumns(List<Node> tbody, List<Node> thead) {
 		int cols = 0;
 
 		try {
@@ -284,7 +284,7 @@ public class TableParser {
 	 *            the rowshead
 	 * @return the int
 	 */
-	public static int CountHeaderColumns(List<Node> headerRows) {
+	public static int countHeaderColumns(List<Node> headerRows) {
 		int cols = 0;
 		for (int k = 0; k < headerRows.size(); k++) {
 			List<Node> headerCells = getChildrenByTagName(headerRows.get(k), "td");
@@ -312,10 +312,10 @@ public class TableParser {
 	 *            the num_of_columns
 	 * @return the table
 	 */
-	public static Table ProcessTableHeader(Table table, int numberofCol, List<Node> thead) {
+	public static Table processTableHeader(Table table, int numberofCol, List<Node> thead) {
 		List<Node> headerRows = null;
 
-		String[] HeaderCols = new String[numberofCol];
+		String[] headerCols = new String[numberofCol];
 		// String [] HeaderCols = {};
 		Columns[] tableCol = new Columns[numberofCol];
 
@@ -328,8 +328,8 @@ public class TableParser {
 				System.out.println("Number of Columns in Table Headings are" + numberofCol);
 
 				// create empty Headercells
-				table.CreateHeaderCells(headerRows.size(), numberofCol);
-				HC[][] HeaderCells = table.getTable_Headercells();
+				table.createHeaderCells(headerRows.size(), numberofCol);
+				Hc[][] headerCells = table.getTable_Headercells();
 				// System.out.println(HeaderCells.length);
 				// System.out.println(HeaderCells[0].length);
 
@@ -356,7 +356,7 @@ public class TableParser {
 						int colspan = 1;
 
 						// check Later?????
-						while (HeaderCells[rowLine][colLine].getHeadercell_value() != null) {
+						while (headerCells[rowLine][colLine].getHeadercell_value() != null) {
 							colLine++;
 						}
 
@@ -378,41 +378,34 @@ public class TableParser {
 						
 						
 						if (rowspan == 1 && colspan == 1) {
-							// System.out.println("I am here
-							// %%%%%%%%%&&&&&&&&&&&&");
-							HeaderCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+							headerCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 
-							if (HeaderCols[colLine] == null)
-								HeaderCols[colLine] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+							if (headerCols[colLine] == null)
+								headerCols[colLine] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 							else
-								HeaderCols[colLine] = HeaderCols[colLine] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+								headerCols[colLine] = headerCols[colLine] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 
 							colLine++;
 						} else if (rowspan == 1 && colspan > 1) {
-							// System.out.println("I am here
-							// $$$$$$$$$$$$&&&&&&&&&&&&");
-							for (int n = colLine; n < colLine + colspan; n++) {
+								for (int n = colLine; n < colLine + colspan; n++) {
 
-								HeaderCells[rowLine][n].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+								headerCells[rowLine][n].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 
-								if (HeaderCols[n] == null)
-									HeaderCols[n] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+								if (headerCols[n] == null)
+									headerCols[n] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 								else
-									HeaderCols[n] = HeaderCols[n] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+									headerCols[n] = headerCols[n] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 							}
 							colLine += colspan;
 						} else if (rowspan > 1 && colspan == 1) {
-							// System.out.println("9999" +
-							// th.get(l).getTextContent());
-							HeaderCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+							headerCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 							for (int m = rowLine + 1; m < rowLine + rowspan; m++) {
-								// HeaderCells[m][colLine].setHeadercell_values(th.get(l).getTextContent());
-								HeaderCells[m][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+								headerCells[m][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
 
-								if (HeaderCols[colLine] == null)
-									HeaderCols[colLine] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+								if (headerCols[colLine] == null)
+									headerCols[colLine] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 								else
-									HeaderCols[colLine] = HeaderCols[colLine] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+									headerCols[colLine] = headerCols[colLine] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 							}
 							colLine++;
 						}
@@ -421,20 +414,20 @@ public class TableParser {
 
 				for (int i = 0; i < numberofCol; i++) {
 					try{
-					HeaderCols[i] = HeaderCols[i].trim();
+					headerCols[i] = headerCols[i].trim();
 					}catch(Exception e){
-						HeaderCols[i]="";
+						headerCols[i]="";
 					}
 					
 					tableCol[i] = new Columns();
-					tableCol[i].setHeader(HeaderCols[i]);
+					tableCol[i].setHeader(headerCols[i]);
 
 					tableCol[i].setColID(table.getTableid() + "_" + (i + 1));
 				}
 
-				table.setTableHeadersColumns(HeaderCols);
+				table.setTableHeadersColumns(headerCols);
 				table.setTableCol(tableCol);
-				table.setTableHeadercells(HeaderCells);
+				table.setTableHeadercells(headerCells);
 
 				// Printing Header Cells
 				// System.out.println("***Header Tables***");
@@ -467,7 +460,7 @@ public class TableParser {
 	 *            the num_of_columns
 	 * @return the table
 	 */
-	public static Table ProcessTableBody(Table table, int numberofCol, List<Node> tbody) {
+	public static Table processTableBody(Table table, int numberofCol, List<Node> tbody) {
 
 		List<Node> Rows = null;
 
@@ -483,14 +476,14 @@ public class TableParser {
 				System.out.println("Number of Rows in Table body are" + Rows.size());
 
 				for (Columns column : tableCol) {
-					column.Entries = new String[Rows.size()];
+					column.entries = new String[Rows.size()];
 					column.celz = new Cell[Rows.size()];
 				}
 
 				System.out.println("Number of Columns in Table body are" + numberofCol);
 
 				// create empty cells
-				table.CreateCells(Rows.size(), numberofCol);
+				table.createCells(Rows.size(), numberofCol);
 				// table.CreateLOC(Rows.size(),numberofCol);
 
 				C[][] c = table.getTable_cells();
@@ -643,11 +636,11 @@ public class TableParser {
 	/*
 	 * Parse Table caption for Traits
 	 */
-	public static Table ParseTableCaptionandTableHeadingsforTraitRelatedWords(Table table) {
+	public static Table parseTableCaptionandTableHeadingsforTraitRelatedWords(Table table) {
 		List<String> HeaderList = new ArrayList<String>();
 
-		for (HC[] hrow : table.header_cells) {
-			for (HC header : hrow) {
+		for (Hc[] hrow : table.header_cells) {
+			for (Hc header : hrow) {
 				try {
 					HeaderList.add(header.getHeadercell_value().toLowerCase());
 				} catch (Exception e) {

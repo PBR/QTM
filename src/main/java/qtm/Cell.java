@@ -24,7 +24,7 @@ public class Cell {
 	/** The cell_content. */
 	private String cell_value;
 
-	private JSONObject Annotations = new JSONObject();
+	private JSONObject annotations = new JSONObject();
 
 	private String abbreviated_value;
 
@@ -64,11 +64,11 @@ public class Cell {
 	}
 
 	public JSONObject getAnnotations() {
-		return Annotations;
+		return annotations;
 	}
 
-	public void setAnnotations(JSONObject annotations) {
-		Annotations = annotations;
+	public void setAnnotations(JSONObject annotationss) {
+		annotations = annotationss;
 	}
 
 	/**

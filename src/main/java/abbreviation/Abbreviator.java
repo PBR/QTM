@@ -1,17 +1,15 @@
 package abbreviation;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AbbrevExpander {
+public class Abbreviator {
 
 	private HashMap mTestDefinitions = new HashMap();
 	private HashMap mStats = new HashMap();

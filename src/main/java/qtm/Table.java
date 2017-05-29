@@ -4,17 +4,10 @@
  */
 package qtm;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import stats.TableStats;
-import utils.Utilities;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The Class Table. Contain various information about table, including the cell
@@ -25,14 +18,13 @@ public class Table {
 	private String tableid;
 	private String xml;
 	private String documentFileName;
-	public TableStats stat;
-	public String PragmaticClass;
+	public String pragmaticClass;
 	public boolean isEmptyOnlyHeaders = true;
 	private boolean isTraitTable = false;
 
 	private String[] tableHeadersColumns;
 
-	private Columns[] TableCol;
+	private Columns[] tableCol;
 
 	// public LinkedList<DataExtractionOutputObj> output = new
 	// LinkedList<DataExtractionOutputObj>();
@@ -40,7 +32,7 @@ public class Table {
 		LIST, MATRIX, SUBHEADER, MULTI, NULL
 	};
 
-	private String SectionOfTable;
+	private String sectionOfTable;
 	/** The num_of_rows. */
 	private int num_of_rows;
 
@@ -67,14 +59,14 @@ public class Table {
 	private boolean isRowSpanning = false;
 
 	private boolean isColSpanning = false;
-	private int StructureClass = 0; // 0 - no class,1- simplest, 2 - simple, 3 -
+	private int structureClass = 0; // 0 - no class,1- simplest, 2 - simple, 3 -
 									// medium, 4 - complex
-	private StructureType TableStructureType;
+	private StructureType tableStructureType;
 
 	/** The cells. Cell matrix of the table */
 
-	public HC[][] header_cells;
-	public HC[][] header_original_cells;
+	public Hc[][] header_cells;
+	public Hc[][] header_original_cells;
 
 	// public List<C[]> LOC;
 
@@ -95,8 +87,7 @@ public class Table {
 		isNoXMLTable = false;
 		isRowSpanning = false;
 		isColSpanning = false;
-		stat = new TableStats();
-	}
+			}
 
 	/**
 	 * Instantiates a new table.
@@ -112,7 +103,7 @@ public class Table {
 		table_label = label;
 		table_caption = Caption;
 		table_footer = Footer;
-		stat = new TableStats();
+//		stat = new TableStats();
 	}
 
 	/**
@@ -135,28 +126,28 @@ public class Table {
 		table_footer = Footer;
 		num_of_rows = Rows;
 		num_of_columns = Columns;
-		stat = new TableStats();
+//		stat = new TableStats();
 	}
 
-	public void printTableStatsToFile(String fileName) {
-		if (!isNoXMLTable() && isHasBody() != false) {
-			String output = "";
-			output += "File Name: ;" + documentFileName + "\r\n";
-			output += "Table Name: ;" + table_label + "\r\n";
-			output += "Number of cells: ;" + stat.getNum_of_cells() + "\r\n";
-			output += "Number of empty cells: ;" + stat.getNum_of_empty_cells() + "\r\n";
-			output += "Number of pure numeric cells: ;" + stat.getNum_of_pure_numeric_cells() + "\r\n";
-			output += "Number of part numeric cells: ;" + stat.getNum_of_part_numeric_cells() + "\r\n";
-			output += "Number of text cells: ;" + stat.getNum_of_text_cells() + "\r\n";
-			output += "Number of colspanning cells: ;" + stat.getNum_of_colspanning_cells() + "\r\n";
-			output += "Number of rowspanning cells: ;" + stat.getNum_of_rowspanning_cells() + "\r\n";
-			output += "Number of header rows: ;" + stat.getNum_of_header_rows() + "\r\n";
-			output += "Number of body rows: ;" + stat.getNum_of_body_rows() + "\r\n";
-			output += "-----";
-
-			Utilities.AppendToFile(fileName, output);
-		}
-	}
+//	public void printTableStatsToFile(String fileName) {
+//		if (!isNoXMLTable() && isHasBody() != false) {
+//			String output = "";
+//			output += "File Name: ;" + documentFileName + "\r\n";
+//			output += "Table Name: ;" + table_label + "\r\n";
+//			output += "Number of cells: ;" + stat.getNum_of_cells() + "\r\n";
+//			output += "Number of empty cells: ;" + stat.getNum_of_empty_cells() + "\r\n";
+//			output += "Number of pure numeric cells: ;" + stat.getNum_of_pure_numeric_cells() + "\r\n";
+//			output += "Number of part numeric cells: ;" + stat.getNum_of_part_numeric_cells() + "\r\n";
+//			output += "Number of text cells: ;" + stat.getNum_of_text_cells() + "\r\n";
+//			output += "Number of colspanning cells: ;" + stat.getNum_of_colspanning_cells() + "\r\n";
+//			output += "Number of rowspanning cells: ;" + stat.getNum_of_rowspanning_cells() + "\r\n";
+//			output += "Number of header rows: ;" + stat.getNum_of_header_rows() + "\r\n";
+//			output += "Number of body rows: ;" + stat.getNum_of_body_rows() + "\r\n";
+//			output += "-----";
+//
+//			Utilities.AppendToFile(fileName, output);
+//		}
+//	}
 
 	public boolean isaTraitTable() {
 		String word1 = "QTL";
@@ -193,11 +184,11 @@ public class Table {
 	 *            the rows
 	 */
 
-	public void CreateHeaderCells(int Rows, int Columns) {
-		header_cells = new HC[Rows][Columns];
+	public void createHeaderCells(int Rows, int Columns) {
+		header_cells = new Hc[Rows][Columns];
 		for (int i = 0; i < Rows; i++) {
 			for (int j = 0; j < Columns; j++) {
-				header_cells[i][j] = new HC(i, j);
+				header_cells[i][j] = new Hc(i, j);
 			}
 		}
 	}
@@ -216,7 +207,7 @@ public class Table {
 	// }
 	// }
 
-	public void CreateCells(int Rows, int Columns) {
+	public void createCells(int Rows, int Columns) {
 		cells = new C[Rows][Columns];
 		for (int i = 0; i < Rows; i++) {
 			for (int j = 0; j < Columns; j++) {
@@ -252,11 +243,11 @@ public class Table {
 	}
 
 	public Columns[] getTableCol() {
-		return TableCol;
+		return tableCol;
 	}
 
-	public void setTableCol(Columns[] tableCol) {
-		TableCol = tableCol;
+	public void setTableCol(Columns[] tCol) {
+		tableCol = tCol;
 	}
 
 	/**
@@ -363,7 +354,7 @@ public class Table {
 		return cells;
 	}
 
-	public HC[][] getTable_Headercells() {
+	public Hc[][] getTable_Headercells() {
 		return header_cells;
 	}
 
@@ -378,7 +369,7 @@ public class Table {
 	 *            the new table_cells
 	 */
 
-	public void setTableHeadercells(HC[][] cells) {
+	public void setTableHeadercells(Hc[][] cells) {
 		this.header_cells = cells;
 	}
 
@@ -447,41 +438,41 @@ public class Table {
 	}
 
 	public int getStructureClass() {
-		return StructureClass;
+		return structureClass;
 	}
 
-	public void setStructureClass(int structureClass) {
-		StructureClass = structureClass;
+	public void setStructureClass(int sClass) {
+		structureClass = sClass;
 	}
 
 	/**
 	 * @return the tableStructureType
 	 */
 	public StructureType getTableStructureType() {
-		return TableStructureType;
+		return tableStructureType;
 	}
 
 	/**
 	 * @param tableStructureType
 	 *            the tableStructureType to set
 	 */
-	public void setTableStructureType(StructureType tableStructureType) {
-		TableStructureType = tableStructureType;
+	public void setTableStructureType(StructureType tStructureType) {
+		tableStructureType = tStructureType;
 	}
 
 	/**
 	 * @return the sectionOfTable
 	 */
 	public String getSectionOfTable() {
-		return SectionOfTable;
+		return sectionOfTable;
 	}
 
 	/**
 	 * @param sectionOfTable
 	 *            the sectionOfTable to set
 	 */
-	public void setSectionOfTable(String sectionOfTable) {
-		SectionOfTable = sectionOfTable;
+	public void setSectionOfTable(String secOfTable) {
+		sectionOfTable = secOfTable;
 	}
 
 	/**
@@ -550,7 +541,7 @@ public class Table {
 
 	public Table removeEmptyRows() {
 		C[][] cells = this.getTable_cells();
-		HC[][] hCells = this.getTable_Headercells();
+		Hc[][] hCells = this.getTable_Headercells();
 
 		int rows = cells.length;
 		int cols = this.num_of_columns;

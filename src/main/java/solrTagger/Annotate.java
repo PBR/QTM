@@ -46,7 +46,7 @@ public class Annotate {
 		return true;
 	}
 
-	public static void AnnotateColumnTable(Article a) {
+	public static void annotateColumnTable(Article a) {
 		try {
 
 			if (connectionDB()) {
@@ -114,7 +114,7 @@ public class Annotate {
 
 	}
 
-	public static void AnnotateTraitTable(Article articles[]) {
+	public static void annotateTraitTable(Article articles[]) {
 		try {
 
 			if (connectionDB()) {

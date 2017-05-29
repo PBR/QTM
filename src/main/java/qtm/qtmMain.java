@@ -16,13 +16,11 @@ import readers.PmcMetaReader;
 
 public class qtmMain {
 
-	public static boolean learnheaders = false;
 	public static boolean doXMLInput = false;
 
-	public static HashMap<String, Integer> headermap = new HashMap<String, Integer>();
-	public static HashMap<String, Integer> stubmap = new HashMap<String, Integer>();
-	public static LinkedList<String> PMCBMI = new LinkedList<String>();
-	public static LinkedList<stats.TableStats> TStats = new LinkedList<stats.TableStats>();
+//	public static HashMap<String, Integer> headermap = new HashMap<String, Integer>();
+//	public static HashMap<String, Integer> stubmap = new HashMap<String, Integer>();
+//	public static LinkedList<stats.TableStats> TStats = new LinkedList<stats.TableStats>();
 
 	public static void main(String[] args) throws IOException {
 
@@ -43,20 +41,20 @@ public class qtmMain {
 		//Step1:  reading xml files with pmc ids 		
 		File[] xmlFiles = new File[pmcIds.length];
 		Article[] articles=new Article[pmcIds.length]; 
+		
 		for (int i = 0; i < pmcIds.length; i++) {
-			xmlFiles[i] = PmcMetaReader.PmcDowloadXml(pmcIds[i]);
-			articles[i] = new Article("");
-			PmcMetaReader P = new PmcMetaReader();
-			
-			P.init(xmlFiles[i].getPath());
-
+                    xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds[i]);
+                    articles[i] = new Article("");
+                    PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i].getPath());
+                    
+		        
 			//Parsing meta-data, cell entries and finding the abbreviations  
-			articles[i] = P.Read();
+			articles[i] = pmcMetaReader.read();
 		}
 		
 		
 		//STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
-			solrTagger.AbbrevAnnotaions.AbbreviationtoSolarSysnonyms(articles);
+			solrTagger.AbbrevAnnotaions.abbrevToSolrSynonyms(articles);
 			try{
 			System.out.println("Restarting Solr");
 			Process p=Runtime.getRuntime().exec(new String[] {"bash","-c","/opt/solr/bin/plants restart"});
@@ -77,11 +75,15 @@ public class qtmMain {
    			qtlDB.InsertTraitEntry(articles);
    			
    			//STEP5 Insert in Trait Values and Trait Properties
-   			qtlDB.insertTraitValuesandTraitProperties(articles);
+   			//qtlDB.insertTraitValuesandTraitProperties(articles);
    			
    			
    			//step6 Mine Trait-Gene / Trait-Marker relationships from Trait Properties
-   			qtlDB.insertQTLTable();
+   			//qtlDB.insertQTLTable();
+   			
+   			
+   			//Step7 I am here
+   			qtlDB.insertQtlTable();
    			
    			try{
    	   			qtlDB.c.close();

@@ -4,16 +4,16 @@ import org.json.simple.JSONObject;
 
 public class Trait {
 	
-private static int TraitID;
+private static int traitId;
 	
 	private String TraitName;
 	
 	public static int getTraitID() {
-		return TraitID;
+		return traitId;
 	}
 
-	public static void setTraitID(int traitID) {
-		TraitID = traitID;
+	public static void setTraitID(int tId) {
+		traitId = tId;
 	}
 
 	public String getTraitName() {

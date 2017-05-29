@@ -5,11 +5,11 @@ public class Columns {
 	private String colID;
 
 
-	private String Header="";
+	private String header="";
 	
-	private String Columns_type="";
+	private String columns_type="";
 	
-	public String[] Entries; 
+	public String[] entries; 
 	
 	public Cell[] celz;
 
@@ -24,7 +24,6 @@ public class Columns {
 
 	
 	public Columns() {
-		// TODO Auto-generated constructor stub
 	}
 	
 //	public void CreateCells(int Rows )
@@ -48,28 +47,28 @@ public class Columns {
 	
 	
    	public String getColumns_type() {
-		return Columns_type;
+		return columns_type;
 	}
 
-	public void setColumns_type(String columns_type) {
-		Columns_type = columns_type;
+	public void setColumns_type(String c_type) {
+		columns_type = c_type;
 	}
 
 	public String getHeader() {
-		return Header;
+		return header;
 	}
 
-	public void setHeader(String header) {
-		Header = header;
+	public void setHeader(String h) {
+		header = h;
 	}
 	
 	public String[] getRowEntries() {
-		return Entries;
+		return entries;
 	}
 
 
 	public void setRowEntries(String[] rowEntries) {
-		Entries = rowEntries;
+		entries = rowEntries;
 	}
 
 	

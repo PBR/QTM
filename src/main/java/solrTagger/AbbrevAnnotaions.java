@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
 
 public class AbbrevAnnotaions {
 
-	public static void AbbreviationtoSolarSysnonyms(Article articles[])
+	public static void abbrevToSolrSynonyms(Article articles[])
 			throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		String synonymfile = "/var/solr/data/terms/conf/synonyms.txt";
 
