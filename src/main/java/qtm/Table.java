@@ -65,13 +65,13 @@ public class Table {
 
 	/** The cells. Cell matrix of the table */
 
-	public Hc[][] header_cells;
-	public Hc[][] header_original_cells;
+//	public Hc[][] header_cells;
+//	public Hc[][] header_original_cells;
 
 	// public List<C[]> LOC;
 
-	public C[][] cells;
-	public C[][] original_cells;
+//	public C[][] cells;
+//	public C[][] original_cells;
 
 	// Constructors
 	/**
@@ -184,14 +184,14 @@ public class Table {
 	 *            the rows
 	 */
 
-	public void createHeaderCells(int Rows, int Columns) {
-		header_cells = new Hc[Rows][Columns];
-		for (int i = 0; i < Rows; i++) {
-			for (int j = 0; j < Columns; j++) {
-				header_cells[i][j] = new Hc(i, j);
-			}
-		}
-	}
+//	public void createHeaderCells(int Rows, int Columns) {
+//		header_cells = new Hc[Rows][Columns];
+//		for (int i = 0; i < Rows; i++) {
+//			for (int j = 0; j < Columns; j++) {
+//				header_cells[i][j] = new Hc(i, j);
+//			}
+//		}
+//	}
 	//
 	// public void CreateLOC(int Rows,int Columns )
 	// {
@@ -207,14 +207,14 @@ public class Table {
 	// }
 	// }
 
-	public void createCells(int Rows, int Columns) {
-		cells = new C[Rows][Columns];
-		for (int i = 0; i < Rows; i++) {
-			for (int j = 0; j < Columns; j++) {
-				cells[i][j] = new C(i, j);
-			}
-		}
-	}
+//	public void createCells(int Rows, int Columns) {
+//		cells = new C[Rows][Columns];
+//		for (int i = 0; i < Rows; i++) {
+//			for (int j = 0; j < Columns; j++) {
+//				cells[i][j] = new C(i, j);
+//			}
+//		}
+//	}
 
 	// Getters and setters
 
@@ -350,13 +350,13 @@ public class Table {
 	 *
 	 * @return the table_cells
 	 */
-	public C[][] getTable_cells() {
-		return cells;
-	}
+//	public C[][] getTable_cells() {
+//		return cells;
+//	}
 
-	public Hc[][] getTable_Headercells() {
-		return header_cells;
-	}
+//	public Hc[][] getTable_Headercells() {
+//		return header_cells;
+//	}
 
 	// public List<C[]> getTable_cellList() {
 	// return LOC;
@@ -369,13 +369,13 @@ public class Table {
 	 *            the new table_cells
 	 */
 
-	public void setTableHeadercells(Hc[][] cells) {
-		this.header_cells = cells;
-	}
+//	public void setTableHeadercells(Hc[][] cells) {
+//		this.header_cells = cells;
+//	}
 
-	public void setTable_cells(C[][] cells) {
-		this.cells = cells;
-	}
+//	public void setTable_cells(C[][] cells) {
+//		this.cells = cells;
+//	}
 
 	// public void setTable_cellList(List<C[]> L) {
 	// this.LOC=L;
@@ -493,30 +493,30 @@ public class Table {
 	 * 
 	 **/
 
-	public void printTable() throws Exception {
-
-		int hrows = 0;
-		while (hrows < this.header_cells.length) {
-			for (int cols = 0; cols < this.num_of_columns; cols++) {
-				System.out.print(this.header_cells[hrows][cols].getHeadercell_value() + "("
-						+ this.header_cells[hrows][cols].getHeaderCell_type() + ")" + "\t");
-			}
-			System.out.print("\n");
-			hrows++;
-		}
-
-		int rows = 0;
-		while (rows < this.cells.length) {
-			for (int cols = 0; cols < this.num_of_columns; cols++) {
-				System.out.print(this.cells[rows][cols].getcell_value() + "(" + this.cells[rows][cols].getCell_type()
-						+ ")" + "\t");
-			}
-			System.out.print("\n");
-			rows++;
-		}
-
-		System.out.print("********" + "\n\n\n");
-	}
+//	public void printTable() throws Exception {
+//
+//		int hrows = 0;
+//		while (hrows < this.header_cells.length) {
+//			for (int cols = 0; cols < this.num_of_columns; cols++) {
+//				System.out.print(this.header_cells[hrows][cols].getHeadercell_value() + "("
+//						+ this.header_cells[hrows][cols].getHeaderCell_type() + ")" + "\t");
+//			}
+//			System.out.print("\n");
+//			hrows++;
+//		}
+//
+//		int rows = 0;
+//		while (rows < this.cells.length) {
+//			for (int cols = 0; cols < this.num_of_columns; cols++) {
+//				System.out.print(this.cells[rows][cols].getcell_value() + "(" + this.cells[rows][cols].getCell_type()
+//						+ ")" + "\t");
+//			}
+//			System.out.print("\n");
+//			rows++;
+//		}
+//
+//		System.out.print("********" + "\n\n\n");
+//	}
 	
 	public void printTable2() throws Exception {
 
@@ -539,50 +539,50 @@ public class Table {
 		System.out.print("********" + "\n\n\n");
 	}
 
-	public Table removeEmptyRows() {
-		C[][] cells = this.getTable_cells();
-		Hc[][] hCells = this.getTable_Headercells();
-
-		int rows = cells.length;
-		int cols = this.num_of_columns;
-		// number of empty cells is k
-
-		C[] nonEmptyCells = new C[cols];
-		// HC[][] newhCells=new HC[hCells.length][];
-
-		for (int i = 0; i < rows; i++) {
-			int k = 0;
-			for (int j = 0; j < cols; j++) {
-				if (cells[i][j].getcell_value() == "" || cells[i][j].getcell_value() == null
-						|| cells[i][j].getCell_type() == "Empty") {
-					System.out.println("I is " + i + " J is " + j + "value is" + cells[i][j].getcell_value()
-							+ " type is " + cells[i][j].getCell_type());
-					k++;
-				}
-
-			}
-			if (k == cols) {
-				continue;
-			} else {
-				for (int j = 0; j < cols; j++) {
-					nonEmptyCells[j] = cells[i][j];
-
-				}
-
-			}
-
-		}
-
-		// this.setTable_cells(nonEmptyCells);
-		return this;
-	}
+//	public Table removeEmptyRows() {
+//		C[][] cells = this.getTable_cells();
+//		Hc[][] hCells = this.getTable_Headercells();
+//
+//		int rows = cells.length;
+//		int cols = this.num_of_columns;
+//		// number of empty cells is k
+//
+//		C[] nonEmptyCells = new C[cols];
+//		// HC[][] newhCells=new HC[hCells.length][];
+//
+//		for (int i = 0; i < rows; i++) {
+//			int k = 0;
+//			for (int j = 0; j < cols; j++) {
+//				if (cells[i][j].getcell_value() == "" || cells[i][j].getcell_value() == null
+//						|| cells[i][j].getCell_type() == "Empty") {
+//					System.out.println("I is " + i + " J is " + j + "value is" + cells[i][j].getcell_value()
+//							+ " type is " + cells[i][j].getCell_type());
+//					k++;
+//				}
+//
+//			}
+//			if (k == cols) {
+//				continue;
+//			} else {
+//				for (int j = 0; j < cols; j++) {
+//					nonEmptyCells[j] = cells[i][j];
+//
+//				}
+//
+//			}
+//
+//		}
+//
+//		// this.setTable_cells(nonEmptyCells);
+//		return this;
+//	}
 
 	public Table tableClassification() {
 		// C[][] cells=this.getTable_cells();
 
 		Columns[] tc = this.getTableCol();
 
-		int rows = cells.length;
+//		int rows = cells.length;
 		int cols = this.num_of_columns;
 
 		HashMap<String, Integer> ColTypes = new HashMap<String, Integer>();

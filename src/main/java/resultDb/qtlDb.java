@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package qtldb;
+package resultDb;
 
 import java.io.FileWriter;
 import java.nio.channels.CancelledKeyException;
@@ -29,32 +29,38 @@ import qtm.Cell;
 import qtm.Columns;
 import qtm.Table;
 import qtm.Trait;
+import utils.Configs;
 
 /**
  *
  * @author gurnoor
  */
-public class qtlDB {
+public class qtlDb {
 
 	public static Connection c;
-	public static String sJdbc = "jdbc:sqlite";
-	public static String tempDb = "data/TixDb.db";
+	
+	public static String sJdbc = Configs.getPropertyDb("sJdbc"); 
+	public static String dbName = Configs.getPropertyDb("dbName");
+	public static String userNameDb = Configs.getPropertyDb("userName");
+	public static String passwordDb = Configs.getPropertyDb("password");
 	// String sTempDb = "TixDb_"+a.getPmc()+".db";
-
+	
+	
+	
+	
 	public static boolean connectionDB() {
 		c = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
 
-			String sDBUrl = sJdbc + ":" + tempDb;
-
-			c = DriverManager.getConnection(sDBUrl);
+			String sDBUrl = sJdbc + ":" + dbName;
+			c = DriverManager.getConnection(sDBUrl, userNameDb,passwordDb);
 
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
-		System.out.println("Opened database successfully \n");
+		System.out.println("TixDB Database created successfully");
 		return true;
 	}
 
@@ -69,40 +75,40 @@ public class qtlDB {
 				String ArticleTable = "CREATE TABLE IF NOT EXISTS Article (pmcId TEXT PRIMARY KEY NOT NULL,"
 						+ " tittle TEXT); ";
 				stmt.executeUpdate(ArticleTable);
-				System.out.println("Article table created successfully");
+				//System.out.println("Article table created successfully");
 
 				String traitTable = "CREATE TABLE IF NOT EXISTS TraitTable (tableId TEXT PRIMARY KEY NOT NULL,"
 						+ "numOfCol INTEGER NOT NULL," + "numOfRows INTEGER NOT NULL," + "pmcId TEXT NOT NULL,"
 						+ "FOREIGN KEY(pmcId) REFERENCES article(pmcId)" + "); ";
 				stmt.executeUpdate(traitTable);
-				System.out.println("TraitTable created successfully");
+				//System.out.println("TraitTable created successfully");
 
 				String abbreviationTable = "CREATE TABLE IF NOT EXISTS Abbreviation" + "(abbreviation TEXT  NOT NULL,"
 						+ "expansion TEXT NOT NULL," + "pmcId TEXT NOT NULL,"
 						+ "FOREIGN KEY(pmcId) REFERENCES Article(pmcId)" + "); ";
 				stmt.executeUpdate(abbreviationTable);
-				System.out.println("AbbreviationTable created successfully");
+				//System.out.println("AbbreviationTable created successfully");
 
 				String columEntry = "CREATE TABLE IF NOT EXISTS ColumnEntry"
 						+ "(colId TEXT PRIMARY KEY NOT NULL, colHeader  TEXT,"
 						+ "colType TEXT, colAnnotation TEXT, tableId TEXT, FOREIGN KEY(tableId) REFERENCES TraitTable(tableId)"
 						+ "); ";
 				stmt.executeUpdate(columEntry);
-				System.out.println("ColumnEntry Table created successfully");
+				//System.out.println("ColumnEntry Table created successfully");
 
 				String cellEntry = "CREATE TABLE IF NOT EXISTS CellEntry"
 						+ "(cellId INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL, rowNumber INT, cellValue  TEXT,"
 						+ "cellType TEXT, colId TEXT, FOREIGN KEY(colId) REFERENCES columnEntry(colId)"
 						+ "); ";
 				stmt.executeUpdate(cellEntry);
-				System.out.println("CellEntry Table created successfully");
+				//System.out.println("CellEntry Table created successfully");
 
 				String trait = "CREATE TABLE IF NOT EXISTS Trait"
 						+ "(traitId INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL, traitName Text, traitValuePair  TEXT,"
 						+ "traitPropertyPair TEXT, otherTraitPair TEXT, pmcId TEXT, tableId TEXT, rowNumber INTEGER, FOREIGN KEY(pmcId) REFERENCES Article(pmcId), FOREIGN KEY(tableId) REFERENCES TraitTable(tableId)"
 						+ "); ";
 				stmt.executeUpdate(trait);
-				System.out.println("Trait Table created successfully");
+				//System.out.println("Trait Table created successfully");
 
 //				String traitValuePair = "CREATE TABLE IF NOT EXISTS TraitValuePair"
 //						+ "(id INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL, traitNameInArticle TEXT,  traitNameInOntology TEXT, traitUri TEXT,"
@@ -119,19 +125,23 @@ public class qtlDB {
 //				System.out.println("Trait-Property Table created successfully");
 //
 //				String oldqtlTable = "CREATE TABLE IF NOT EXISTS OldQtl"
-//						+ "(qtlId TEXT PRIMARY KEY NOT NULL, traitNameInArticle Text,traitNameInOntology Text, traitUri TEXT,"
+//						+ "(qtlId id INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL, traitNameInArticle Text,traitNameInOntology Text, traitUri TEXT,"
 //						+ "featureNameInArticle TEXT, featureNameInOntology TEXT, featureUri TEXT, featureValue TEXT, featureValueInOntology TEXT, featureValueUri TEXT, pmcId TEXT, doi TEXT , tableId TEXT, FOREIGN KEY(pmcId) REFERENCES Article(pmcId), FOREIGN KEY(tableId) REFERENCES TraitTable(tableId) "
 //						+ "); ";
 //				stmt.executeUpdate(oldqtlTable);
 //				System.out.println("qtlTable Table created successfully");
 
 				String qtlTable = "CREATE TABLE IF NOT EXISTS Qtl"
-						+ "(qtlId TEXT PRIMARY KEY NOT NULL, traitNameInArticle Text,traitNameInOntology Text, traitUri TEXT,"
+						+ "(qtlId INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL, traitNameInArticle Text,traitNameInOntology Text, traitUri TEXT,"
 						+ "chromosomeNumber TEXT, markerAssociated TEXT, markerUri TEXT, geneAssociated TEXT, geneUri TEXT, snpAssociated TEXT, snpUri TEXT, pmcId TEXT, tableId TEXT, rowNumber TEXT, FOREIGN KEY(pmcId) REFERENCES Article(pmcId), FOREIGN KEY(tableId) REFERENCES TraitTable(tableId) "
 						+ "); ";
 				stmt.executeUpdate(qtlTable);
-				System.out.println("Qtl Table Table created successfully");
+				//System.out.println("Qtl Table Table created successfully");
 
+				
+				System.out.println("TixDB tables created successfully\n");
+				System.out.println(
+	                                "____________________________________________________________________________________________________________________________");
 				stmt.close();
 
 			}
@@ -295,7 +305,7 @@ public class qtlDB {
 		}
 	}
 
-	public static void InsertTraitEntry(Article articles[]) {
+	public static void insertTraitEntry(Article articles[]) {
 		try {
 
 			for (int i = 0; i < articles.length; i++) {
@@ -414,15 +424,23 @@ public class qtlDB {
                     String core5 = "solaLyco2";
                     String match = "LONGEST_DOMINANT_RIGHT";
                     String type = "dictionary";
+                    
+                    
+                  FileWriter QTLTableMinerResultsfile = new FileWriter("data/QTLTableMiner++Results.csv");
 
+                      QTLTableMinerResultsfile.append("qtlId,traitName,traitUri,ChromosomeNumber,"
+                              + "markers_associated,markerUri,gene_associated, geneUri,"
+                              + "snp_associated,snpUri,pmcId,tableId,rowNumber \n");
+                    
+                    
+                    
                     if (connectionDB()) {
                             Statement stmt1 = null;
-                            Statement stmt2 = null;
-                            Statement stmt3 = null;
                             stmt1 = c.createStatement();
+                            Statement stmt2 = null;
                             stmt2 = c.createStatement();
+                            Statement stmt3 = null;
                             stmt3 = c.createStatement();
-
                             String sql1 = "SELECT DISTINCT(pmcId) FROM Trait;";
 
                             ResultSet rs1 = stmt1.executeQuery(sql1);
@@ -430,12 +448,14 @@ public class qtlDB {
                             while (rs1.next()) {
 
                                     String pmcId = rs1.getString("pmcId");
-
+                                    System.out.println("pmcid IS"+pmcId);
                                     String sql2 = "SELECT * FROM Trait WHERE pmcId LIKE '" + pmcId + "';'";
-
-                                    ResultSet rs2 = stmt1.executeQuery(sql2);
+                                    
+                                    
+                                    ResultSet rs2 = stmt2.executeQuery(sql2);
 
                                     while (rs2.next()) {
+                                           
 
                                             String traitName = rs2.getString("TraitName");// .replaceAll("\\(.*\\)",
                                             String traitId = rs2.getString("TraitId"); // "");
@@ -492,7 +512,7 @@ public class qtlDB {
                                                     JSONObject statJsonv = (JSONObject) parserV.parse(key);
 
                                                     // Filter out Chromosome Number
-                                                    String REGEX = "chromo";
+                                                    String REGEX = "chr";
                                                     Pattern pattern = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
                                                     // System.out.println("pref term is \t"+
                                                     // statJsonv.get("prefTerm") );
@@ -520,8 +540,8 @@ public class qtlDB {
                                                     JSONObject statJsonp = (JSONObject) parserP.parse(key);
 
                                                     // Filter out Chromosome Number
-                                                    String Regex = "chromo";
-                                                    Pattern pattern = Pattern.compile(Regex, Pattern.CASE_INSENSITIVE);
+                                                    String regex = "chromo";
+                                                    Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
                                                     if (statJsonp.get("prefTerm").equals("chromosome") || pattern.matcher(pvalue).find()) {
                                                             ChromosomeNumber += statJsonp.get("actualValue").toString();
@@ -534,7 +554,7 @@ public class qtlDB {
 
                                                     // Filterout SNP
                                                     
-                                                    Regex = "snp";
+                                                    regex = "snp";
                                                     String s1= (String) statJsonp.get("actualValue");
                                                     String s2= (String) statJsonp.get("prefTerm");
                                                     String s3= pvalue;
@@ -543,13 +563,13 @@ public class qtlDB {
                                                     System.out.println(s3);
                                                     
                                                     
-                                                    pattern = Pattern.compile(Regex, Pattern.CASE_INSENSITIVE);
+                                                    pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                                                     Matcher matcher1 = pattern.matcher(s1);
                                                     Matcher matcher2 = pattern.matcher(s2);
                                                     Matcher matcher3 = pattern.matcher(s3);
                                                     if (matcher1.find() || matcher2.find() || matcher3.find()) {
                                                             System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
-                                                            snp_associated += statJsonp.get("actualValue").toString();
+                                                            snp_associated += statJsonp.get("actualValue").toString()+"; ";
                                                             System.out.println("snp is"+snp_associated);
                                                             
                                                             
@@ -581,16 +601,17 @@ public class qtlDB {
                                                     }
 
                                                     // Filterout Gene
-                                                    Regex = "gene";
-                                                    pattern = Pattern.compile(Regex, Pattern.CASE_INSENSITIVE);
+                                                    regex = "gene"; 
+                                                    pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                                                     System.out.println(pattern);
                                                     matcher1 = pattern.matcher(s1);
                                                     matcher2 = pattern.matcher(s2);
                                                     matcher3 = pattern.matcher(s3);
 
-                                                    if (matcher1.find() || matcher2.find() || matcher3.find()) {
+                                                    
+                                                    if ((matcher1.find() || matcher2.find() || matcher3.find()) || (matcher1.find() || matcher2.find() || matcher3.find())) {
                                                         System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
-                                                            gene_associated += statJsonp.get("actualValue").toString();
+                                                            gene_associated += statJsonp.get("actualValue").toString()+"; ";
                                                             System.out.println("gene is"+gene_associated);
                                                             
                                                                                                                            
@@ -623,8 +644,52 @@ public class qtlDB {
                                                             
                                                     }
                                                     
-                                                    Regex = "solyc";
-                                                    pattern = Pattern.compile(Regex, Pattern.CASE_INSENSITIVE);
+//                                                    regex = "genotype";                                                            
+//                                                    pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+//                                                    System.out.println(pattern);
+//                                                    matcher1 = pattern.matcher(s1);
+//                                                    matcher2 = pattern.matcher(s2);
+//                                                    matcher3 = pattern.matcher(s3);
+//                                                    if ((matcher1.find() || matcher2.find() || matcher3.find()) || (matcher1.find() || matcher2.find() || matcher3.find())) {
+//                                                        System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
+//                                                            gene_associated += statJsonp.get("actualValue").toString()+"; ";
+//                                                            System.out.println("gene is"+gene_associated);
+//                                                            
+//                                                                                                                           
+//                                                             try {
+//                                                                geneOntologyAnnotation = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+//                                                                                    .processString(gene_associated, core5, match, type);
+//
+//                                                            } catch (Exception e) {
+//                                                                geneOntologyAnnotation = "";
+//                                                                    System.out.println("error in solar annotations");
+//
+//                                                            }
+//
+//                                                            if (!"".equals(geneOntologyAnnotation)) {
+//
+//                                                                    geneJSON = processSolarOutputtoJson(geneOntologyAnnotation);
+//
+//                                                            }
+//
+//                                                            else {
+//                                                                    geneJSON.put("icd", "");
+//                                                                    geneJSON.put("matchingText", gene_associated);
+//                                                                    geneJSON.put("prefTerm", gene_associated);
+//                                                                    geneJSON.put("Term", "");
+//                                                                    geneJSON.put("start", "");
+//                                                                    geneJSON.put("end", "");
+//                                                                    geneJSON.put("Uuid", "");
+//                                                            }
+//
+//                                                            
+//                                                    }
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    regex = "solyc";
+                                                    pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                                                     System.out.println(pattern);
                                                     matcher1 = pattern.matcher(s1);
                                                     matcher2 = pattern.matcher(s2);
@@ -632,7 +697,7 @@ public class qtlDB {
 
                                                     if (matcher1.find() || matcher2.find() || matcher3.find()) {
                                                         System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
-                                                            gene_associated += statJsonp.get("actualValue").toString();
+                                                            gene_associated += statJsonp.get("actualValue").toString()+"; ";
                                                             System.out.println("gene is"+gene_associated);
                                                             
                                                                                                                                                                                           
@@ -667,8 +732,8 @@ public class qtlDB {
                                                     }
                                                     
                                                     // Filterout Marker
-                                                    Regex = "marker";
-                                                    pattern = Pattern.compile(Regex, Pattern.CASE_INSENSITIVE);
+                                                    regex = "marker";
+                                                    pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                                                     matcher1 = pattern.matcher(s1);
                                                     matcher2 = pattern.matcher(s2);
                                                     matcher3 = pattern.matcher(s3);
@@ -676,7 +741,7 @@ public class qtlDB {
                                                             // marker_start -- marker_end -- peak_marker
                                                             // TEXT
                                                             System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
-                                                            markers_associated += statJsonp.get("actualValue").toString();
+                                                            markers_associated += statJsonp.get("actualValue").toString()+"; ";
                                                             
                                                             
                                                                                                                                                                                           
@@ -710,24 +775,40 @@ public class qtlDB {
                                                     }
 
                                             }
-
-                                            String qtl_id = tableId +"_" + rowNumber;
-                                            if(ChromosomeNumber!="" || markers_associated !="" || gene_associated !="" || snp_associated !=""){
-                                            String insertQTLZtable = "INSERT INTO Qtl(qtlId, traitNameInArticle,traitnameInOntology,traitUri,"
+                                            
+                                            String qtlId = tableId +"_" + rowNumber;
+                                            
+                                            
+                                            QTLTableMinerResultsfile.append(qtlId + "," + traitName +"," + traitAnnoJSON.get("icd") + "," 
+                                                    + ChromosomeNumber + "," + markers_associated + "," + markerJSON.get("icd") + "," 
+                                                    + gene_associated + "," + geneJSON.get("icd") + "," + snp_associated + "," + snpJSON.get("icd") + "," + pmcId + "," + tableId
+                                                    + "," + rowNumber +  "\n");
+                                            
+                                            if(markers_associated !="" || gene_associated !="" || snp_associated !=""){
+                                            String insertQTLZtable = "INSERT INTO Qtl(traitNameInArticle,traitnameInOntology,traitUri,"
                                                             + "chromosomeNumber,markerAssociated,markerUri, geneAssociated,geneUri, snpAssociated, snpUri, pmcId,tableId,rowNumber)"
-                                                            + "VALUES('" + qtl_id + "','" + traitName + "','" + traitAnnoJSON.get("prefTerm")
+                                                            + "VALUES('" + traitName + "','" + traitAnnoJSON.get("prefTerm")
                                                             + "','" + traitAnnoJSON.get("icd") + "','" + ChromosomeNumber + "','" + markers_associated + "','" + markerJSON.get("icd")                                                                
                                                             + "','" + gene_associated + "','" + geneJSON.get("icd") + "','" + snp_associated + "','" + snpJSON.get("icd") + "','" + pmcId + "','" + tableId
                                                             + "','" + rowNumber + "');";
+                                            
                                             stmt3.executeUpdate(insertQTLZtable);
                                             }
-                                            stmt3.close();
+                                            
                                             
                                     }
-
+                                    
+                                    System.out.println("pmcid IS"+pmcId);
                             }
+                            
+                            stmt3.close();
+                           stmt2.close(); 
+                           stmt1.close();
+                           
                     }
-            } catch (Exception e) {
+                    
+                    
+                               } catch (Exception e) {
                     e.printStackTrace();
             }
     }

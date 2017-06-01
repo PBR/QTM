@@ -19,8 +19,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.sqlite.util.StringUtils;
 
-import qtldb.qtlDB;
 import qtm.Article;
+import resultDb.qtlDb;
 
 public class Annotate {
 	public static Connection c;

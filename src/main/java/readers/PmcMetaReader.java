@@ -35,6 +35,7 @@ import org.xml.sax.InputSource;
 import abbreviation.Abbreviator;
 import qtm.Article;
 import utils.Author;
+import utils.Configs;
 import utils.Utilities;
 
 /**
@@ -120,22 +121,19 @@ public class PmcMetaReader{
             //System.out.println(art.getPlain_text());
 
             //abbreviations
-            char deliminator = '\t';
-
             this.abbreviator = new Abbreviator();
             HashMap<String, String> abbreviationsFound = new HashMap<String, String>();
 
             abbreviationsFound = abbreviator.extractAbbrPairs(art.getPlain_text());
 
             art.setAbbreviations(abbreviationsFound);
-            System.out.println("\n$$$$$Abbreviations$$$$$$$$");
+            System.out.println("\nAbbreviations found in"+art.getPmc());
             for (String key : art.getAbbreviations().keySet()) {
-                System.out.println(key + deliminator + art.getAbbreviations().get(key));
+                System.out.println(key + "\t->\t" + art.getAbbreviations().get(key));
 
             }
-            System.out.println("\n\n");
-
-            //Tables			
+            //Tables
+            System.out.println("Processing table in"+art.getPmc());
             art = TableParser.parseTables(art, parse);
 
             //			for(Table t: art.getTables()){
@@ -237,7 +235,7 @@ public class PmcMetaReader{
         for (int j = 0; j < affis.getLength(); j++) {
             String affiliation = Utilities.getString(affis.item(j));
             affilis[j] = affiliation;
-            System.out.println("Affiliation:" + affiliation);
+            //System.out.println("Affiliation:" + affiliation);
         }
 
         return affilis;
@@ -257,7 +255,7 @@ public class PmcMetaReader{
             if (keywords.item(j).getTextContent().length() > 1) {
                 String keyword = keywords.item(j).getTextContent().substring(1);
                 keywords_str[j] = keyword;
-                System.out.println("Keyword:" + keyword);
+                //System.out.println("Keyword:" + keyword);
             }
         }
         return keywords_str;
@@ -281,13 +279,13 @@ public class PmcMetaReader{
             title = parse.getElementsByTagName("article-title").item(0).getTextContent();
             title = title.replaceAll("\n", "");
             title = title.replaceAll("\t", "");
-            System.out.println(title);
+            System.out.println("Titel of the Article :\t"+title);
         }
 
         // Authors List
         LinkedList<Author> auths = getAuthors(parse);
         for (int j = 0; j < auths.size(); j++) {
-            System.out.println(auths.get(j));
+            //System.out.println(auths.get(j));
         }
 
         // journal-title
@@ -306,14 +304,16 @@ public class PmcMetaReader{
             if (issn.item(j).getAttributes().getNamedItem("pub-type").getNodeValue().equals("ppub")) {
                 String issnp = issn.item(j).getTextContent();
                 art.setPissn(issnp);
-                if (issnp != null)
-                    System.out.println(issnp);
+                if (issnp != null){
+                    //System.out.println(issnp);
+                    }
             }
             if (issn.item(j).getAttributes().getNamedItem("pub-type").getNodeValue().equals("epub")) {
                 String issne = issn.item(j).getTextContent();
                 art.setPissn(issne);
-                if (issne != null)
-                    System.out.println(issne);
+                if (issne != null){
+                    //System.out.println(issne);
+                }
             }
         }
 
@@ -325,8 +325,9 @@ public class PmcMetaReader{
                     && article_id.item(j).getAttributes().getNamedItem("pub-id-type").getNodeValue().equals("pmid")) {
                 String pmid = article_id.item(j).getTextContent();
                 art.setPmid(pmid);
-                if (pmid != null)
-                    System.out.println(pmid);
+                if (pmid != null){
+                   // System.out.println(pmid);
+                }
             }
             if (article_id.item(j).getAttributes() != null
                     && article_id.item(j).getAttributes().getNamedItem("pub-id-type") != null
@@ -334,8 +335,9 @@ public class PmcMetaReader{
                 String pmc = "PMC" + article_id.item(j).getTextContent();
                 art.setPmc(pmc);
                 art.setSpec_id(pmc);
-                if (pmc != null)
-                    System.out.println(pmc);
+                if (pmc != null){
+                    System.out.println("PMC id :\t"+pmc);
+                }
             }
             if (article_id.item(j).getAttributes() != null
                     && article_id.item(j).getAttributes().getNamedItem("pub-id-type") != null
@@ -373,7 +375,7 @@ public class PmcMetaReader{
             publisher_loc = parse.getElementsByTagName("publisher-loc").item(0).getTextContent();
         art.setPublisher_loc(publisher_loc);
         if (publisher_loc != null)
-            System.out.println(publisher_loc);
+            //System.out.println(publisher_loc);
 
         art.setTitle(title);
         art.setXML(xml);
@@ -447,7 +449,8 @@ public class PmcMetaReader{
 
     public static File pmcDowloadXml(String PMCID) throws IOException, MalformedURLException {
 
-        File xmlfile = new File("data/pmcfiles/" + PMCID + ".xml");
+        String pmcDir=Configs.getPropertyDb("pmcDir");
+        File xmlfile = new File(pmcDir + PMCID + ".xml");
 
         if (!xmlfile.exists()) {
                 xmlfile.createNewFile();
