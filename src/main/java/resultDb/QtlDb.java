@@ -35,7 +35,7 @@ import utils.Configs;
  *
  * @author gurnoor
  */
-public class qtlDb {
+public class QtlDb {
 
 	public static Connection c;
 	
@@ -141,7 +141,7 @@ public class qtlDb {
 				
 				System.out.println("TixDB tables created successfully\n");
 				System.out.println(
-	                                "____________________________________________________________________________________________________________________________");
+	                                "____________________________________________________________________________________________________________________________\n");
 				stmt.close();
 
 			}

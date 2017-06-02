@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import readers.PmcMetaReader;
-import resultDb.qtlDb;
+import resultDb.QtlDb;
 import utils.Configs;
 
-public class qtmMain {
+public class QtmMain {
 
 	public static boolean doXMLInput = false;
 	public static Configs confi=new Configs();
@@ -31,15 +31,15 @@ public class qtmMain {
 
 		String solrProgram=Configs.getPropertySolr("solrProgram");
 		
-		System.out.println("=============================================");
+		System.out.println("========================================================================");
 		System.out.println("QTLTableMiner++ semantic mininig of QTL Tables from scientific articles");
-		System.out.println("=============================================");
+		System.out.println("========================================================================");
 		System.out.println(
-				"____________________________________________________________________________________________________________________________");
+				"____________________________________________________________________________________________________________________________\n");
 
 		
 		//intialisation
-		qtlDb.createTables();
+		QtlDb.createTables();
                 
 		
 		//Step1:  reading xml files with pmc ids 		
@@ -55,29 +55,33 @@ public class qtmMain {
 			//Parsing meta-data, cell entries and finding the abbreviations  
 			articles[i] = pmcMetaReader.read();
 		}
-		
+		System.out.println(
+                        "____________________________________________________________________________________________________________________________\n");
+
 		
 		//STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
 			solrTagger.AbbrevAnnotaions.abbrevToSolrSynonyms(articles);
 			try{
-			System.out.println("Restarting Solr");
+			System.out.println("\nRestarting Solr");
 			
 			Process p=Runtime.getRuntime().exec(new String[] {"bash","-c",solrProgram+" restart"});
 			p.waitFor();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			
+			System.out.println(
+	                        "____________________________________________________________________________________________________________________________\n");
+
 			
 			//STEP3 Inserting enteries in the data base
 			System.out.println("\n\nInsert entry to the TixDB \n\n ");
-   			qtlDb.insertArticleEntry(articles);
+   			QtlDb.insertArticleEntry(articles);
    			
    			
    			
    			//STEP4 Insert in Trait Table
    			System.out.println("Finding traits nows");
-   			qtlDb.insertTraitEntry(articles);
+   			QtlDb.insertTraitEntry(articles);
    			
    			//STEP5 Insert in Trait Values and Trait Properties
    			//qtlDB.insertTraitValuesandTraitProperties(articles);
@@ -88,10 +92,10 @@ public class qtmMain {
    			
    			
    			//Step7 I am here
-   			qtlDb.insertQtlTable();
+   			QtlDb.insertQtlTable();
    			
    			try{
-   	   			qtlDb.c.close();
+   	   			QtlDb.c.close();
    	   			}catch(SQLException e){
    	   				System.out.println("SQL Exception is clossing the conection");
    	   				e.printStackTrace();

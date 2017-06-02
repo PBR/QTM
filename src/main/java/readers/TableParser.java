@@ -142,16 +142,18 @@ public class TableParser {
 					tables[tableindex].setNum_of_columns(numofCol);
 					
 					
-					System.out.println("Number of Rows in the complete Table" + tables[tableindex].getTable_label()
+					System.out.println("Number of Rows in " + tables[tableindex].getTable_label()
 							+ " is: " + tables[tableindex].getNum_of_rows());
-					System.out.println("Number of Cols in the complete Table" + tables[tableindex].getTable_label()
+					System.out.println("Number of Columns in "+ tables[tableindex].getTable_label()
 							+ " is: " + tables[tableindex].getNum_of_columns());
+					System.out.println("\n");
 
 					
 					//table classification
 					tables[tableindex] = tables[tableindex].tableClassification();
-					System.out.println("after classification");
-					//tables[tableindex].printTable2();
+					tables[tableindex].printTable2();
+					System.out.println(
+		                                "____________________________________________________________________________________________________________________________\n");
 
 					tableindex++;
 				}
@@ -649,13 +651,13 @@ public class TableParser {
 			for (int j = 0; j < wordlist.length; j++) {
 				if (table.getTable_caption().toLowerCase().indexOf(wordlist[j]) != -1) {
 					table.setisTraitTable(true);
-					System.out.println("\n" + table.getisTraitTable() + " is a QTL table\n" + table.getTableid());
+					System.out.println(table.getTableid() + " is a QTL table\n");
 					return table;
 				}
 				for (String h : HeaderList) {
 					if (h.indexOf(wordlist[j]) != -1) {
 						table.setisTraitTable(true);
-						System.out.println("\n" + table.getisTraitTable() + " is a QTL table\n" + table.getTableid());
+						System.out.println(table.getTableid() + " is a QTL table\n");
 						return table;
 					} else {
 						continue;
@@ -663,7 +665,7 @@ public class TableParser {
 				}
 			}
 			
-			System.out.println("\n" + table.getisTraitTable() + " is not a QTL table\n" + table.getTableid());
+			System.out.println(table.getTableid() + " is NOT a QTL table\n");
 		} catch (Exception e) {
 
 		}

@@ -76,7 +76,7 @@ public class Article {
 			//System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
 			try{
 			if(t.getisTraitTable()==true){
-				System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
+				//System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
 				i++;
 		}
 		}catch(NullPointerException e){

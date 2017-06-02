@@ -20,7 +20,7 @@ import org.json.simple.parser.JSONParser;
 import org.sqlite.util.StringUtils;
 
 import qtm.Article;
-import resultDb.qtlDb;
+import resultDb.QtlDb;
 
 public class Annotate {
 	public static Connection c;

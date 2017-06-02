@@ -523,14 +523,19 @@ public class Table {
 		
 		for(Columns c:this.getTableCol()){
 			System.out.print(c.getHeader()+ "("
-					+ c.getColumns_type() + ")" + "\t");
+					+ c.getColumns_type() + ")" + "\t\t");
 		}
 		System.out.print("\n");
 		int i=0;
 		while(i<this.num_of_rows){
 		for(Columns c:this.getTableCol()){
+		        try{
 			System.out.print(c.getcelz()[i].getcell_value()+"(" + c.getcelz()[i].getCell_type()
-			+ ")" + "\t");
+			+ ")" + "\t\t");
+		        }
+		        catch(Exception e){
+		            System.out.print("Null(Null"+ "\t\t");
+		        }
 		}
 		System.out.print("\n");
 		i++;
@@ -539,43 +544,6 @@ public class Table {
 		System.out.print("********" + "\n\n\n");
 	}
 
-//	public Table removeEmptyRows() {
-//		C[][] cells = this.getTable_cells();
-//		Hc[][] hCells = this.getTable_Headercells();
-//
-//		int rows = cells.length;
-//		int cols = this.num_of_columns;
-//		// number of empty cells is k
-//
-//		C[] nonEmptyCells = new C[cols];
-//		// HC[][] newhCells=new HC[hCells.length][];
-//
-//		for (int i = 0; i < rows; i++) {
-//			int k = 0;
-//			for (int j = 0; j < cols; j++) {
-//				if (cells[i][j].getcell_value() == "" || cells[i][j].getcell_value() == null
-//						|| cells[i][j].getCell_type() == "Empty") {
-//					System.out.println("I is " + i + " J is " + j + "value is" + cells[i][j].getcell_value()
-//							+ " type is " + cells[i][j].getCell_type());
-//					k++;
-//				}
-//
-//			}
-//			if (k == cols) {
-//				continue;
-//			} else {
-//				for (int j = 0; j < cols; j++) {
-//					nonEmptyCells[j] = cells[i][j];
-//
-//				}
-//
-//			}
-//
-//		}
-//
-//		// this.setTable_cells(nonEmptyCells);
-//		return this;
-//	}
 
 	public Table tableClassification() {
 		// C[][] cells=this.getTable_cells();

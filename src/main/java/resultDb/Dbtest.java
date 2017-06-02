@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class dbtest {
+public class Dbtest {
 
     public static Connection c;
     public static String sJdbc = "jdbc:sqlite";
