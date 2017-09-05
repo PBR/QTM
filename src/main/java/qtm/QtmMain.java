@@ -83,7 +83,7 @@ public class QtmMain {
 
 		
 		//STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
-			solrTagger.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
+			solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 			try{
 			System.out.println("\nRestarting Solr");
 			

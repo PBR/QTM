@@ -1,4 +1,4 @@
-package solrTagger;
+package solrAnnotator;
 
 import java.util.HashMap;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package solrTagger;
+package solrAnnotator;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
