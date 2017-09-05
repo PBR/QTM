@@ -39,7 +39,7 @@ public class QtlDb {
 
 	public static Connection c;
 	
-	public static String sJdbc = Configs.getPropertyDb("sJdbc"); 
+	public static String sJdbc = Configs.getPropertyDb("sJdbc");
 	public static String dbName = Configs.getPropertyDb("dbName");
 	public static String userNameDb = Configs.getPropertyDb("userName");
 	public static String passwordDb = Configs.getPropertyDb("password");
@@ -52,7 +52,6 @@ public class QtlDb {
 		c = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-
 			String sDBUrl = sJdbc + ":" + dbName;
 			c = DriverManager.getConnection(sDBUrl, userNameDb,passwordDb);
 
@@ -226,11 +225,11 @@ public class QtlDb {
 
 									try {
 										if (col.getColumns_type() == "QTL value") {
-											colAnno = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+											colAnno = solr.tagger.recognize.Evaluate2
 													.processString(col.getHeader(), "statoTerms",
 															"LONGEST_DOMINANT_RIGHT", "dictionary");
 										} else if (col.getColumns_type() == "QTL property") {
-											colAnno = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+											colAnno = solr.tagger.recognize.Evaluate2
 													.processString(getOnlyStrings(col.getHeader()), "propTerms",
 															"LONGEST_DOMINANT_RIGHT", "dictionary");
 											;
@@ -355,7 +354,7 @@ public class QtlDb {
 
 							if (!"".equals(colAnno)) {
 
-								colAnnoJSON = processSolarOutputtoJson(colAnno);
+								colAnnoJSON = processSolrOutputtoJson(colAnno);
 								colAnnoJSON.put("actualValue", cellValue);
 							} else {
 								colAnnoJSON.put("icd", "");
@@ -465,13 +464,13 @@ public class QtlDb {
                                             System.out.println("\nTraitName: " + traitName + "\n");
 
                                             String traitAnno = "";
-                                            traitAnno = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+                                            traitAnno = solr.tagger.recognize.Evaluate2
                                                             .processString(getOnlyStrings(traitName), core1, match, type);
 
                                             JSONObject traitAnnoJSON = new JSONObject();
 
                                             if (!"".equals(traitAnno)) {
-                                                    traitAnnoJSON = processSolarOutputtoJson(traitAnno);
+                                                    traitAnnoJSON = processSolrOutputtoJson(traitAnno);
                                                     System.out.println(traitAnnoJSON.toJSONString());
                                             }
 
@@ -574,7 +573,7 @@ public class QtlDb {
                                                             
                                                             
                                                             try {
-                                                                snpOntologyAnnotation = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+                                                                snpOntologyAnnotation = solr.tagger.recognize.Evaluate2
                                                                                     .processString(snp_associated, core5, match, type);
 
                                                             } catch (Exception e) {
@@ -585,7 +584,7 @@ public class QtlDb {
 
                                                             if (!"".equals(snpOntologyAnnotation)) {
 
-                                                                    snpJSON = processSolarOutputtoJson(snpOntologyAnnotation);
+                                                                    snpJSON = processSolrOutputtoJson(snpOntologyAnnotation);
 
                                                             }
 
@@ -616,7 +615,7 @@ public class QtlDb {
                                                             
                                                                                                                            
                                                              try {
-                                                                geneOntologyAnnotation = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+                                                                geneOntologyAnnotation = solr.tagger.recognize.Evaluate2
                                                                                     .processString(gene_associated, core5, match, type);
 
                                                             } catch (Exception e) {
@@ -627,7 +626,7 @@ public class QtlDb {
 
                                                             if (!"".equals(geneOntologyAnnotation)) {
 
-                                                                    geneJSON = processSolarOutputtoJson(geneOntologyAnnotation);
+                                                                    geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
 
                                                             }
 
@@ -702,7 +701,7 @@ public class QtlDb {
                                                             
                                                                                                                                                                                           
                                                             try {
-                                                                geneOntologyAnnotation = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+                                                                geneOntologyAnnotation = solr.tagger.recognize.Evaluate2
                                                                                     .processString(gene_associated, core5, match, type);
 
                                                             } catch (Exception e) {
@@ -713,7 +712,7 @@ public class QtlDb {
 
                                                             if (!"".equals(geneOntologyAnnotation)) {
 
-                                                                    geneJSON = processSolarOutputtoJson(geneOntologyAnnotation);
+                                                                    geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
 
                                                             }
 
@@ -746,7 +745,7 @@ public class QtlDb {
                                                             
                                                                                                                                                                                           
                                                             try {
-                                                                markerOntologyAnnotation = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+                                                                markerOntologyAnnotation = solr.tagger.recognize.Evaluate2
                                                                                     .processString(gene_associated, core5, match, type);
 
                                                             } catch (Exception e) {
@@ -757,7 +756,7 @@ public class QtlDb {
 
                                                             if (!"".equals(markerOntologyAnnotation)) {
 
-                                                                    markerJSON = processSolarOutputtoJson(markerOntologyAnnotation);
+                                                                    markerJSON = processSolrOutputtoJson(markerOntologyAnnotation);
 
                                                             }
 
@@ -1072,7 +1071,7 @@ public class QtlDb {
 
 	}
 
-	public static JSONObject processSolarOutputtoJson(String output) {
+	public static JSONObject processSolrOutputtoJson(String output) {
 		System.out.println("\n" + output);
 		JSONObject j = new JSONObject();
 		String[] s = output.split(Pattern.quote("|"));

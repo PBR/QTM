@@ -1,4 +1,4 @@
-package nl.erasmusmc.biosemantics.tagger.recognize;
+package solr.tagger.recognize;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -52,9 +52,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import nl.erasmusmc.biosemantics.tagger.utils.Position;
-import nl.erasmusmc.biosemantics.tagger.utils.TagItem;
-import nl.erasmusmc.biosemantics.tagger.utils.TagResponse;
+import solr.tagger.utils.Position;
+import solr.tagger.utils.TagItem;
+import solr.tagger.utils.TagResponse;
 
 public class Evaluate_Trait_Gene {
 

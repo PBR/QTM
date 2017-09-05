@@ -14,6 +14,8 @@ import java.util.LinkedList;
 import readers.PmcMetaReader;
 import resultDb.QtlDb;
 import utils.Configs;
+import java.util.Arrays;
+
 
 public class QtmMain {
 
@@ -21,13 +23,30 @@ public class QtmMain {
 	public static Configs confi=new Configs();
         
 		
-//	public static HashMap<String, Integer> headermap = new HashMap<String, Integer>();
+//	public static HashMmyp8ap<String, Integer> headermap = new HashMap<String, Integer>();
 //	public static HashMap<String, Integer> stubmap = new HashMap<String, Integer>();
 //	public static LinkedList<stats.TableStats> TStats = new LinkedList<stats.TableStats>();
 
 	public static void main(String[] args) throws IOException {
+	    
+	        if(Arrays.asList(args).contains("-help")){
+	            printHelp();
+	            return;
+	        }
+	        
+	        if(Arrays.asList(args).contains("-o")){
+	            String dbName2 = args[Arrays.asList(args).indexOf("-o")+1];
+	            QtlDb.dbName="data/"+dbName2;
+                    
+                }
 
-		String[] pmcIds = args;// pmcIds = new String[]{"PMC4540768"};
+	       String pmcs = args[Arrays.asList(args).indexOf("-pmc")+1];
+	       String[] pmcIds=pmcs.split(",");
+	        
+                
+	        
+	        
+		//String[] pmcIds = args;// pmcIds = new String[]{"PMC4540768"};
 
 		String solrProgram=Configs.getPropertySolr("solrProgram");
 		
@@ -42,6 +61,8 @@ public class QtmMain {
 		QtlDb.createTables();
                 
 		
+		
+		
 		//Step1:  reading xml files with pmc ids 		
 		File[] xmlFiles = new File[pmcIds.length];
 		Article[] articles=new Article[pmcIds.length]; 
@@ -54,13 +75,15 @@ public class QtmMain {
 		        
 			//Parsing meta-data, cell entries and finding the abbreviations  
 			articles[i] = pmcMetaReader.read();
+			System.out.println("\n\n\n"+ articles[i].getPlain_text()+"\n\n\n");
+			
 		}
 		System.out.println(
                         "____________________________________________________________________________________________________________________________\n");
 
 		
 		//STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
-			solrTagger.AbbrevAnnotaions.abbrevToSolrSynonyms(articles);
+			solrTagger.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 			try{
 			System.out.println("\nRestarting Solr");
 			
@@ -102,5 +125,26 @@ public class QtmMain {
    	   			}
    			
 	}
+	
+	
+	public static void printHelp() {
+            System.out.println("HELP pages for QTL Table Miner ++\r\n");
+            
+            System.out.println("DESCRIPTION");
+            System.out
+                            .println("QTL TableMiner++ is a command-line tool that can retrieve and semantically annotate results of QTL mapping experiments commonly buried in (heterogenous) tables.");
+            
+            System.out.println("java -jar QTM.jar -pmc PMC4266912");
+            
+            System.out.println("ARGUMENTS");
+            System.out
+                            .println("    -pmc\t A list of all pmcids required to be processed. Use comma(,) as a seperator between to ids. For example PMC4266912, PMC2267253");
+            System.out
+            .println("    -o\t Filename of the output database. This database is in sqlite format.");
 
+            System.out
+            .println("    -help\t HELP pages for QTL Table Miner ++");
+
+	}
+	
 }

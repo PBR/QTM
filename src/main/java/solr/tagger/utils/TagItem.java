@@ -1,4 +1,4 @@
-package nl.erasmusmc.biosemantics.tagger.utils;
+package solr.tagger.utils;
 
 public class TagItem {
     

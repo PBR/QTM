@@ -666,7 +666,7 @@ public class Table {
 					Integer j = myListIterator.next();
 					tc[j].setColumns_type("QTL property");
 					for (int k = 0; k < tc[j].getcelz().length; k++) {
-						String QTLannotation = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2.processString(
+						String QTLannotation = solr.tagger.recognize.Evaluate2.processString(
 								tc[j].getcelz()[k].getcell_value().toLowerCase(), "terms", "LONGEST_DOMINANT_RIGHT",
 								"dictionary");
 						if (QTLannotation != "") {

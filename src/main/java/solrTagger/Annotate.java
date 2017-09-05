@@ -76,7 +76,7 @@ public class Annotate {
 
 					String colAnno = "";
 					try {
-						colAnno = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+						colAnno = solr.tagger.recognize.Evaluate2
 								.processString(getOnlyStrings(colName), core2, match, type);
 
 					} catch (Exception e) {
@@ -151,7 +151,7 @@ public class Annotate {
 
 						String traitAnno = "";
 						try {
-							traitAnno = nl.erasmusmc.biosemantics.tagger.recognize.Evaluate2
+							traitAnno = solr.tagger.recognize.Evaluate2
 									.processString(getOnlyStrings(traitName), core1, match, type);
 
 						} catch (Exception e) {

@@ -20,7 +20,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-public class AbbrevAnnotaions {
+/**
+ * 
+ * @author gurnoor
+ * This class is used to copy all new Abbreviations found to the file /conf/synonyms.txt of all the dictionary.
+ */
+
+public class AbbrevtoSynonyms {
 
 	public static void abbrevToSolrSynonyms(Article articles[])
 			throws FileNotFoundException, UnsupportedEncodingException, IOException {

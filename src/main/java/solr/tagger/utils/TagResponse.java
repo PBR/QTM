@@ -1,4 +1,4 @@
-package nl.erasmusmc.biosemantics.tagger.utils;
+package solr.tagger.utils;
 
 import java.util.ArrayList;
 import java.util.List;

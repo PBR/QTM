@@ -1,4 +1,4 @@
-package nl.erasmusmc.biosemantics.tagger.recognize;
+package solr.tagger.recognize;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -21,7 +21,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 
-import nl.erasmusmc.biosemantics.tagger.utils.Permutations;
+import solr.tagger.utils.Permutations;
 
 public class Import {
 
