@@ -15,10 +15,14 @@ Installation
 ------------
 
 
+Arguements
+----------
+-pmc    A list of all pmcids as input. Use comma(,) as a seperator between to ids. For example PMC4266912, PMC2267253
+
+-o	    Filename of the output database. This database is in sqlite format. By default, there is no username and password for the database
+
+-help	  HELP pages for QTL Table Miner ++
+
 Example use
 -----------
-
-* _Input_: one or more articles in XML files or PMC IDs
-* _Output_: tabulated data in CSV and/or SQLite database file (*.db)
-
-`java -jar QTM.jar PMC4266912`
+`java -jar QTM.jar -pmc PMC4266912
