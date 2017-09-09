@@ -1,0 +1,19 @@
+#!/bin/bash
+# 1. Install Solr version (6.2.1)
+sudo wget http://archive.apache.org/dist/lucene/solr/6.2.1/solr-6.2.1.tgz
+tar -xvf solr-6.2.1.tgz
+sudo cp -R solr-6.2.1/example /opt/solr
+cd /opt/
+sudo chmod 777 solr
+cd solr/bin
+echo "Check if solr is running"
+./solr start
+./solr stop
+
+#2. Copy core files from ../data/solr to /var/solr/data with cpSolrCore
+# Make directory /var/solr
+sudo mkdir -p /var/solr/
+sudo cp -r /home/gurnoor/workspace/QTM/installSolr/solrData/* /var/solr/
+
+# 3. Restart solr
+/opt/solr/bin/solr restart -p 8983 -s /var/solr/data
