@@ -6,20 +6,15 @@
 package resultDb;
 
 import java.io.FileWriter;
-import java.nio.channels.CancelledKeyException;
-import java.sql.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.sql.rowset.RowSetWarning;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
