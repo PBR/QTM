@@ -31,4 +31,4 @@ Arguements
 
 Example use
 -----------
-java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912
+java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912 -o results_PMC4266912
