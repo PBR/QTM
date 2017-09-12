@@ -51,10 +51,11 @@ public class QtlDb {
 			c = DriverManager.getConnection(sDBUrl, userNameDb,passwordDb);
 
 		} catch (Exception e) {
+		        System.out.println("I am here");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
-		System.out.println("TixDB Database created successfully");
+		System.out.println("Output Database "+dbName+" created successfully");
 		return true;
 	}
 

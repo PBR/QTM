@@ -1,24 +1,19 @@
 package solrAnnotator;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import qtm.Article;
-import utils.Configs;
-
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+
+import qtm.Article;
+import utils.Configs;
 
 /**
  * 

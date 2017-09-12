@@ -8,13 +8,11 @@ package qtm;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Arrays;
 
 import readers.PmcMetaReader;
 import resultDb.QtlDb;
 import utils.Configs;
-import java.util.Arrays;
 
 
 public class QtmMain {
@@ -60,7 +58,7 @@ public class QtmMain {
 		//intialisation
 		QtlDb.createTables();
                 
-		
+		//System.out.println("Version 1.0");
 		
 		
 		//Step1:  reading xml files with pmc ids 		
