@@ -51,11 +51,14 @@ public class QtlDb {
 			c = DriverManager.getConnection(sDBUrl, userNameDb,passwordDb);
 
 		} catch (Exception e) {
-		        System.out.println("I am here");
+		        System.out.println("Error in connecting to the output dataase");
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
-		System.out.println("Output Database "+dbName+" created successfully");
+		
+		
+		System.out.println("Results Database file is: \t"+dbName);
+				
 		return true;
 	}
 
@@ -131,12 +134,8 @@ public class QtlDb {
 						+ "chromosomeNumber TEXT, markerAssociated TEXT, markerUri TEXT, geneAssociated TEXT, geneUri TEXT, snpAssociated TEXT, snpUri TEXT, pmcId TEXT, tableId TEXT, rowNumber TEXT, FOREIGN KEY(pmcId) REFERENCES Article(pmcId), FOREIGN KEY(tableId) REFERENCES TraitTable(tableId) "
 						+ "); ";
 				stmt.executeUpdate(qtlTable);
-				//System.out.println("Qtl Table Table created successfully");
-
 				
-				System.out.println("TixDB tables created successfully\n");
-				System.out.println(
-	                                "____________________________________________________________________________________________________________________________\n");
+
 				stmt.close();
 
 			}
@@ -156,10 +155,10 @@ public class QtlDb {
 
 	public static void insertArticleEntry(Article articles[]) {
 		try {
-			System.out.println("Article length is" + articles.length);
+			//System.out.println("Article length is" + articles.length);
 
 			for (int i = 0; i < articles.length; i++) {
-				System.out.println("Article pmcid is" + articles[i].getPmc());
+				//System.out.println("Article pmcid is" + articles[i].getPmc());
 
 				if (connectionDB() & isArticleEntryAlredyIn(articles[i], c) == false) {
 					Statement articlestmt = null;

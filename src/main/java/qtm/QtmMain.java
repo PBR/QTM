@@ -58,8 +58,8 @@ public class QtmMain {
 		//intialisation
 		QtlDb.createTables();
                 
-		//System.out.println("Version 1.0");
-		
+		System.out.println("\n");
+                
 		
 		//Step1:  reading xml files with pmc ids 		
 		File[] xmlFiles = new File[pmcIds.length];
@@ -71,31 +71,31 @@ public class QtmMain {
                     PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i].getPath());
                     
 		        
-			//Parsing meta-data, cell entries and finding the abbreviations  
+			//Parsing meta-data, cell entries and finding the abbreviations 
+                        System.out.println("Processing Article: \t" +   pmcIds[i]);
+                        System.out.println("-----------------------------------------");
 			articles[i] = pmcMetaReader.read();
-			System.out.println("\n\n\n"+ articles[i].getPlain_text()+"\n\n\n");
+			
 			
 		}
-		System.out.println(
-                        "____________________________________________________________________________________________________________________________\n");
+		System.out.println("\n");
 
 		
 		//STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
 			solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 			try{
-			System.out.println("\nRestarting Solr");
+			System.out.println("\n Restarting Solr");
 			
 			Process p=Runtime.getRuntime().exec(new String[] {"bash","-c",solrProgram+" restart"});
 			p.waitFor();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			System.out.println(
-	                        "____________________________________________________________________________________________________________________________\n");
+			System.out.println("\n");
 
 			
 			//STEP3 Inserting enteries in the data base
-			System.out.println("\n\nInsert entry to the TixDB \n\n ");
+			System.out.println("\n\nInsert entry to the results Database \n\n ");
    			QtlDb.insertArticleEntry(articles);
    			
    			

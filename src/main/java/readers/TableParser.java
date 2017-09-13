@@ -83,7 +83,7 @@ public class TableParser {
 				// table in xml
 				tables[tableindex].setXml(Utilities.createXMLStringFromSubNode(tablesxml.item(i)));
 
-				System.out.println("Table label :\t" + tables[tableindex].getTable_label());
+				System.out.println("Table label: \t" + tables[tableindex].getTable_label());
 
 				if(tableTags.size()>1){
 					
@@ -96,7 +96,7 @@ public class TableParser {
 				}
 				
 				String caption = readTableCaption(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
-				System.out.println("Caption :\t" + caption);
+				System.out.println("Caption: \t" + caption);
 				tables[tableindex].setTable_caption(caption);
 
 				String foot = readTableFooter(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");

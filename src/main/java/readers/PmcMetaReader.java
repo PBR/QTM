@@ -123,15 +123,17 @@ public class PmcMetaReader {
             abbreviationsFound = abbreviator.extractAbbrPairs(art.getPlain_text());
 
             art.setAbbreviations(abbreviationsFound);
-            System.out.println("\nAbbreviations found in" + art.getPmc());
+            
+            System.out.println("\nList of abbreviations in " + art.getPmc());
             for (String key : art.getAbbreviations().keySet()) {
                 System.out.println(key + "\t->\t" + art.getAbbreviations().get(key));
 
             }
             //Tables
-            System.out.println(
-                    "____________________________________________________________________________________________________________________________\n");
-            System.out.println("Processing tables in" + art.getPmc() + "\n\n");
+            System.out.println("\n");
+            
+            System.out.println("Reading tables in  " + art.getPmc() + "\n\n");
+            
 
             art = TableParser.parseTables(art, parse);
 
@@ -280,7 +282,7 @@ public class PmcMetaReader {
             title = parse.getElementsByTagName("article-title").item(0).getTextContent();
             title = title.replaceAll("\n", "");
             title = title.replaceAll("\t", "");
-            System.out.println("Titel of the Article :\t" + title);
+            System.out.println("Titel of the Article: \t" + title);
         }
 
         // Authors List
@@ -337,7 +339,7 @@ public class PmcMetaReader {
                 art.setPmc(pmc);
                 art.setSpec_id(pmc);
                 if (pmc != null) {
-                    System.out.println("PMC id :\t" + pmc);
+                    System.out.println("PMC id: \t" + pmc);
                 }
             }
             if (article_id.item(j).getAttributes() != null
@@ -370,7 +372,7 @@ public class PmcMetaReader {
             publisher_name = parse.getElementsByTagName("publisher-name").item(0).getTextContent();
         art.setPublisher_name(publisher_name);
         if (publisher_name != null)
-            System.out.println(publisher_name);
+            System.out.println("Publisher: \t"+publisher_name);
         String publisher_loc = "";
         if (parse.getElementsByTagName("publisher-loc").item(0) != null)
             publisher_loc = parse.getElementsByTagName("publisher-loc").item(0).getTextContent();
