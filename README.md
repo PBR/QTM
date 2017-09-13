@@ -15,8 +15,6 @@ Requirements
 Installation
 ------------
 
-** Installing Solr with core **
-=======
 ### Installing Solr with core ### 
 
 For Linux user, a bash script /installSolr/installSolr(6.2.1) is provide to Apache Solr 6.2.1 with 5 cores. This script require sudo rights and installs Solr at /opt/Solr and make /var/Solr as your Solr data directory. 
@@ -33,7 +31,6 @@ Arguements
 
 Example use
 -----------
-java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912
-=======
+
 java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912 -o results_PMC4266912
 
