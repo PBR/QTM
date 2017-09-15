@@ -27,6 +27,8 @@ For Linux user, a bash script /installSolr/installSolr(6.2.1) is provide to Apac
 
 -pmc    A list of all pmcids as input. Use comma(,) as a separator between to ids. For example PMC4266912, PMC2267253
 
--o	    Filename of the output database. This database is in sqlite format. By default, there is no username and password for the database
+-o	Filename of the SQLite output database. By default, name of the database is resultQTM.db and there is no username and password for the database
+
+-csv	Filename of the csv output file. By default, name of the file is results_QTM
 
 -help	  HELP pages for QTL Table Miner++
