@@ -7,10 +7,12 @@ package readers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
@@ -53,6 +55,15 @@ public class PmcMetaReader {
 
     private String pmcId;
 
+    private File f1;
+    
+    public PmcMetaReader(File F1) {
+        super();
+        this.f1 = F1;
+        this.fileName=F1.getPath();
+    }
+
+    
     public PmcMetaReader(String fName) {
         super();
         this.fileName = fName;
@@ -88,27 +99,38 @@ public class PmcMetaReader {
     public Article read() {
         Article art = new Article(fileName);
         art.setSource("PMC");
+        
         try {
             @SuppressWarnings("resource")
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String line = null;
             String xmlString = "";
+            
             while ((line = reader.readLine()) != null) {
-                if (line.contains("JATS-archivearticle1.dtd") || line.contains("archivearticle.dtd"))
+                if(line.contains("!DOCTYPE article"))
                     continue;
-                xmlString += line + '\n';
+               xmlString += line + '\n';
             }
-            //System.out.println(xmlString);
+           //System.out.println(xmlString);
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
             factory.setNamespaceAware(true);
             factory.setValidating(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
+            
             InputSource is = new InputSource(new StringReader(xmlString));
-
+                       
+            //System.out.println(is);
+            
+            //InputStream isa = new ByteArrayInputStream( xmlString.getBytes() );
+            
+            //Document parse = builder.parse(f1);
+            //Document parse = builder.parse(isa);
+            
             Document parse = builder.parse(is);
-
+            
+            
             //MetaData
             art = this.parseMetaData(art, parse, xmlString);
 
@@ -452,20 +474,24 @@ public class PmcMetaReader {
 
     public static File pmcDowloadXml(String PMCID) throws IOException, MalformedURLException {
 
-        String pmcDir = Configs.getPropertyDb("pmcDir");
+        String pmcDir = Configs.getPropertyQTM("pmcDir");
         File xmlfile = new File(pmcDir + PMCID + ".xml");
 
         if (!xmlfile.exists()) {
             xmlfile.createNewFile();
-        }
+        
 
         String API_PMCXML = "http://www.ebi.ac.uk/europepmc/webservices/rest/" + PMCID + "/fullTextXML";
         URL website = new URL(API_PMCXML);
+        
         ReadableByteChannel rbc = Channels.newChannel(website.openStream());
 
         FileOutputStream fos = new FileOutputStream(xmlfile);
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         fos.close();
+        }
+        else {}
+        
 
         return xmlfile;
     }

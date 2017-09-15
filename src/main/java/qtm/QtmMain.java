@@ -54,8 +54,8 @@ public class QtmMain {
 
 		String solrProgram=Configs.getPropertySolr("solrProgram");
 		
-		System.out.println("*************************************************************************");
-		System.out.println("\n\n========================================================================");
+		
+		System.out.println("========================================================================");
 		System.out.println("QTLTableMiner++ semantic mininig of QTL Tables from scientific articles");
 		System.out.println("========================================================================");
 		System.out.println(
@@ -75,7 +75,7 @@ public class QtmMain {
 		for (int i = 0; i < pmcIds.length; i++) {
                     xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds[i]);
                     articles[i] = new Article("");
-                    PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i].getPath());
+                    PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
                     
 		        
 			//Parsing meta-data, cell entries and finding the abbreviations 
@@ -124,10 +124,12 @@ public class QtmMain {
                         System.out.println("-----------------------------------------");
                         
                         QtlDb.insertQtlTable();
-   			
-                        System.out.println("==========================================");
+                        
+                        System.out.println("************************************************************************* \n \n\n");
+                        
+                        System.out.println("=========================================================================");
                         System.out.println("RESULTS are available in the following files");
-                        System.out.println("==========================================");
+                        System.out.println("=========================================================================");
                         System.out.println("SQLite file: \t"+QtlDb.dbName);
                         System.out.println("CSV file: \t"+Configs.getPropertyQTM("csvFile"));
                         

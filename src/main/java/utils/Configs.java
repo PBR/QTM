@@ -12,90 +12,59 @@ public class Configs {
     public static Properties prop=new Properties();
 
     public static void setPropertyQTM(String title, String value){
-        Properties prop = new Properties();
-        OutputStream confOutputStream = null;
-
         try {
+            FileInputStream in = new FileInputStream("config/configQtm.properties");
+            Properties props = new Properties();
+            props.load(in);
+            in.close();
 
-                confOutputStream = new FileOutputStream("config/configQtm.properties");
-
-                // set the properties value
-                prop.setProperty(title, value);
-               
-                // save properties to project root folder
-                prop.store(confOutputStream, null);
-
-        } catch (IOException io) {
+            FileOutputStream out = new FileOutputStream("config/configQtm.properties");
+            props.setProperty(title, value);
+            props.store(out, null);
+            out.close();
+            
+        
+       } catch (IOException io) {
                 io.printStackTrace();
         } finally {
-                if (confOutputStream != null) {
-                        try {
-                                confOutputStream.close();
-                        } catch (IOException e) {
-                                e.printStackTrace();
-                        }
-                }
-
+  
         }
   }
         
         
     public static void setPropertySolr(String title, String value){
-        Properties prop = new Properties();
-        OutputStream confOutputStream = null;
-
         try {
+            FileInputStream in = new FileInputStream("config/configSolr.properties");
+            Properties props = new Properties();
+            props.load(in);
+            in.close();
 
-                confOutputStream = new FileOutputStream("config/configSolr.properties");
-
-                // set the properties value
-                prop.setProperty("core9", "value9");
-                prop.setProperty("core10", "value10");
-                prop.setProperty("core11", "value11");
-
-                // save properties to project root folder
-                prop.store(confOutputStream, null);
+            FileOutputStream out = new FileOutputStream("config/configSolr.properties");
+            props.setProperty(title, value);
+            props.store(out, null);
+            out.close();
 
         } catch (IOException io) {
                 io.printStackTrace();
         } finally {
-                if (confOutputStream != null) {
-                        try {
-                                confOutputStream.close();
-                        } catch (IOException e) {
-                                e.printStackTrace();
-                        }
-                }
 
         }
   }
         
     public static void setPropertyDb(String title, String value){
-        Properties prop = new Properties();
-        OutputStream confOutputStream = null;
-
         try {
+        FileInputStream in = new FileInputStream("config/configDb.properties");
+        Properties props = new Properties();
+        props.load(in);
+        in.close();
 
-                confOutputStream = new FileOutputStream("config/configDb.properties");
-
-                // set the properties value
-                prop.setProperty("core9", "value9");
-                prop.setProperty("core10", "value10");
-                prop.setProperty("core11", "value11");
-
-                // save properties to project root folder
-                prop.store(confOutputStream, null);
-
+        FileOutputStream out = new FileOutputStream("config/configDb.properties");
+        props.setProperty(title, value);
+        props.store(out, null);
+        out.close();
         } catch (IOException io) {
                 io.printStackTrace();
         } finally {
-                if (confOutputStream != null) {
-                        try {
-                                confOutputStream.close();
-                        } catch (IOException e) {
-                                e.printStackTrace();
-                        }
-                }
 
         }
   }
