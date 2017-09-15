@@ -38,6 +38,12 @@ public class QtmMain {
                     
                 }
 
+	        if(Arrays.asList(args).contains("-csv")){
+                    String csvFile = "data/"+args[Arrays.asList(args).indexOf("-csv")+1];
+                    Configs.setPropertyQTM("csvFile", csvFile);
+                    
+                }
+	        
 	       String pmcs = args[Arrays.asList(args).indexOf("-pmc")+1];
 	       String[] pmcIds=pmcs.split(",");
 	        
@@ -48,7 +54,8 @@ public class QtmMain {
 
 		String solrProgram=Configs.getPropertySolr("solrProgram");
 		
-		System.out.println("========================================================================");
+		System.out.println("*************************************************************************");
+		System.out.println("\n\n========================================================================");
 		System.out.println("QTLTableMiner++ semantic mininig of QTL Tables from scientific articles");
 		System.out.println("========================================================================");
 		System.out.println(
@@ -101,7 +108,6 @@ public class QtmMain {
    			
    			
    			//STEP4 Insert in Trait Table
-   			System.out.println("Finding traits nows");
    			QtlDb.insertTraitEntry(articles);
    			
    			//STEP5 Insert in Trait Values and Trait Properties
@@ -113,8 +119,19 @@ public class QtmMain {
    			
    			
    			//Step7 I am here
-   			QtlDb.insertQtlTable();
+   			System.out.println("-----------------------------------------");
+                        System.out.println("Finding QTL statements");
+                        System.out.println("-----------------------------------------");
+                        
+                        QtlDb.insertQtlTable();
    			
+                        System.out.println("==========================================");
+                        System.out.println("RESULTS are available in the following files");
+                        System.out.println("==========================================");
+                        System.out.println("SQLite file: \t"+QtlDb.dbName);
+                        System.out.println("CSV file: \t"+Configs.getPropertyQTM("csvFile"));
+                        
+                        
    			try{
    	   			QtlDb.c.close();
    	   			}catch(SQLException e){

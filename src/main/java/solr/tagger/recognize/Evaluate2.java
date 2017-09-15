@@ -209,7 +209,7 @@ public class Evaluate2 {
 	}
 
 	public static TagResponse parse(String jsonLine) {
-		System.out.println(jsonLine);
+		//System.out.println(jsonLine);
 		Map<String, List<Position>> positions = new HashMap<String, List<Position>>();
 		TagResponse result = new TagResponse();
 		JsonElement jelement = new JsonParser().parse(jsonLine);

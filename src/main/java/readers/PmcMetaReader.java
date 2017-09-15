@@ -132,7 +132,7 @@ public class PmcMetaReader {
             //Tables
             System.out.println("\n");
             
-            System.out.println("Reading tables in  " + art.getPmc() + "\n\n");
+            System.out.println("Parsing tables in " + art.getPmc() + "now \n\n");
             
 
             art = TableParser.parseTables(art, parse);

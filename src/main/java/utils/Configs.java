@@ -20,10 +20,8 @@ public class Configs {
                 confOutputStream = new FileOutputStream("config/configQtm.properties");
 
                 // set the properties value
-                prop.setProperty("core9", "value9");
-                prop.setProperty("core10", "value10");
-                prop.setProperty("core11", "value11");
-
+                prop.setProperty(title, value);
+               
                 // save properties to project root folder
                 prop.store(confOutputStream, null);
 
