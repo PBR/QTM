@@ -6,7 +6,7 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 
 ## Requirements
 
-* [Oracle Java](http://www.oracle.com/technetwork/java/) 8
+* Java 1.7
 * [SQLite](https://sqlite.org/) 3.x
 * [Apache Solr](https://lucene.apache.org/solr/) 6.x
 * domain-specific controlled vocabularies & ontologies for Solr _cores_:
