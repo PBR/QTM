@@ -19,13 +19,19 @@ public class QtmMain {
 
 	public static boolean doXMLInput = false;
 	public static Configs confi=new Configs();
-        
+	private static final long megabyte = 1024L * 1024L;
 		
 //	public static HashMmyp8ap<String, Integer> headermap = new HashMap<String, Integer>();
 //	public static HashMap<String, Integer> stubmap = new HashMap<String, Integer>();
 //	public static LinkedList<stats.TableStats> TStats = new LinkedList<stats.TableStats>();
 
+	public static long bytesToMegabytes(long bytes) {
+	        return bytes / megabyte;
+	    }
+	
 	public static void main(String[] args) throws IOException {
+	        
+	    long startTime = System.currentTimeMillis();//to calculate run-time   
 	    
 	        if(Arrays.asList(args).contains("-help")){
 	            printHelp();
@@ -140,6 +146,17 @@ public class QtmMain {
    	   				System.out.println("SQL Exception is clossing the conection");
    	   				e.printStackTrace();
    	   			}
+   			
+   			Runtime runtime=Runtime.getRuntime();
+   			runtime.gc();
+   			long memory = runtime.totalMemory() - runtime.freeMemory();
+   		        System.out.println("Used memory is bytes: \t" + memory);
+   		        System.out.println("Used memory is megabytes: \t"
+   		                + bytesToMegabytes(memory));
+   		     long stopTime = System.currentTimeMillis();
+   		        long elapsedTime = stopTime - startTime;
+   		        System.out.println("Total run time: \t"+elapsedTime);
+   		        
    			
 	}
 	

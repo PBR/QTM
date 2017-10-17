@@ -594,7 +594,7 @@ public class QtlDb {
                                                     }
 
                                                     // Filterout Gene
-                                                    regex = "gene"; 
+                                                    regex = "gen[eo]"; 
                                                     pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                                                     //System.out.println(pattern);
                                                     matcher1 = pattern.matcher(s1);
