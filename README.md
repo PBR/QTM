@@ -21,7 +21,7 @@ For Linux user, a bash script /installSolr/installSolr(6.2.1) is provide to Apac
 
 ## Usage
 
-`java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912 -o results_PMC4266912`
+java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912 -o results_PMC4266912
 
 ## Command-line options
 
