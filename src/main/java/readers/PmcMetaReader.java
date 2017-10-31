@@ -443,7 +443,7 @@ public class PmcMetaReader {
         try {
 
             Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("/home/gurnoor/workspace/TABLESinXMI/textFiles/" + art.getPmc() + ".txt"), "utf-8"));
+                    new FileOutputStream("./text_files/" + art.getPmc() + ".txt"), "utf-8"));
             writer.write(text);
             writer.close();
         } catch (Exception e) {
