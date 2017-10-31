@@ -18,6 +18,13 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 
 ## Install
 
+### Installing SQLite
+
+#### Linux
+Precompiled build for Linux system can be downloaded here [SQLite](https://www.sqlite.org/download.html)
+
+
+
 For Linux user, a bash script /installSolr/installSolr(6.2.1) is provide to Apache Solr 6.2.1 with 5 cores. This script require sudo rights and installs Solr at /opt/Solr and make /var/Solr as your Solr data directory.
 
 ## Usage
