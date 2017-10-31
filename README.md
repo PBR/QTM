@@ -8,12 +8,13 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 
 * Java 1.7
 * [SQLite](https://sqlite.org/) 3.x
-* [Apache Solr](https://lucene.apache.org/solr/) 6.x
-* domain-specific controlled vocabularies & ontologies for Solr _cores_:
+* [Apache Maven](https://maven.apache.org/) 3.x
+* [Apache Solr](https://lucene.apache.org/solr/) 6.x with domain-specific controlled vocabularies & ontologies for Solr _cores_:
   * [Plant Trait Ontology](http://www.ontobee.org/ontology/PATO)
   * [STATistics Ontology](http://www.ontobee.org/ontology/STATO)
   * [ChEBI](https://www.ebi.ac.uk/chebi/)
 * full-text articles (or PMCIDs) from [Europe PMC](https://europepmc.org/)
+* Operating System: Linux
 
 ## Install
 
