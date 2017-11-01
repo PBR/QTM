@@ -6,37 +6,23 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 
 ## Requirements
 
-* Java 1.7
-* [SQLite](https://sqlite.org/) 3.x
+* [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html) 1.7 or later
 * [Apache Maven](https://maven.apache.org/) 3.x
-* [Apache Solr](https://lucene.apache.org/solr/) 6.x with domain-specific controlled vocabularies & ontologies for Solr _cores_:
-  * [Plant Trait Ontology](http://www.ontobee.org/ontology/PATO)
-  * [STATistics Ontology](http://www.ontobee.org/ontology/STATO)
-  * [ChEBI](https://www.ebi.ac.uk/chebi/)
-* full-text articles (or PMCIDs) from [Europe PMC](https://europepmc.org/)
-* Operating System: Linux
+* [SQLite](https://sqlite.org/) 3.x
+* [Apache Solr](https://lucene.apache.org/solr/) 6.x with domain-specific vocabularies and ontologies (_Solr cores_):
+  * [Plant Trait Ontology](http://www.ontobee.org/ontology/PATO) (PATO)
+  * [STATistics Ontology](http://www.ontobee.org/ontology/STATO) (STATO)
+  * [Chemical Entities of Biological Interest](https://www.ebi.ac.uk/chebi/) (ChEBI)
+* full-text articles (XML) or PMCIDs from [Europe PMC](https://europepmc.org/)
 
 ## Install
 
-### Installing SQLite
-
-#### Linux
-Precompiled build for Linux system can be downloaded here [SQLite](https://www.sqlite.org/download.html)
-
-
-
-For Linux user, a bash script /installSolr/installSolr(6.2.1) is provide to Apache Solr 6.2.1 with 5 cores. This script require sudo rights and installs Solr at /opt/Solr and make /var/Solr as your Solr data directory.
+`mvn install`
 
 ## Usage
 
-java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912 -o results_PMC4266912
+`java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912 -o QTL_PMC4266912.db`
 
-## Command-line options
+**Command-line arguments**
 
--pmc    A list of all pmcids as input. Use comma(,) as a separator between to ids. For example PMC4266912, PMC2267253
-
--o	Filename of the SQLite output database. By default, name of the database is resultQTM.db and there is no username and password for the database
-
--csv	Filename of the csv output file. By default, name of the file is results_QTM
-
--help	  HELP pages for QTL Table Miner++
+[TODO]
