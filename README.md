@@ -17,11 +17,15 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 
 ## Install
 
-`mvn install`
+```
+git clone https://github.com/PBR/QTM.git
+cd QTM
+mvn install
+```
 
 ## Usage
 
-`java -jar target/QTM-1.0-SNAPSHOT.jar -pmc PMC4266912 -o QTL_PMC4266912.db`
+`./QTM -pmc PMC4266912 -o QTL_PMC4266912.db`
 
 **Command-line arguments**
 
