@@ -422,7 +422,7 @@ public class QtlDb {
                   FileWriter QTLTableMinerResultsfile = new FileWriter(csvfile);
 
                       QTLTableMinerResultsfile.append("qtlId,traitName,traitUri,ChromosomeNumber,"
-                              + "markers_associated,markerUri,gene_associated, geneUri,"
+                              + "markers_associated,markerUri,gene_associated,geneUri,"
                               + "snp_associated,snpUri,pmcId,tableId,rowNumber \n");
                     
                     
