@@ -10,7 +10,10 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 * [Apache Maven](https://maven.apache.org/) 3.x
 * [SQLite](https://sqlite.org/) 3.x
 * [Apache Solr](https://lucene.apache.org/solr/) 6.x with domain-specific vocabularies and ontologies (_Solr cores_):
-  * [Plant Trait Ontology](http://www.ontobee.org/ontology/PATO) (PATO)
+  * [Gene Ontology](http://www.ontobee.org/ontology/GO) (GO)
+  * [Plant Trait Ontology](http://www.ontobee.org/ontology/TO) (TO)
+  * [Phenotypic quality ontology](http://www.ontobee.org/ontology/PATO) (PATO)
+  * [Solanaceae Phenotype Ontology](http://purl.bioontology.org/ontology/SPTO) (SPTO)
   * [STATistics Ontology](http://www.ontobee.org/ontology/STATO) (STATO)
   * [Chemical Entities of Biological Interest](https://www.ebi.ac.uk/chebi/) (ChEBI)
 * full-text articles (XML) or PMCIDs from [Europe PMC](https://europepmc.org/)
