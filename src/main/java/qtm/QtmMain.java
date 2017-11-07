@@ -40,12 +40,12 @@ public class QtmMain {
 	        
 	        if(Arrays.asList(args).contains("-o")){
 	            String dbName2 = args[Arrays.asList(args).indexOf("-o")+1];
-	            QtlDb.dbName="data/"+dbName2;
+	            QtlDb.dbName = dbName2;
                     
                 }
 
 	        if(Arrays.asList(args).contains("-csv")){
-                    String csvFile = "data/"+args[Arrays.asList(args).indexOf("-csv")+1];
+                    String csvFile = args[Arrays.asList(args).indexOf("-csv")+1];
                     Configs.setPropertyQTM("csvFile", csvFile);
                     
                 }
