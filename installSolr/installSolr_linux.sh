@@ -10,8 +10,8 @@ sudo /opt/solr/bin/solr stop
 
 #2. Copy core files from ../data/solr to /var/solr/data with cpSolrCore
 # Make directory /var/solr
-sudo mkdir -p /var/solr/
-sudo cp -r solrData/* /var/solr/
+sudo mkdir -p /var/solr/data
+sudo cp -r installSolr/solrData/solrData/* /var/solr/data/
 sudo chmod 777 -R /var/solr/*
 # 3. Restart solr
 sudo /opt/solr/bin/solr restart -p 8983 -s /var/solr/data
