@@ -58,7 +58,7 @@ public class QtmMain {
 	        
 		//String[] pmcIds = args;// pmcIds = new String[]{"PMC4540768"};
 
-		String solrProgram=Configs.getPropertySolr("solrProgram");
+		String solrProgram=Configs.getPropertyQTM("solrProgram");
 		
 		
 		System.out.println("========================================================================");

@@ -34,10 +34,10 @@ public class QtlDb {
 
 	public static Connection c;
 	
-	public static String sJdbc = Configs.getPropertyDb("sJdbc");
-	public static String dbName = Configs.getPropertyDb("dbName");
-	public static String userNameDb = Configs.getPropertyDb("userName");
-	public static String passwordDb = Configs.getPropertyDb("password");
+	public static String sJdbc = Configs.getPropertyQTM("sJdbc");
+	public static String dbName = Configs.getPropertyQTM("dbName");
+	public static String userNameDb = Configs.getPropertyQTM("userName");
+	public static String passwordDb = Configs.getPropertyQTM("password");
 	// String sTempDb = "TixDb_"+a.getPmc()+".db";
 	
 	

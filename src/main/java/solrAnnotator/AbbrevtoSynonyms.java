@@ -25,11 +25,11 @@ public class AbbrevtoSynonyms {
 
 	public static void abbrevToSolrSynonyms(Article articles[])
 			throws FileNotFoundException, UnsupportedEncodingException, IOException {
-		String termSynonmsFile = Configs.getPropertySolr("termDir")+"/conf/synonyms.txt";
+		String termSynonmsFile = Configs.getPropertyQTM("termDir")+"/conf/synonyms.txt";
 		
-		String statoSynonmsFile = Configs.getPropertySolr("statoDir")+"/conf/synonyms.txt";
-		String propSynonmsFile = Configs.getPropertySolr("propDir")+"/conf/synonyms.txt";
-		String solanumSynonmsFile = Configs.getPropertySolr("solanumDir")+"/conf/synonyms.txt";
+		String statoSynonmsFile = Configs.getPropertyQTM("statoDir")+"/conf/synonyms.txt";
+		String propSynonmsFile = Configs.getPropertyQTM("propDir")+"/conf/synonyms.txt";
+		String solanumSynonmsFile = Configs.getPropertyQTM("solanumDir")+"/conf/synonyms.txt";
                  
 		
 		HashMap<String, String> oldAbbrev = new HashMap<String, String>();
