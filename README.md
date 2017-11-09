@@ -26,6 +26,7 @@ cd QTM
 mvn install
 cd solrDir
 bash installSolr_linux.sh
+cd ..
 ```
 
 ## Usage
