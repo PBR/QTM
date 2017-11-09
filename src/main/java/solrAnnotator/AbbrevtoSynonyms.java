@@ -27,10 +27,7 @@ public class AbbrevtoSynonyms {
 			throws FileNotFoundException, UnsupportedEncodingException, IOException {
 		String termSynonmsFile = Configs.getPropertyQTM("termDir")+"/conf/synonyms.txt";
 		
-		String statoSynonmsFile = Configs.getPropertyQTM("statoDir")+"/conf/synonyms.txt";
-		String propSynonmsFile = Configs.getPropertyQTM("propDir")+"/conf/synonyms.txt";
-		String solanumSynonmsFile = Configs.getPropertyQTM("solanumDir")+"/conf/synonyms.txt";
-                 
+		 
 		
 		HashMap<String, String> oldAbbrev = new HashMap<String, String>();
 		Properties properties = new Properties();
@@ -68,22 +65,7 @@ public class AbbrevtoSynonyms {
 		}
 		writer.close();
 
-		Process p;
-
-		try {
-			p = Runtime.getRuntime().exec(new String[] { "bash", "-c",
-					"cp -rf "+termSynonmsFile+" "+statoSynonmsFile+" " });
-			p.waitFor();
-			p = Runtime.getRuntime().exec(new String[] { "bash", "-c",
-					"cp -rf "+termSynonmsFile+" "+propSynonmsFile+" " });
-			p.waitFor();
-			p = Runtime.getRuntime().exec(new String[] { "bash", "-c",
-					"cp -rf "+termSynonmsFile+" "+solanumSynonmsFile+" "});
-			p.waitFor();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		
 	}
 
 }

@@ -33,7 +33,7 @@ public class QtmMain {
 	        
 	    long startTime = System.currentTimeMillis();//to calculate run-time   
 	    
-	        if(Arrays.asList(args).contains("-help")){
+	        if(Arrays.asList(args).contains("-h")){
 	            printHelp();
 	            return;
 	        }
@@ -46,8 +46,7 @@ public class QtmMain {
 
 	        if(Arrays.asList(args).contains("-csv")){
                     String csvFile = args[Arrays.asList(args).indexOf("-csv")+1];
-                    Configs.setPropertyQTM("csvFile", csvFile);
-                    
+                     
                 }
 	        
 	       String pmcs = args[Arrays.asList(args).indexOf("-pmc")+1];
@@ -57,7 +56,7 @@ public class QtmMain {
 	        
 	        
 		//String[] pmcIds = args;// pmcIds = new String[]{"PMC4540768"};
-
+	        System.out.println(Configs.getPropertyQTM("solrProgram"));
 		String solrProgram=Configs.getPropertyQTM("solrProgram");
 		
 		
@@ -191,7 +190,7 @@ public class QtmMain {
             .println("    -o\t Filename of the output database. This database is in sqlite format.");
 
             System.out
-            .println("    -help\t HELP pages for QTL Table Miner ++");
+            .println("    -h\t HELP pages for QTL Table Miner ++");
 
 	}
 	

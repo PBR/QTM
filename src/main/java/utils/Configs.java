@@ -41,9 +41,7 @@ public class Configs {
         String value="";
         
         try{
-            
-            
-            prop.load(new FileInputStream("config/configQtm.properties"));;
+            prop.load(new FileInputStream("config/configQtm.properties"));
             value=prop.getProperty(title);
         }catch (IOException e){
             

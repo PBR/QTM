@@ -45,13 +45,15 @@ public class QtlDb {
 	
 	public static boolean connectionDB() {
 		c = null;
-		try {
-			Class.forName("org.sqlite.JDBC");
-			String sDBUrl = sJdbc + ":" + dbName;
+		try { 
+		    
+		        Class.forName("org.sqlite.JDBC");
+		        String sDBUrl = sJdbc + ":" + dbName;
 			c = DriverManager.getConnection(sDBUrl, userNameDb,passwordDb);
 
 		} catch (Exception e) {
 		        System.out.println("Error in connecting to the output database");
+		        e.printStackTrace();
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
