@@ -1054,6 +1054,10 @@ public class QtlDb {
 		return check;
 
 	}
+	
+	
+	    
+	
 
 	public static JSONObject processSolrOutputtoJson(String output) {
 		//System.out.println("\n" + output);
