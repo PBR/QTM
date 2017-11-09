@@ -476,8 +476,7 @@ public class PmcMetaReader {
 
     public static File pmcDowloadXml(String PMCID) throws IOException, MalformedURLException {
 
-        String pmcDir = Configs.getPropertyQTM("pmcDir");
-        File xmlfile = new File(pmcDir + PMCID + ".xml");
+        File xmlfile = new File(PMCID + ".xml");
 
         if (!xmlfile.exists()) {
             xmlfile.createNewFile();

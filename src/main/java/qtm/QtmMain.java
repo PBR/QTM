@@ -97,7 +97,7 @@ public class QtmMain {
 		//STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
 			solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 			try{
-			System.out.println("\n Restarting Solr");
+			System.out.println("Restarting Solr");
 			
 			Process p=Runtime.getRuntime().exec(new String[] {"bash","-c",solrProgram+" restart"});
 			p.waitFor();
@@ -130,6 +130,19 @@ public class QtmMain {
                         System.out.println("-----------------------------------------");
                         
                         QtlDb.insertQtlTable();
+                     
+                        
+                        
+                        try{
+                            System.out.println("\nSolr stoped");
+                            Process p=Runtime.getRuntime().exec(new String[] {"bash","-c",solrProgram+" stop"});
+                            p.waitFor();
+                            }catch(Exception e){
+                                    e.printStackTrace();
+                            }
+                            System.out.println("\n");
+                        
+                        
                         
                         System.out.println("************************************************************************* \n \n\n");
                         
@@ -157,7 +170,8 @@ public class QtmMain {
    		        long elapsedTime = stopTime - startTime;
    		        System.out.println("Total run time: \t"+elapsedTime);
    		        
-   			
+   		        
+   		        
 	}
 	
 	

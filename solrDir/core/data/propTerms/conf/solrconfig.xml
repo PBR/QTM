@@ -2,15 +2,15 @@
 <config>
   <luceneMatchVersion>6.1.0</luceneMatchVersion>
   <directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}"/> 
-  <lib dir="/opt/solr/contrib/extraction/lib" regex=".*\.jar" />
-  <lib dir="/opt/solr/dist/" regex="solr-cell-\d.*\.jar" />
-  <lib dir="/opt/solr/contrib/clustering/lib/" regex=".*\.jar" />
-  <lib dir="/opt/solr/dist/" regex="solr-clustering-\d.*\.jar" />
-  <lib dir="/opt/solr/contrib/langid/lib/" regex=".*\.jar" />
-  <lib dir="/opt/solr/dist/" regex="solr-langid-\d.*\.jar" />
-  <lib dir="/opt/solr/contrib/velocity/lib" regex=".*\.jar" />
-  <lib dir="/opt/solr/dist/" regex="solr-velocity-\d.*\.jar" />
-  <lib dir="/var/solr/data/text-tagger/" regex=".*\.jar" />
+  <lib dir="../../../solr/contrib/extraction/lib" regex=".*\.jar" />
+  <lib dir="../../../solr/dist/" regex="solr-cell-\d.*\.jar" />
+  <lib dir="../../../solr/contrib/clustering/lib/" regex=".*\.jar" />
+  <lib dir="../../../solr/dist/" regex="solr-clustering-\d.*\.jar" />
+  <lib dir="../../../solr/contrib/langid/lib/" regex=".*\.jar" />
+  <lib dir="../../../solr/dist/" regex="solr-langid-\d.*\.jar" />
+  <lib dir="../../../solr/contrib/velocity/lib" regex=".*\.jar" />
+  <lib dir="../../../solr/dist/" regex="solr-velocity-\d.*\.jar" />
+  <lib dir="../text-tagger/" regex=".*\.jar" />
   <codecFactory class="solr.SchemaCodecFactory"/>
   <schemaFactory class="ClassicIndexSchemaFactory"/>
   <indexConfig>
@@ -31,6 +31,15 @@
        <maxTime>1000</maxTime> 
      </autoSoftCommit>
   </updateHandler>
+
+  <updateRequestProcessorChain name="uuid">
+    <processor class="solr.UUIDUpdateProcessorFactory">
+      <str name="fieldName">uuid</str>
+    </processor>
+    <processor class="solr.RunUpdateProcessorFactory" />
+  </updateRequestProcessorChain>
+
+
   <query>
     <maxBooleanClauses>1024</maxBooleanClauses>
     <filterCache class="solr.FastLRUCache" size="512" initialSize="512" autowarmCount="0"/>
