@@ -43,9 +43,10 @@ public class QtmMain {
 	            QtlDb.dbName = dbName2;
                     
                 }
-
+	        
+	        String csvfile=null;
 	        if(Arrays.asList(args).contains("-csv")){
-                    String csvFile = args[Arrays.asList(args).indexOf("-csv")+1];
+                    csvfile = args[Arrays.asList(args).indexOf("-csv")+1];
                      
                 }
 	        

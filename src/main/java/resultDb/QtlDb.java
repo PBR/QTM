@@ -419,16 +419,7 @@ public class QtlDb {
                     String match = "LONGEST_DOMINANT_RIGHT";
                     String type = "dictionary";
                     
-                    String csvfile=Configs.getPropertyQTM("csvFile");
-                    
-                  FileWriter QTLTableMinerResultsfile = new FileWriter(csvfile);
-
-                      QTLTableMinerResultsfile.append("qtlId,traitName,traitUri,ChromosomeNumber,"
-                              + "markers_associated,markerUri,gene_associated,geneUri,"
-                              + "snp_associated,snpUri,pmcId,tableId,rowNumber \n");
-                    
-                    
-                    
+                                      
                     if (connectionDB()) {
                             Statement stmt1 = null;
                             stmt1 = c.createStatement();
@@ -786,11 +777,6 @@ public class QtlDb {
                                             
                                             stmt3.executeUpdate(insertQTLZtable);
                                             
-                                            QTLTableMinerResultsfile.append(qtlId + "," + traitName +"," + traitAnnoJSON.get("icd") + "," 
-                                                    + ChromosomeNumber + "," + markers_associated + "," + markerJSON.get("icd") + "," 
-                                                    + gene_associated + "," + geneJSON.get("icd") + "," + snp_associated + "," + snpJSON.get("icd") + "," + pmcId + "," + tableId
-                                                    + "," + rowNumber +  "\n");
-                                            
                                             }
                                             
                                             
@@ -804,8 +790,7 @@ public class QtlDb {
                            stmt1.close();
                            
                     }
-                    
-                    QTLTableMinerResultsfile.close();
+                                    
                                } catch (Exception e) {
                     e.printStackTrace();
             }
