@@ -32,11 +32,16 @@ public class QtmMain {
 
         long startTime = System.currentTimeMillis();//to calculate run-time   
 
-        if (Arrays.asList(args).contains("-h")) {
+        if (Arrays.asList(args).contains("-h") | Arrays.asList(args).contains("--help") ) {
             printHelp();
             return;
         }
-
+        
+        if (Arrays.asList(args).contains("-v") | Arrays.asList(args).contains("--version") ) {
+            System.out.println("QTL Table Miner++ Version: 1.0 ");
+            return;
+        }
+        
         if (Arrays.asList(args).contains("-o")) {
             String dbName2 = args[Arrays.asList(args).indexOf("-o") + 1];
             QtlDb.dbName = dbName2;
