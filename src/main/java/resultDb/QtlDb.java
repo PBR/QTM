@@ -10,11 +10,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -145,7 +148,7 @@ public class QtlDb {
 
                                     try {
                                         if (col.getColumns_type() == "QTL value") {
-                                            colAnno = solr.tagger.recognize.Evaluate2.processString(col.getHeader(), "statoTerms",
+                                            colAnno = solr.tagger.recognize.Evaluate2.processString(col.getHeader(), "STATO",
                                                     "LONGEST_DOMINANT_RIGHT", "dictionary");
                                         } else if (col.getColumns_type() == "QTL property") {
                                             colAnno = solr.tagger.recognize.Evaluate2.processString(
@@ -336,7 +339,7 @@ public class QtlDb {
             String core2 = "statoTerms";
             String core3 = "propTerms";
             String core4 = "solaLyco";
-            String core5 = "solaLyco2";
+            String core5 = "SGN";
             String match = "LONGEST_DOMINANT_RIGHT";
             String type = "dictionary";
 
@@ -370,9 +373,10 @@ public class QtlDb {
 
                         String traitAnno = "";
                         traitAnno = solr.tagger.recognize.Evaluate2.processString(getOnlyStrings(traitName), core1, match, type);
-
+                        
+                        
                         JSONObject traitAnnoJSON = new JSONObject();
-
+                        
                         if (!"".equals(traitAnno)) {
                             traitAnnoJSON = processSolrOutputtoJson(traitAnno);
                             System.out.println(traitAnnoJSON.toJSONString());
@@ -389,17 +393,19 @@ public class QtlDb {
                         }
 
                         String ChromosomeNumber = "";
-                        String snp_associated = "";
-                        String snpOntologyAnnotation = "";
+                        
                         String gene_associated = "";
                         String geneOntologyAnnotation = "";
                         String markers_associated = "";
                         String markerOntologyAnnotation = "";
-
+                                                
                         JSONObject markerJSON = new JSONObject();
                         JSONObject geneJSON = new JSONObject();
                         JSONObject snpJSON = new JSONObject();
 
+                        Set<JSONObject> markers = new HashSet<JSONObject>();
+
+                        Set<JSONObject> genes = new HashSet<JSONObject>();
                         // Parsing Trait Values
 
                         String traitValue = rs2.getString("trait_value_pair");
@@ -455,6 +461,12 @@ public class QtlDb {
 
                             // Filterout SNP
 
+                            
+                            
+                            
+                            
+                            
+                            
                             regex = "snp";
                             String s1 = (String) statJsonp.get("actualValue");
                             String s2 = (String) statJsonp.get("prefTerm");
@@ -472,7 +484,7 @@ public class QtlDb {
                                 markers_associated += statJsonp.get("actualValue").toString() + "; ";
                                 try {
                                     markerOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated,
-                                            core5, match, type);
+                                            "SGN", match, type);
 
                                 } catch (Exception e) {
                                     markerOntologyAnnotation = "";
@@ -483,17 +495,19 @@ public class QtlDb {
                                 if (!"".equals(markerOntologyAnnotation)) {
 
                                     markerJSON = processSolrOutputtoJson(markerOntologyAnnotation);
-
+                                    markers.add(markerJSON);
                                 }
 
                                 else {
                                     markerJSON.put("icd", "");
-                                    markerJSON.put("matchingText", gene_associated);
-                                    markerJSON.put("prefTerm", gene_associated);
+                                    markerJSON.put("matchingText", markers_associated);
+                                    markerJSON.put("prefTerm", markers_associated);
                                     markerJSON.put("Term", "");
                                     markerJSON.put("start", "");
                                     markerJSON.put("end", "");
                                     markerJSON.put("Uuid", "");
+                                    
+                                    markers.add(markerJSON);
                                 }
 
                             }
@@ -513,7 +527,7 @@ public class QtlDb {
                                 //System.out.println("gene is"+gene_associated);
 
                                 try {
-                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated, core5,
+                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated, "SGN",
                                             match, type);
 
                                 } catch (Exception e) {
@@ -525,7 +539,7 @@ public class QtlDb {
                                 if (!"".equals(geneOntologyAnnotation)) {
 
                                     geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
-
+                                    genes.add(geneJSON);
                                 }
 
                                 else {
@@ -536,6 +550,8 @@ public class QtlDb {
                                     geneJSON.put("start", "");
                                     geneJSON.put("end", "");
                                     geneJSON.put("Uuid", "");
+                                    
+                                    genes.add(geneJSON);
                                 }
 
                             }
@@ -554,8 +570,9 @@ public class QtlDb {
                                 // System.out.println("gene is"+gene_associated);
 
                                 try {
-                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated, core5,
+                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated, "SGN",
                                             match, type);
+                                    
 
                                 } catch (Exception e) {
                                     geneOntologyAnnotation = "";
@@ -566,7 +583,7 @@ public class QtlDb {
                                 if (!"".equals(geneOntologyAnnotation)) {
 
                                     geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
-
+                                    genes.add(geneJSON);
                                 }
 
                                 else {
@@ -577,10 +594,14 @@ public class QtlDb {
                                     geneJSON.put("start", "");
                                     geneJSON.put("end", "");
                                     geneJSON.put("Uuid", "");
+                                
+                                    genes.add(geneJSON);
                                 }
 
                             }
 
+                            System.out.println("I am here" + markers.size() +"\t"+ genes.size());    
+                            
                             // Filterout Marker
                             regex = "marker";
                             pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -595,7 +616,8 @@ public class QtlDb {
 
                                 try {
                                     markerOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated,
-                                            core5, match, type);
+                                            "SGN", match, type);
+                                    
 
                                 } catch (Exception e) {
                                     markerOntologyAnnotation = "";
@@ -606,17 +628,20 @@ public class QtlDb {
                                 if (!"".equals(markerOntologyAnnotation)) {
 
                                     markerJSON = processSolrOutputtoJson(markerOntologyAnnotation);
-
+                                    markers.add(markerJSON);
                                 }
 
                                 else {
                                     markerJSON.put("icd", "");
-                                    markerJSON.put("matchingText", gene_associated);
-                                    markerJSON.put("prefTerm", gene_associated);
+                                    markerJSON.put("matchingText", markers_associated);
+                                    markerJSON.put("prefTerm", markers_associated);
                                     markerJSON.put("Term", "");
                                     markerJSON.put("start", "");
                                     markerJSON.put("end", "");
                                     markerJSON.put("Uuid", "");
+                                    
+                                    markers.add(markerJSON);
+                                    
                                 }
 
                             }
@@ -625,12 +650,39 @@ public class QtlDb {
 
                         String qtlId = tableId + "_" + rowNumber;
 
-                        if (markers_associated != "" || gene_associated != "" || snp_associated != "") {
+                        
+                        if (markers_associated != "" || gene_associated != "") {
+                            
+                            String genes_icd="";
+                            
+                            for (JSONObject g : genes){
+                                genes_icd+=g.get("icd")+";";
+                            }
+                            
+                            String markers_icd="";
+                            for (JSONObject m : markers){
+                                markers_icd+=m.get("icd")+";";
+                            }
+                            
+                            
+                            if("".equals(traitAnnoJSON.get("icd")) || ";".equals(traitAnnoJSON.get("icd")) ||traitAnnoJSON.isEmpty())
+                                traitAnnoJSON.put("icd",null);
+                            
+                            if("".equals(ChromosomeNumber) || ";".equals(ChromosomeNumber) ||ChromosomeNumber.isEmpty())
+                                ChromosomeNumber=null;
+                            
+                            if("".equals(markers_icd) || ";".equals(markers_icd) ||markers_icd.isEmpty())
+                                markers_icd=null;
+                            
+                            if("".equals(genes_icd) || ";".equals(genes_icd) ||genes_icd.isEmpty())
+                                genes_icd=null;
+                            
+                                
                             String insertQTLZtable = "INSERT INTO  QTL(trait_in_article,trait_in_onto,trait_uri,"
                                     + "chromosome,marker,marker_uri, gene,gene_uri, pmc_id,tab_id,row_id)"
                                     + "VALUES('" + traitName + "','" + traitAnnoJSON.get("prefTerm") + "','"
                                     + traitAnnoJSON.get("icd") + "','" + ChromosomeNumber + "','" + markers_associated + "','"
-                                    + markerJSON.get("icd") + "','" + gene_associated + "','" + geneJSON.get("icd") + "','"
+                                    + markers_icd + "','" + gene_associated + "','" + genes_icd + "','"
                                     + pmcId + "','" + tableId + "','"
                                     + rowNumber + "');";
 
