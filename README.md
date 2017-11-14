@@ -35,7 +35,7 @@ cd ..
 
 **Command-line arguments**
 
--pmc  A list of all pmcids required to be processed. Use comma(,) as a seperator between to ids. For example PMC4266912, PMC2267253 <br />
+-pmc  A list of all pmcids. Use comma(,) to separate to ids For example -pmc PMC4266912, PMC2267253 <br />
 -o  Filename of the output database. This database is in sqlite format <br />
 -h | --help  HELP pages for QTL Table Miner++ <br />
 -v | --version <br />
