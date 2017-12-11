@@ -335,7 +335,7 @@ public class QtlDb {
         try {
 
             String server = "http://localhost:8983/solr";
-            String core1 = "terms";
+            String core1 = "core1";
             String core2 = "statoTerms";
             String core3 = "propTerms";
             String core4 = "solaLyco";
@@ -373,10 +373,9 @@ public class QtlDb {
 
                         String traitAnno = "";
                         traitAnno = solr.tagger.recognize.Evaluate2.processString(getOnlyStrings(traitName), core1, match, type);
-                        
-                        
+
                         JSONObject traitAnnoJSON = new JSONObject();
-                        
+
                         if (!"".equals(traitAnno)) {
                             traitAnnoJSON = processSolrOutputtoJson(traitAnno);
                             System.out.println(traitAnnoJSON.toJSONString());
@@ -393,12 +392,12 @@ public class QtlDb {
                         }
 
                         String ChromosomeNumber = "";
-                        
+
                         String gene_associated = "";
                         String geneOntologyAnnotation = "";
                         String markers_associated = "";
                         String markerOntologyAnnotation = "";
-                                                
+
                         JSONObject markerJSON = new JSONObject();
                         JSONObject geneJSON = new JSONObject();
                         JSONObject snpJSON = new JSONObject();
@@ -454,20 +453,6 @@ public class QtlDb {
                                 ChromosomeNumber += statJsonp.get("actualValue").toString();
                             }
 
-                            // featureName_asinArticle like '%geno%' or
-                            // featureName_asinArticle like '%gene%' or
-                            // featureName_asinArticle like '%marker%' or
-                            // featureValue like '%sol%' or
-
-                            // Filterout SNP
-
-                            
-                            
-                            
-                            
-                            
-                            
-                            regex = "snp";
                             String s1 = (String) statJsonp.get("actualValue");
                             String s2 = (String) statJsonp.get("prefTerm");
                             String s3 = pvalue;
@@ -475,149 +460,30 @@ public class QtlDb {
                             //System.out.println(s2);
                             //System.out.println(s3);
 
-                            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-                            Matcher matcher1 = pattern.matcher(s1);
-                            Matcher matcher2 = pattern.matcher(s2);
-                            Matcher matcher3 = pattern.matcher(s3);
-                            if (matcher1.find() || matcher2.find() || matcher3.find()) {
-
-                                markers_associated += statJsonp.get("actualValue").toString() + "; ";
-                                try {
-                                    markerOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated,
-                                            "SGN", match, type);
-
-                                } catch (Exception e) {
-                                    markerOntologyAnnotation = "";
-                                    System.out.println("error in solar annotations");
-
-                                }
-
-                                if (!"".equals(markerOntologyAnnotation)) {
-
-                                    markerJSON = processSolrOutputtoJson(markerOntologyAnnotation);
-                                    markers.add(markerJSON);
-                                }
-
-                                else {
-                                    markerJSON.put("icd", "");
-                                    markerJSON.put("matchingText", markers_associated);
-                                    markerJSON.put("prefTerm", markers_associated);
-                                    markerJSON.put("Term", "");
-                                    markerJSON.put("start", "");
-                                    markerJSON.put("end", "");
-                                    markerJSON.put("Uuid", "");
-                                    
-                                    markers.add(markerJSON);
-                                }
-
-                            }
-
-                            // Filterout Gene
-                            regex = "gen[eo]";
-                            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-                            //System.out.println(pattern);
-                            matcher1 = pattern.matcher(s1);
-                            matcher2 = pattern.matcher(s2);
-                            matcher3 = pattern.matcher(s3);
-
-                            if ((matcher1.find() || matcher2.find() || matcher3.find())
-                                    || (matcher1.find() || matcher2.find() || matcher3.find())) {
-                                //System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
-                                gene_associated += statJsonp.get("actualValue").toString() + "; ";
-                                //System.out.println("gene is"+gene_associated);
-
-                                try {
-                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated, "SGN",
-                                            match, type);
-
-                                } catch (Exception e) {
-                                    geneOntologyAnnotation = "";
-                                    System.out.println("error in solar annotations");
-
-                                }
-
-                                if (!"".equals(geneOntologyAnnotation)) {
-
-                                    geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
-                                    genes.add(geneJSON);
-                                }
-
-                                else {
-                                    geneJSON.put("icd", "");
-                                    geneJSON.put("matchingText", gene_associated);
-                                    geneJSON.put("prefTerm", gene_associated);
-                                    geneJSON.put("Term", "");
-                                    geneJSON.put("start", "");
-                                    geneJSON.put("end", "");
-                                    geneJSON.put("Uuid", "");
-                                    
-                                    genes.add(geneJSON);
-                                }
-
-                            }
-
-
-                            regex = "solyc";
-                            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-                            //System.out.println(pattern);
-                            matcher1 = pattern.matcher(s1);
-                            matcher2 = pattern.matcher(s2);
-                            matcher3 = pattern.matcher(s3);
-
-                            if (matcher1.find() || matcher2.find() || matcher3.find()) {
-                                //System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
-                                gene_associated += statJsonp.get("actualValue").toString() + "; ";
-                                // System.out.println("gene is"+gene_associated);
-
-                                try {
-                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated, "SGN",
-                                            match, type);
-                                    
-
-                                } catch (Exception e) {
-                                    geneOntologyAnnotation = "";
-                                    System.out.println("error in solar annotations");
-
-                                }
-
-                                if (!"".equals(geneOntologyAnnotation)) {
-
-                                    geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
-                                    genes.add(geneJSON);
-                                }
-
-                                else {
-                                    geneJSON.put("icd", "");
-                                    geneJSON.put("matchingText", gene_associated);
-                                    geneJSON.put("prefTerm", gene_associated);
-                                    geneJSON.put("Term", "");
-                                    geneJSON.put("start", "");
-                                    geneJSON.put("end", "");
-                                    geneJSON.put("Uuid", "");
-                                
-                                    genes.add(geneJSON);
-                                }
-
-                            }
-
-                            System.out.println("I am here" + markers.size() +"\t"+ genes.size());    
-                            
                             // Filterout Marker
-                            regex = "marker";
-                            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-                            matcher1 = pattern.matcher(s1);
-                            matcher2 = pattern.matcher(s2);
-                            matcher3 = pattern.matcher(s3);
-                            if (matcher1.find() || matcher2.find() || matcher3.find()) {
+                            String regex1 = "marker";
+                            String regex2 = "snp";
+                            Pattern pattern1 = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE);
+                            Pattern pattern2 = Pattern.compile(regex2, Pattern.CASE_INSENSITIVE);
+
+                            Matcher matcher1 = pattern1.matcher(s1);
+                            Matcher matcher2 = pattern1.matcher(s2);
+                            Matcher matcher3 = pattern1.matcher(s3);
+
+                            Matcher matcher4 = pattern2.matcher(s1);
+                            Matcher matcher5 = pattern2.matcher(s2);
+                            Matcher matcher6 = pattern2.matcher(s3);
+
+                            if (matcher1.find() || matcher2.find() || matcher3.find() || matcher4.find() || matcher5.find()
+                                    || matcher6.find()) {
                                 // marker_start -- marker_end -- peak_marker
                                 // TEXT
                                 //System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
                                 markers_associated += statJsonp.get("actualValue").toString() + "; ";
 
                                 try {
-                                    markerOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated,
-                                            "SGN", match, type);
-                                    
+                                    markerOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(markers_associated,
+                                            "sgnMarkers", match, type);
 
                                 } catch (Exception e) {
                                     markerOntologyAnnotation = "";
@@ -639,9 +505,60 @@ public class QtlDb {
                                     markerJSON.put("start", "");
                                     markerJSON.put("end", "");
                                     markerJSON.put("Uuid", "");
-                                    
+
                                     markers.add(markerJSON);
-                                    
+
+                                }
+
+                            }
+
+                            // Filterout Gene
+                            regex1 = "gen[eo]";
+                            regex2 = "solyc";
+                            pattern1 = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE);
+                            pattern2 = Pattern.compile(regex2, Pattern.CASE_INSENSITIVE);
+
+                            matcher1 = pattern1.matcher(s1);
+                            matcher2 = pattern1.matcher(s2);
+                            matcher3 = pattern1.matcher(s3);
+
+                            matcher4 = pattern2.matcher(s1);
+                            matcher5 = pattern2.matcher(s2);
+                            matcher6 = pattern2.matcher(s3);
+
+                            if (matcher1.find() || matcher2.find() || matcher3.find() || matcher4.find() || matcher5.find()
+                                    || matcher6.find()) {
+
+                                //System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
+                                gene_associated += statJsonp.get("actualValue").toString() + "; ";
+                                //System.out.println("gene is"+gene_associated);
+
+                                try {
+                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated,
+                                            "sgnGenes", match, type);
+
+                                } catch (Exception e) {
+                                    geneOntologyAnnotation = "";
+                                    System.out.println("error in solar annotations");
+
+                                }
+
+                                if (!"".equals(geneOntologyAnnotation)) {
+
+                                    geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
+                                    genes.add(geneJSON);
+                                }
+
+                                else {
+                                    geneJSON.put("icd", "");
+                                    geneJSON.put("matchingText", gene_associated);
+                                    geneJSON.put("prefTerm", gene_associated);
+                                    geneJSON.put("Term", "");
+                                    geneJSON.put("start", "");
+                                    geneJSON.put("end", "");
+                                    geneJSON.put("Uuid", "");
+
+                                    genes.add(geneJSON);
                                 }
 
                             }
@@ -650,41 +567,38 @@ public class QtlDb {
 
                         String qtlId = tableId + "_" + rowNumber;
 
-                        
                         if (markers_associated != "" || gene_associated != "") {
-                            
-                            String genes_icd="";
-                            
-                            for (JSONObject g : genes){
-                                genes_icd+=g.get("icd")+";";
+
+                            String genes_icd = "";
+
+                            for (JSONObject g : genes) {
+                                genes_icd += g.get("icd") + ";";
                             }
-                            
-                            String markers_icd="";
-                            for (JSONObject m : markers){
-                                markers_icd+=m.get("icd")+";";
+
+                            String markers_icd = "";
+                            for (JSONObject m : markers) {
+                                markers_icd += m.get("icd") + ";";
                             }
-                            
-                            
-                            if("".equals(traitAnnoJSON.get("icd")) || ";".equals(traitAnnoJSON.get("icd")) ||traitAnnoJSON.isEmpty())
-                                traitAnnoJSON.put("icd",null);
-                            
-                            if("".equals(ChromosomeNumber) || ";".equals(ChromosomeNumber) ||ChromosomeNumber.isEmpty())
-                                ChromosomeNumber=null;
-                            
-                            if("".equals(markers_icd) || ";".equals(markers_icd) ||markers_icd.isEmpty())
-                                markers_icd=null;
-                            
-                            if("".equals(genes_icd) || ";".equals(genes_icd) ||genes_icd.isEmpty())
-                                genes_icd=null;
-                            
-                                
+
+                            if ("".equals(traitAnnoJSON.get("icd")) || ";".equals(traitAnnoJSON.get("icd"))
+                                    || traitAnnoJSON.isEmpty())
+                                traitAnnoJSON.put("icd", null);
+
+                            if ("".equals(ChromosomeNumber) || ";".equals(ChromosomeNumber) || ChromosomeNumber.isEmpty())
+                                ChromosomeNumber = null;
+
+                            if ("".equals(markers_icd) || ";".equals(markers_icd) || markers_icd.isEmpty())
+                                markers_icd = null;
+
+                            if ("".equals(genes_icd) || ";".equals(genes_icd) || genes_icd.isEmpty())
+                                genes_icd = null;
+
                             String insertQTLZtable = "INSERT INTO  QTL(trait_in_article,trait_in_onto,trait_uri,"
-                                    + "chromosome,marker,marker_uri, gene,gene_uri, pmc_id,tab_id,row_id)"
-                                    + "VALUES('" + traitName + "','" + traitAnnoJSON.get("prefTerm") + "','"
-                                    + traitAnnoJSON.get("icd") + "','" + ChromosomeNumber + "','" + markers_associated + "','"
-                                    + markers_icd + "','" + gene_associated + "','" + genes_icd + "','"
-                                    + pmcId + "','" + tableId + "','"
-                                    + rowNumber + "');";
+                                    + "chromosome,marker,marker_uri, gene,gene_uri, pmc_id,tab_id,row_id)" + "VALUES('"
+                                    + traitName + "','" + traitAnnoJSON.get("prefTerm") + "','" + traitAnnoJSON.get("icd") + "','"
+                                    + ChromosomeNumber + "','" + markers_associated + "','" + markers_icd + "','"
+                                    + gene_associated + "','" + genes_icd + "','" + pmcId + "','" + tableId + "','" + rowNumber
+                                    + "');";
 
                             stmt3.executeUpdate(insertQTLZtable);
 

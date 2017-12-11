@@ -25,7 +25,7 @@ public class AbbrevtoSynonyms {
 
 	public static void abbrevToSolrSynonyms(Article articles[])
 			throws FileNotFoundException, UnsupportedEncodingException, IOException {
-		String termSynonmsFile = Configs.getPropertyQTM("termDir")+"/conf/synonyms.txt";
+		String termSynonmsFile = Configs.getPropertyQTM("core1Dir")+"/conf/synonyms.txt";
 		
 		 
 		
