@@ -24,8 +24,8 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 git clone https://github.com/PBR/QTM.git
 cd QTM
 mvn install
-cd solrDir
-bash installSolr_linux.sh
+cd solr
+./installSolr_linux.sh
 cd ..
 ```
 
