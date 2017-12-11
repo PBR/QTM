@@ -25,7 +25,7 @@ git clone https://github.com/PBR/QTM.git
 cd QTM
 mvn install
 cd solr
-./installSolr_linux.sh
+./install_solr.sh
 cd ..
 ```
 
