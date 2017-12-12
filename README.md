@@ -25,7 +25,7 @@ git clone https://github.com/PBR/QTM.git
 cd QTM
 mvn install
 cd solr
-./install_solr.sh
+./install_solr.sh # install & start server at http://localhost:8983/
 cd ..
 ```
 
