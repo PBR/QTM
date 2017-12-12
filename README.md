@@ -31,7 +31,7 @@ solr/install_solr.sh # install & start server at http://localhost:8983/
 
 `./QTM articles.txt`
 
-`./QTL -h`
+`./QTM -h`
 
 ```
 ...
