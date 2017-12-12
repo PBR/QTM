@@ -16,7 +16,7 @@ A significant amount of experimental information about [_Quantitative Trait Locu
   * [Solanaceae Phenotype Ontology](http://purl.bioontology.org/ontology/SPTO) (SPTO)
   * [STATistics Ontology](http://www.ontobee.org/ontology/STATO) (STATO)
   * [Chemical Entities of Biological Interest](https://www.ebi.ac.uk/chebi/) (ChEBI)
-* full-text articles (XML) or PMCIDs from [Europe PMC](https://europepmc.org/)
+* access to full-text articles (in XML) from [Europe PMC](https://europepmc.org/)
 
 ## Install
 
@@ -24,16 +24,17 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 git clone https://github.com/PBR/QTM.git
 cd QTM
 mvn install
-cd solr
-./install_solr.sh # install & start server at http://localhost:8983/
-cd ..
+solr/install_solr.sh # install & start server at http://localhost:8983/
 ```
 
-### Execute
+## Example use
 
-`./QTL articles.txt`
+`./QTM articles.txt`
+
+`./QTL -h`
 
 ```
+...
 USAGE
 =====
   QTM [-v|-h]
@@ -50,4 +51,3 @@ OPTIONS
   -v|--version			Print software version.
   -h|--help			Print this help message.
 ```
-
