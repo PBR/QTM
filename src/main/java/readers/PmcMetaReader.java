@@ -118,18 +118,8 @@ public class PmcMetaReader {
             factory.setNamespaceAware(true);
             factory.setValidating(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
-            
             InputSource is = new InputSource(new StringReader(xmlString));
-                       
-            //System.out.println(is);
-            
-            //InputStream isa = new ByteArrayInputStream( xmlString.getBytes() );
-            
-            //Document parse = builder.parse(f1);
-            //Document parse = builder.parse(isa);
-            
             Document parse = builder.parse(is);
-            
             
             //MetaData
             art = this.parseMetaData(art, parse, xmlString);

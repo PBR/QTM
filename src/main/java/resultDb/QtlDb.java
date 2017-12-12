@@ -34,21 +34,19 @@ import utils.Configs;
  */
 public class QtlDb {
 
-    public static Connection c;
+    public static Connection conn;
 
     public static String sJdbc = Configs.getPropertyQTM("sJdbc");
-    public static String dbName = Configs.getPropertyQTM("dbName");
-    public static String userNameDb = Configs.getPropertyQTM("userName");
-    public static String passwordDb = Configs.getPropertyQTM("password");
+    public static String dbFile = Configs.getPropertyQTM("dbFile");
     // String sTempDb = "TixDb_"+a.getPmc()+".db";
 
     public static boolean connectionDB() {
-        c = null;
+        conn = null;
         try {
 
             Class.forName("org.sqlite.JDBC");
-            String sDBUrl = sJdbc + ":" + dbName;
-            c = DriverManager.getConnection(sDBUrl, userNameDb, passwordDb);
+            String sDBUrl = sJdbc + ":" + dbFile;
+            conn = DriverManager.getConnection(sDBUrl);
 
         } catch (Exception e) {
             System.out.println("Error in connecting to the output database");
@@ -56,9 +54,6 @@ public class QtlDb {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-
-        //System.out.println("Results Database file is: \t"+dbName);
-
         return true;
     }
 
@@ -66,7 +61,7 @@ public class QtlDb {
         try {
             if (connectionDB()) {
                 Process p = Runtime.getRuntime()
-                        .exec(new String[] { "bash", "-c", "sqlite3 " + QtlDb.dbName + "< db_schema.sql" });
+                        .exec(new String[] { "bash", "-c", "sqlite3 " + QtlDb.dbFile + "< db_schema.sql" });
                 p.waitFor();
 
             }
@@ -90,21 +85,21 @@ public class QtlDb {
             for (int i = 0; i < articles.length; i++) {
                 //System.out.println("Article pmcid is" + articles[i].getPmc());
 
-                if (connectionDB() & isArticleEntryAlredyIn(articles[i], c) == false) {
+                if (connectionDB() & isArticleEntryAlredyIn(articles[i], conn) == false) {
                     Statement articlestmt = null;
-                    articlestmt = c.createStatement();
+                    articlestmt = conn.createStatement();
 
                     Statement abbrevstmt = null;
-                    abbrevstmt = c.createStatement();
+                    abbrevstmt = conn.createStatement();
 
                     Statement qtlTablestmt = null;
-                    qtlTablestmt = c.createStatement();
+                    qtlTablestmt = conn.createStatement();
 
                     Statement colstmt = null;
-                    colstmt = c.createStatement();
+                    colstmt = conn.createStatement();
 
                     Statement cellstmt = null;
-                    cellstmt = c.createStatement();
+                    cellstmt = conn.createStatement();
 
                     // Article Table entry
                     String pmc_id = articles[i].getPmc();
@@ -233,9 +228,9 @@ public class QtlDb {
                     Statement stmt1 = null;
                     Statement stmt2 = null;
                     Statement stmt3 = null;
-                    stmt1 = c.createStatement();
-                    stmt2 = c.createStatement();
-                    stmt3 = c.createStatement();
+                    stmt1 = conn.createStatement();
+                    stmt2 = conn.createStatement();
+                    stmt3 = conn.createStatement();
                     // System.out.println("I am here");
 
                     List<Trait> traits = articles[i].getTraits();
@@ -345,11 +340,11 @@ public class QtlDb {
 
             if (connectionDB()) {
                 Statement stmt1 = null;
-                stmt1 = c.createStatement();
+                stmt1 = conn.createStatement();
                 Statement stmt2 = null;
-                stmt2 = c.createStatement();
+                stmt2 = conn.createStatement();
                 Statement stmt3 = null;
-                stmt3 = c.createStatement();
+                stmt3 = conn.createStatement();
                 String sql1 = "SELECT DISTINCT(pmc_id) FROM TRAIT;";
 
                 ResultSet rs1 = stmt1.executeQuery(sql1);
