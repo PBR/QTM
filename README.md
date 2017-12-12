@@ -29,13 +29,25 @@ cd solr
 cd ..
 ```
 
-## Usage
+### Execute
 
-`./QTM -pmc PMC4266912 -o QTL_PMC4266912.db`
+`./QTL articles.txt`
 
-**Command-line arguments**
+```
+USAGE
+=====
+  QTM [-v|-h]
+  QTM [-o FILE_PREFIX] FILE
 
--pmc  A list of all pmcids. Use comma(,) to separate to ids For example -pmc PMC4266912, PMC2267253 <br />
--o  Filename of the output database. This database is in sqlite format <br />
--h | --help  HELP pages for QTL Table Miner++ <br />
--v | --version <br />
+ARGUMENTS
+=========
+  FILE		List of full-text articles from Europe PMC (one PMCID per line).
+
+OPTIONS
+=======
+  -o|--output FILE_PREFIX	Output files in SQLite/CSV formats.
+				(default: qtl.{db,csv})
+  -v|--version			Print software version.
+  -h|--help			Print this help message.
+```
+
