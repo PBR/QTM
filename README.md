@@ -42,7 +42,8 @@ USAGE
 
 ARGUMENTS
 =========
-  FILE		List of full-text articles from Europe PMC (one PMCID per line).
+  FILE				List of full-text articles from Europe PMC.
+				Enter one PMCID per line.
 
 OPTIONS
 =======

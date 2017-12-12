@@ -199,7 +199,8 @@ public class QtmMain {
         System.out.println("  QTM [-o FILE_PREFIX] FILE\n");
         System.out.println("ARGUMENTS");
         System.out.println("=========");
-        System.out.println("  FILE\t\tList of full-text articles from Europe PMC" + " (one PMCID per line).\n");
+        System.out.println("  FILE\t\t\t\tList of full-text articles from Europe PMC.\n"
+          + "\t\t\t\tEnter one PMCID per line.\n");
         System.out.println("OPTIONS");
         System.out.println("=======");
         System.out.println(
