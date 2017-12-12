@@ -30,15 +30,15 @@ public class QtmMain {
 
     public static void main(String[] args) throws IOException {
 
-        long startTime = System.currentTimeMillis();//to calculate run-time   
-
-        if (Arrays.asList(args).contains("-h") | Arrays.asList(args).contains("--help") ) {
+        long startTime = System.currentTimeMillis();//to calculate run-time
+        
+        if (args.length == 0 | Arrays.asList(args).contains("-h") | Arrays.asList(args).contains("--help") ) {
             printHelp();
             return;
         }
         
         if (Arrays.asList(args).contains("-v") | Arrays.asList(args).contains("--version") ) {
-            System.out.println("QTL Table Miner++ Version: 1.0 ");
+            System.out.println("1.0 ");
             return;
         }
         
@@ -55,12 +55,10 @@ public class QtmMain {
         System.out.println(Configs.getPropertyQTM("solrProgram"));
         String solrProgram = Configs.getPropertyQTM("solrProgram");
 
-        System.out.println("========================================================================");
-        System.out.println("QTLTableMiner++ semantic mininig of QTL Tables from scientific articles");
-        System.out.println("========================================================================");
-        System.out.println(
-                "____________________________________________________________________________________________________________________________\n");
-
+        System.out.println("===============");
+        System.out.println("QTLTableMiner++");
+        System.out.println("===============\n\n");
+        
         //intialisation
         QtlDb.createTables();
 
@@ -76,8 +74,9 @@ public class QtmMain {
             PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
 
             //Parsing meta-data, cell entries and finding the abbreviations 
-            System.out.println("Processing Article: \t" + pmcIds[i]);
-            System.out.println("-----------------------------------------");
+            System.out.println("Processing article:\n");
+            System.out.println("\t" + pmcIds[i]);
+            System.out.println("---------------------------------------------");
             articles[i] = pmcMetaReader.read();
 
         }
@@ -86,7 +85,8 @@ public class QtmMain {
         //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
         solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
         try {
-            System.out.println("Restarting Solr");
+            System.out.println("Restarting Solr.");
+            System.out.println("---------------------------------------------");
 
             Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", solrProgram + " restart" });
             p.waitFor();
@@ -95,8 +95,10 @@ public class QtmMain {
         }
         System.out.println("\n");
 
-        //STEP3 Inserting enteries in the data base
-        System.out.println("\n\nInsert entry to the results Database \n\n ");
+        //STEP3 Inserting enteries into the database
+        System.out.println("Insert entry to the database.");
+        System.out.println("-------------------------------------------------");
+        
         QtlDb.insertArticleEntry(articles);
 
         //STEP4 Insert in Trait Table
@@ -109,14 +111,13 @@ public class QtmMain {
         //qtlDB.insertQTLTable();
 
         //Step7 I am here
-        System.out.println("-----------------------------------------");
-        System.out.println("Finding QTL statements");
-        System.out.println("-----------------------------------------");
+        System.out.println("Finding QTL statements.");
+        System.out.println("-------------------------------------------------");
 
         QtlDb.insertQtlTable();
 
         try {
-            System.out.println("\nSolr stoped");
+            System.out.println("\nSolr stoped!");
             Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", solrProgram + " stop" });
             p.waitFor();
         } catch (Exception e) {
@@ -127,7 +128,8 @@ public class QtmMain {
         if (Arrays.asList(args).contains("-csv")) {
             try {
                 String csvfile = args[Arrays.asList(args).indexOf("-csv") + 1];
-                System.out.println("\nExporting results to csv");
+                System.out.println("Writing results to csv file.");
+                System.out.println("-----------------------------------------");
                 Process p = Runtime.getRuntime()
                         .exec(new String[] { "bash", "-c", "sqlite3 -header -csv " + QtlDb.dbName + " \"Select * from QTL;\" >" + csvfile});
                 p.waitFor();
@@ -137,11 +139,10 @@ public class QtmMain {
             System.out.println("\n");
         }
 
-        System.out.println("************************************************************************* \n \n\n");
-
-        System.out.println("=========================================================================");
-        System.out.println("RESULTS are available in the following files");
-        System.out.println("=========================================================================");
+        System.out.println("\n\n");
+        System.out.println("=================================================");
+        System.out.println("RESULTS are available in the following files:");
+        System.out.println("=================================================");
         System.out.println("SQLite file: \t" + QtlDb.dbName);
         if (Arrays.asList(args).contains("-csv"))
             System.out.println("CSV file: \t" + args[Arrays.asList(args).indexOf("-csv") + 1]);
@@ -165,21 +166,25 @@ public class QtmMain {
     }
 
     public static void printHelp() {
-        System.out.println("HELP pages for QTL Table Miner ++\r\n");
-
-        System.out.println("DESCRIPTION");
-        System.out.println(
-                "QTL TableMiner++ is a command-line tool that can retrieve and semantically annotate results of QTL mapping experiments commonly buried in (heterogenous) tables.");
-
-        System.out.println("java -jar QTM.jar -pmc PMC4266912");
-
+        System.out.println("\nDESCRIPTION");
+        System.out.println("===========");
+        System.out.println("QTL TableMiner++ is a command-line tool to retrieve"
+          + " and semantically annotate\nresults of QTL mapping studies"
+          + " described in tables of scientific articles.\n");
+        System.out.println("USAGE");
+        System.out.println("=====");
+        System.out.println("  QTM [-v|-h]");
+        System.out.println("  QTM [-o FILE_PREFIX] FILE\n");
         System.out.println("ARGUMENTS");
-        System.out.println(
-                "    -pmc\t A list of all pmcids required to be processed. Use comma(,) as a seperator between to ids. For example PMC4266912, PMC2267253");
-        System.out.println("    -o\t Filename of the output database. This database is in sqlite format.");
-
-        System.out.println("    -h\t HELP pages for QTL Table Miner ++");
-
+        System.out.println("=========");
+        System.out.println("  FILE\t\tList of full-text articles from Europe PMC"
+          + " (one PMCID per line).\n");
+        System.out.println("OPTIONS");
+        System.out.println("=======");
+        System.out.println("  -o|--output FILE_PREFIX\tOutput files in SQLite/"
+          + "CSV formats.\n\t\t\t\t(default: PMCID.{db,csv})");        
+        System.out.println("  -v|--version\t\t\tPrint software version.");        
+        System.out.println("  -h|--help\t\t\tPrint this help message.");
+        System.out.println("\n");
     }
-
 }
