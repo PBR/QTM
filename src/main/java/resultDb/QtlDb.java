@@ -36,7 +36,7 @@ public class QtlDb {
 
     public static Connection conn;
 
-    public static String sJdbc = Configs.getPropertyQTM("sJdbc");
+    public static String dbDriver = Configs.getPropertyQTM("dbDriver");
     public static String dbFile = Configs.getPropertyQTM("dbFile");
     // String sTempDb = "TixDb_"+a.getPmc()+".db";
 
@@ -45,7 +45,7 @@ public class QtlDb {
         try {
 
             Class.forName("org.sqlite.JDBC");
-            String sDBUrl = sJdbc + ":" + dbFile;
+            String sDBUrl = dbDriver + ":" + dbFile;
             conn = DriverManager.getConnection(sDBUrl);
 
         } catch (Exception e) {

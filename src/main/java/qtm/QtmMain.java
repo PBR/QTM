@@ -82,7 +82,7 @@ public class QtmMain {
         }
         reader.close();
 
-        String solrProgram = Configs.getPropertyQTM("solrProgram");
+        // String solrProgram = Configs.getPropertyQTM("solrProgram");
         System.out.println("===============");
         System.out.println("QTLTableMiner++");
         System.out.println("===============\n\n");
@@ -110,18 +110,18 @@ public class QtmMain {
         }
         System.out.println("\n");
 
-        //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
-        solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
-        try {
-            System.out.println("Restarting Solr.");
-            System.out.println("---------------------------------------------");
-
-            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", solrProgram + " restart" });
-            p.waitFor();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("\n");
+        // //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
+        // solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
+        // try {
+        //     System.out.println("Restarting Solr.");
+        //     System.out.println("---------------------------------------------");
+        //
+        //     Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", solrProgram + " restart" });
+        //     p.waitFor();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+        // System.out.println("\n");
 
         //STEP3 Inserting enteries into the database
         System.out.println("Insert entry to the database.");
@@ -144,14 +144,14 @@ public class QtmMain {
 
         QtlDb.insertQtlTable();
 
-        try {
-            System.out.println("\nSolr stoped!");
-            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", solrProgram + " stop" });
-            p.waitFor();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("\n");
+        // try {
+        //     System.out.println("\nSolr stoped!");
+        //     Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", solrProgram + " stop" });
+        //     p.waitFor();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+        // System.out.println("\n");
         String csvFile = "";
         try {
             csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
