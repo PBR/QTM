@@ -481,9 +481,9 @@ public class PmcMetaReader {
         if (!xmlfile.exists()) {
             xmlfile.createNewFile();
         
-
-        String API_PMCXML = "http://www.ebi.ac.uk/europepmc/webservices/rest/" + PMCID + "/fullTextXML";
-        URL website = new URL(API_PMCXML);
+        String pmcWebserviceUrl = Configs.getPropertyQTM("pmcWebservicesEndpoint")+ PMCID + "/fullTextXML";
+                
+        URL website = new URL(pmcWebserviceUrl);
         
         ReadableByteChannel rbc = Channels.newChannel(website.openStream());
 
