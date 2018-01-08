@@ -5,9 +5,13 @@
 
 package qtm;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import readers.PmcMetaReader;
@@ -48,9 +52,27 @@ public class QtmMain {
 
         }
 
-        String pmcs = args[Arrays.asList(args).indexOf("-pmc") + 1];
-        String[] pmcIds = pmcs.split(",");
+        String inputFile = args[args.length - 1];
 
+        ArrayList<String> pmcIds = new ArrayList<String>();
+
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new FileReader(inputFile));
+            String pmcId = null;
+
+            while ((pmcId = reader.readLine()) != null) {
+                pmcIds.add(pmcId);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Input file '" + inputFile + "' not found.");
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        reader.close();
+        
         //String[] pmcIds = args;// pmcIds = new String[]{"PMC4540768"};
         System.out.println(Configs.getPropertyQTM("solrProgram"));
         String solrProgram = Configs.getPropertyQTM("solrProgram");
@@ -67,16 +89,16 @@ public class QtmMain {
         System.out.println("\n");
 
         //Step1:  reading xml files with pmc ids 		
-        File[] xmlFiles = new File[pmcIds.length];
-        Article[] articles = new Article[pmcIds.length];
+        File[] xmlFiles = new File[pmcIds.size()];
+        Article[] articles = new Article[pmcIds.size()];
 
-        for (int i = 0; i < pmcIds.length; i++) {
-            xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds[i]);
+        for (int i = 0; i < pmcIds.size(); i++) {
+            xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
             articles[i] = new Article("");
             PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
 
             //Parsing meta-data, cell entries and finding the abbreviations 
-            System.out.println("Processing Article: \t" + pmcIds[i]);
+            System.out.println("Processing Article: \t" + pmcIds.get(i));
             System.out.println("-----------------------------------------");
             articles[i] = pmcMetaReader.read();
 
