@@ -39,7 +39,21 @@ public class QtlDb {
     public static String dbDriver = Configs.getPropertyQTM("dbDriver");
     public static String dbFile = Configs.getPropertyQTM("dbFile");
     // String sTempDb = "TixDb_"+a.getPmc()+".db";
-
+    
+    private static String solrUri=Configs.getPropertyQTM("solrUri");
+    private static String solrRun=Configs.getPropertyQTM("solrRun");
+    private static String core1=Configs.getPropertyQTM("core1");
+    private static String core2=Configs.getPropertyQTM("core2");
+    private static String core3=Configs.getPropertyQTM("core3");
+    private static String core5=Configs.getPropertyQTM("core5");
+    private static String coreSGNMarkers=Configs.getPropertyQTM("coreSGNMarkers");
+    private static String coreSGNgenes=Configs.getPropertyQTM("coreSGNgenes");
+    
+    private static String match=Configs.getPropertyQTM("match");
+    private static String type=Configs.getPropertyQTM("type");
+    private static String core1Dir=Configs.getPropertyQTM("core1Dir");
+    
+    
     public static boolean connectionDB() {
         conn = null;
         try {
@@ -143,12 +157,11 @@ public class QtlDb {
 
                                     try {
                                         if (col.getColumns_type() == "QTL value") {
-                                            colAnno = solr.tagger.recognize.Evaluate.processString(col.getHeader(), "STATO",
-                                                    "LONGEST_DOMINANT_RIGHT", "dictionary");
+                                            colAnno = solr.tagger.recognize.Evaluate.processString(col.getHeader(), core2,
+                                                    match, type);
                                         } else if (col.getColumns_type() == "QTL property") {
                                             colAnno = solr.tagger.recognize.Evaluate.processString(
-                                                    getOnlyStrings(col.getHeader()), "propTerms", "LONGEST_DOMINANT_RIGHT",
-                                                    "dictionary");
+                                                    getOnlyStrings(col.getHeader()), core3, match, type);
                                             ;
                                         }
                                     } catch (Exception e) {
@@ -329,15 +342,11 @@ public class QtlDb {
     public static void insertQtlTable() {
         try {
 
-            String server = "http://localhost:8983/solr";
-            String core1 = "core1";
             String core2 = "statoTerms";
             String core3 = "propTerms";
             String core4 = "solaLyco";
             String core5 = "SGN";
-            String match = "LONGEST_DOMINANT_RIGHT";
-            String type = "dictionary";
-
+            
             if (connectionDB()) {
                 Statement stmt1 = null;
                 stmt1 = conn.createStatement();
@@ -367,7 +376,7 @@ public class QtlDb {
                         System.out.println("TraitName: " + traitName);
 
                         String traitAnno = "";
-                        traitAnno = solr.tagger.recognize.Evaluate2.processString(getOnlyStrings(traitName), core1, match, type);
+                        traitAnno = solr.tagger.recognize.Evaluate.processString(getOnlyStrings(traitName), core1, match, type);
 
                         JSONObject traitAnnoJSON = new JSONObject();
 
@@ -477,8 +486,8 @@ public class QtlDb {
                                 markers_associated += statJsonp.get("actualValue").toString() + "; ";
 
                                 try {
-                                    markerOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(markers_associated,
-                                            "sgnMarkers", match, type);
+                                    markerOntologyAnnotation = solr.tagger.recognize.Evaluate.processString(markers_associated,
+                                            coreSGNMarkers, match, type);
 
                                 } catch (Exception e) {
                                     markerOntologyAnnotation = "";
@@ -529,8 +538,8 @@ public class QtlDb {
                                 //System.out.println("gene is"+gene_associated);
 
                                 try {
-                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate2.processString(gene_associated,
-                                            "sgnGenes", match, type);
+                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate.processString(gene_associated,
+                                            coreSGNgenes, match, type);
 
                                 } catch (Exception e) {
                                     geneOntologyAnnotation = "";

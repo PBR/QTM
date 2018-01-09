@@ -92,7 +92,7 @@ public class Evaluate {
 
 				out.close();
 			} else {
-				new HelpFormatter().printHelp(Evaluate2.class.getCanonicalName(), options);
+				new HelpFormatter().printHelp(Evaluate.class.getCanonicalName(), options);
 			}
 
 
