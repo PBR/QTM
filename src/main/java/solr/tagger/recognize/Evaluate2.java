@@ -69,14 +69,14 @@ public class Evaluate2 {
 			if (line.getArgList().size() > 0) {
 				throw new ParseException("unknown arguments");
 			}
-			
+
 			String solr = line.hasOption("solr") ? line.getOptionValue("solr") : "http://localhost:8983/solr";
 			String core = line.hasOption("core") ? line.getOptionValue("core") : "sgnMarkers";
 			String match = line.hasOption("match") ? line.getOptionValue("match") : "LONGEST_DOMINANT_RIGHT";
 			String input = line.hasOption("input") ? line.getOptionValue("input") : null;
 			String outputfolder = line.hasOption("outputfolder") ? line.getOptionValue("outputfolder") : "data/Resultdata";
 			String type = line.hasOption("type") ? line.getOptionValue("type") : "dictionary";
-			
+
 			String output = line.hasOption("output") ? line.getOptionValue("output"): "TixdbSolarOutput";
 
 			if (solr != null && core != null && type != null && match != null && output != null
@@ -88,14 +88,14 @@ public class Evaluate2 {
 						"|"));
 				out.newLine();
 				processArray(out, input,core, match, type);
-				
-				
+
+
 				out.close();
 			} else {
-				new HelpFormatter().printHelp(Evaluate2.class.getCanonicalName(), options);
+				new HelpFormatter().printHelp(Evaluate.class.getCanonicalName(), options);
 			}
-			
-			
+
+
 		} catch (ParseException e) {
 			System.err.println("Parsing failed.  Reason: " + e.getMessage());
 			logger.error("Parsing failed.  Reason: " + e.getMessage());
@@ -126,9 +126,9 @@ public class Evaluate2 {
             			out.write(StringUtils.join(new String[]{item.getIcd10(), item.getMatchText(), item.getPrefTerm(), item.getTerm(), start.toString(), end.toString(), item.getUuid()},"|"));
             			out.newLine();
         		    }
-        		    
+
         		    System.out.println(response.toString());
-        		    
+
     	    	}catch(Exception e){
     	    		e.printStackTrace();
     	    		}
@@ -139,70 +139,70 @@ public class Evaluate2 {
 	    String output="";
 	try {
     		    String request = "http://localhost:8983/solr/" + core + "/tag?fl=uuid,code,prefterm,term&overlaps=" + URLEncoder.encode(match, "UTF-8") + "&matchText=true&tagsLimit=5000&wt=json";
-    		    
+
     		    String content=getStringContent(request, input, headers);
-    		    
+
     		    //System.out.println("***"+content);
-    		    
+
     		    TagResponse response = parse(content);
-    		    
+
     		    for (TagItem item : response.getItems()){
         			Integer start = item.getStart();
         			Integer end = item.getEnd();
         			output= StringUtils.join(new String[]{item.getIcd10(), item.getMatchText(), item.getPrefTerm(), item.getTerm(), start.toString(), end.toString(), item.getUuid()},"|");
         			output+= "\n";
     		    }
-    		    
+
 	    	}catch(Exception e){
 	    		e.printStackTrace();
 	    		output="";
 	    		return output;
-	    		}	
-				
+	    		}
+
 			return output;
 	}
-	
+
 	public static String processString2(String input, String core, String match, String type) throws UnsupportedEncodingException, FileNotFoundException, IOException{
-	    String res="";	
+	    String res="";
 		try {
     		    String request = "http://localhost:8983/solr/" + core + "/tag?fl=uuid,code,prefterm,term&overlaps=" + URLEncoder.encode(match) + "&matchText=true&tagsLimit=5000&wt=json";
     		    res=getStringContent(request, input, headers);
-    		        		    
+
 	    	}catch(Exception e){
 	    		e.printStackTrace();
 	    		}
-			
+
 			return(res);
 	}
-	
-	
+
+
 	public static String getStringContent(String uri, String postData, HashMap<String, String> headers)
 			throws Exception {
 		HttpPost request = new HttpPost(uri);
-		
+
 		StringBuilder stringbulider = new StringBuilder();
 		for (char c:postData.toCharArray()) {
 		    if (c == '_')
-		        stringbulider.append(' '); 
-		    else stringbulider.append(c); 
+		        stringbulider.append(' ');
+		    else stringbulider.append(c);
 		    }
 		postData=stringbulider.toString();
-		
+
 		request.setEntity(new StringEntity(ClientUtils.escapeQueryChars(postData), "UTF-8"));
-		
-		
+
+
 		for (Entry<String, String> s : headers.entrySet()) {
 			request.setHeader(s.getKey(), s.getValue());
 		}
-		
+
 		HttpResponse response = client.execute(request);
-		
+
 		InputStream ips = response.getEntity().getContent();
 		BufferedReader buf = new BufferedReader(new InputStreamReader(ips, "UTF-8"));
-		
+
 //		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 //			throw new Exception(response.getStatusLine().getReasonPhrase());
-//			
+//
 //		}
 		StringBuilder sb = new StringBuilder();
 		String s;

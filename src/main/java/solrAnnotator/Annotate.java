@@ -68,7 +68,7 @@ public class Annotate {
 
                                         String colAnno = "";
                                         try {
-                                                colAnno = solr.tagger.recognize.Evaluate2
+                                                colAnno = solr.tagger.recognize.Evaluate
                                                                 .processString(getOnlyStrings(colName), core2, match, type);
 
                                         } catch (Exception e) {
@@ -143,7 +143,7 @@ public class Annotate {
 
                                                 String traitAnno = "";
                                                 try {
-                                                        traitAnno = solr.tagger.recognize.Evaluate2
+                                                        traitAnno = solr.tagger.recognize.Evaluate
                                                                         .processString(getOnlyStrings(traitName), core1, match, type);
 
                                                 } catch (Exception e) {
@@ -180,7 +180,7 @@ public class Annotate {
                                                         for (Iterator iterator = tValuesJson.keySet().iterator(); iterator.hasNext();) {
                                                                 String v = (String) iterator.next();
                                                                 String key = tValuesJson.get(v).toString();
-                                                                
+
                                                                 JSONParser parser2 = new JSONParser();
                                                                 JSONObject statJsonv = (JSONObject) parser.parse(v);
 
