@@ -19,11 +19,12 @@ CREATE TABLE ABBREVIATION (
 );
 
 CREATE TABLE COLUMN_ENTRY (
-  col_id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  col_id  NUMERIC NOT NULL,
   tab_id  NUMERIC NOT NULL,
   header  TEXT,
   type    TEXT,
   annot   TEXT,
+  PRIMARY KEY(col_id),
   FOREIGN KEY(tab_id) REFERENCES TRAIT_TABLE(tab_id)
 );
 
@@ -49,6 +50,5 @@ CREATE TABLE QTL (
   gene              TEXT,
   gene_uri          TEXT,
   PRIMARY KEY(pmc_id, tab_id, row_id),
-  FOREIGN KEY(pmc_id) REFERENCES ARTICLE(pmc_id),
   FOREIGN KEY(tab_id) REFERENCES TRAIT_TABLE(tab_id)
 );
