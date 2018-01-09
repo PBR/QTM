@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import utils.Configs;
+
 /**
  * The Class Table. Contain various information about table, including the cell
  * matrix
@@ -667,8 +669,8 @@ public class Table {
 					tc[j].setColumns_type("QTL property");
 					for (int k = 0; k < tc[j].getcelz().length; k++) {
 						String QTLannotation = solr.tagger.recognize.Evaluate.processString(
-                                tc[j].getcelz()[k].getcell_value().toLowerCase(), "core1", "LONGEST_DOMINANT_RIGHT",
-								"dictionary");
+                                tc[j].getcelz()[k].getcell_value().toLowerCase(), Configs.getPropertyQTM("core1"), Configs.getPropertyQTM("match"),
+                                Configs.getPropertyQTM("type"));
 						if (QTLannotation != "") {
 							numofannotatedTerms++;
 						}
