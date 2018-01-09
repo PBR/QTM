@@ -62,9 +62,7 @@ public class QtmMain {
         }
 
         String inputFile = args[args.length - 1];
-
         ArrayList<String> pmcIds = new ArrayList<String>();
-
         BufferedReader reader = null;
 
         try {
@@ -92,16 +90,16 @@ public class QtmMain {
 
         System.out.println("\n");
 
-        //Step1:  reading xml files with pmc ids 		
+        //Step1:  reading xml files with pmc ids
         File[] xmlFiles = new File[pmcIds.size()];
         Article[] articles = new Article[pmcIds.size()];
-        
+
         for (int i = 0; i < pmcIds.size(); i++) {
             xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
             articles[i] = new Article("");
             PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
 
-            //Parsing meta-data, cell entries and finding the abbreviations 
+            //Parsing meta-data, cell entries and finding the abbreviations
             System.out.println("Processing article:\n");
             System.out.println("\t" + pmcIds.get(i));
             System.out.println("---------------------------------------------");
@@ -110,7 +108,7 @@ public class QtmMain {
         }
         System.out.println("\n");
 
-        // //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart 
+        // //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart
         // solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
         // try {
         //     System.out.println("Restarting Solr.");
@@ -181,9 +179,10 @@ public class QtmMain {
         Runtime runtime = Runtime.getRuntime();
         runtime.gc();
         long memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Memory used (bytes): \t" + memory);
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
+
+        System.out.println("Memory used (bytes): \t" + memory);
         System.out.println("Total runtime (s): \t" + elapsedTime);
     }
 

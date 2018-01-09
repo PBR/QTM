@@ -44,7 +44,7 @@ import utils.Utilities;
 /**
  * PMCXMLReader class is used to read and parse XML data from PubMed Central database The class takes as input folder with XML
  * documents extracted from PMC database and creates array of Articles {@link Article} as output
- * 
+ *
  * @author Nikola Milosevic
  */
 public class PmcMetaReader {
@@ -56,14 +56,14 @@ public class PmcMetaReader {
     private String pmcId;
 
     private File f1;
-    
+
     public PmcMetaReader(File F1) {
         super();
         this.f1 = F1;
         this.fileName=F1.getPath();
     }
 
-    
+
     public PmcMetaReader(String fName) {
         super();
         this.fileName = fName;
@@ -92,20 +92,20 @@ public class PmcMetaReader {
     /**
      * This method is the main method for reading PMC XML files. It uses {@link #ParseMetaData} and {@link #ParseTables} methods.
      * It returns {@link Article} object that contains structured data from article, including tables.
-     * 
+     *
      * @return Article
      */
 
     public Article read() {
         Article art = new Article(fileName);
         art.setSource("PMC");
-        
+
         try {
             @SuppressWarnings("resource")
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             String line = null;
             String xmlString = "";
-            
+
             while ((line = reader.readLine()) != null) {
                 if(line.contains("!DOCTYPE article"))
                     continue;
@@ -120,7 +120,7 @@ public class PmcMetaReader {
             DocumentBuilder builder = factory.newDocumentBuilder();
             InputSource is = new InputSource(new StringReader(xmlString));
             Document parse = builder.parse(is);
-            
+
             //MetaData
             art = this.parseMetaData(art, parse, xmlString);
 
@@ -135,7 +135,7 @@ public class PmcMetaReader {
             abbreviationsFound = abbreviator.extractAbbrPairs(art.getPlain_text());
 
             art.setAbbreviations(abbreviationsFound);
-            
+
             System.out.println("\nList of abbreviations in " + art.getPmc());
             for (String key : art.getAbbreviations().keySet()) {
                 System.out.println(key + "\t->\t" + art.getAbbreviations().get(key));
@@ -143,9 +143,9 @@ public class PmcMetaReader {
             }
             //Tables
             System.out.println("\n");
-            
+
             System.out.println("Parsing tables in " + art.getPmc() + "now \n\n");
-            
+
 
             art = TableParser.parseTables(art, parse);
 
@@ -166,7 +166,7 @@ public class PmcMetaReader {
                         System.out.println(t.getTableid() + "\t\t" + t.getisTraitTable());
                     }
                 } catch (NullPointerException e) {
-                        
+
                 }
             }
         }
@@ -277,7 +277,7 @@ public class PmcMetaReader {
 
     /**
      * Reads metadata from article such as title, authors, publication type etc
-     * 
+     *
      * @param art
      *            - Article where to put data
      * @param parse
@@ -401,7 +401,7 @@ public class PmcMetaReader {
 
     /**
      * Reads Full-text from article
-     * 
+     *
      * @param art
      *            - Article where to put data
      * @param parse
@@ -433,7 +433,7 @@ public class PmcMetaReader {
         try {
 
             String textFiles = Configs.getPropertyQTM("textFiles");
-            
+
             Writer writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(textFiles + art.getPmc() + ".txt"), "utf-8"));
             writer.write(text);
@@ -470,20 +470,13 @@ public class PmcMetaReader {
 
         if (!xmlfile.exists()) {
             xmlfile.createNewFile();
-        
-
-        String API_PMCXML = "http://www.ebi.ac.uk/europepmc/webservices/rest/" + PMCID + "/fullTextXML";
-        URL website = new URL(API_PMCXML);
-        
-        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-
-        FileOutputStream fos = new FileOutputStream(xmlfile);
-        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        fos.close();
+            String pmcWebserviceUrl = Configs.getPropertyQTM("pmcWebservicesEndpoint")+ PMCID + "/fullTextXML";
+            URL website = new URL(pmcWebserviceUrl);
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            FileOutputStream fos = new FileOutputStream(xmlfile);
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            fos.close();
         }
-        else {}
-        
-
         return xmlfile;
     }
 
