@@ -143,10 +143,10 @@ public class QtlDb {
 
                                     try {
                                         if (col.getColumns_type() == "QTL value") {
-                                            colAnno = solr.tagger.recognize.Evaluate2.processString(col.getHeader(), "STATO",
+                                            colAnno = solr.tagger.recognize.Evaluate.processString(col.getHeader(), "STATO",
                                                     "LONGEST_DOMINANT_RIGHT", "dictionary");
                                         } else if (col.getColumns_type() == "QTL property") {
-                                            colAnno = solr.tagger.recognize.Evaluate2.processString(
+                                            colAnno = solr.tagger.recognize.Evaluate.processString(
                                                     getOnlyStrings(col.getHeader()), "propTerms", "LONGEST_DOMINANT_RIGHT",
                                                     "dictionary");
                                             ;

@@ -477,20 +477,20 @@ public class Table {
 
 	/**
 	 * public boolean ParseTableHeadingsforTraits(){
-	 * 
+	 *
 	 * boolean found=false; //String word1="QTL"; String word1="trait"; //String
 	 * word3="Quantitavie Trait loci"; if(hasHeader) {
-	 * 
+	 *
 	 * }
-	 * 
-	 * 
+	 *
+	 *
 	 * //found=(table_caption.toLowerCase().indexOf(word1.toLowerCase())!=-1) ||
 	 * (table_footer.toLowerCase().indexOf(word1.toLowerCase())!=-1) ||
 	 * (table_caption.toLowerCase().indexOf(word2.toLowerCase())!=-1) ||
 	 * (table_footer.toLowerCase().indexOf(word2.toLowerCase())!=-1) ;
-	 * 
+	 *
 	 * return(found); }
-	 * 
+	 *
 	 **/
 
 //	public void printTable() throws Exception {
@@ -517,10 +517,10 @@ public class Table {
 //
 //		System.out.print("********" + "\n\n\n");
 //	}
-	
+
 	public void printTable2() throws Exception {
 
-		
+
 		for(Columns c:this.getTableCol()){
 			System.out.print(c.getHeader()+ "("
 					+ c.getColumns_type() + ")" + "\t\t");
@@ -540,7 +540,7 @@ public class Table {
 		System.out.print("\n");
 		i++;
 		}
-		
+
 		System.out.print("********" + "\n\n\n");
 	}
 
@@ -666,7 +666,7 @@ public class Table {
 					Integer j = myListIterator.next();
 					tc[j].setColumns_type("QTL property");
 					for (int k = 0; k < tc[j].getcelz().length; k++) {
-						String QTLannotation = solr.tagger.recognize.Evaluate2.processString(
+						String QTLannotation = solr.tagger.recognize.Evaluate.processString(
                                 tc[j].getcelz()[k].getcell_value().toLowerCase(), "core1", "LONGEST_DOMINANT_RIGHT",
 								"dictionary");
 						if (QTLannotation != "") {
