@@ -5,7 +5,7 @@ CREATE TABLE ARTICLE (
 );
 
 CREATE TABLE TRAIT_TABLE (
-  tab_id  NUMERIC NOT NULL,
+  tab_id  REAL NOT NULL,
   pmc_id  NUMERIC NOT NULL,
   PRIMARY KEY(tab_id,pmc_id),
   FOREIGN KEY(pmc_id) REFERENCES ARTICLE(pmc_id)
@@ -20,7 +20,7 @@ CREATE TABLE ABBREVIATION (
 
 CREATE TABLE COLUMN_ENTRY (
   col_id  NUMERIC NOT NULL,
-  tab_id  NUMERIC NOT NULL,
+  tab_id  REAL NOT NULL,
   pmc_id  NUMERIC NOT NULL,
   header  TEXT,
   type    TEXT,
@@ -33,7 +33,7 @@ CREATE TABLE COLUMN_ENTRY (
 CREATE TABLE CELL_ENTRY (
   row_id  INTEGER NOT NULL,
   col_id  NUMERIC NOT NULL,
-  tab_id  NUMERIC NOT NULL,
+  tab_id  REAL NOT NULL,
   pmc_id  NUMERIC NOT NULL,
   value   TEXT,
   type    TEXT,
@@ -45,7 +45,7 @@ CREATE TABLE CELL_ENTRY (
 
 CREATE TABLE QTL (
   pmc_id            NUMERIC NOT NULL,
-  tab_id            NUMERIC NOT NULL,
+  tab_id            REAL NOT NULL,
   row_id            INTEGER NOT NULL,
   trait_in_article  TEXT,
   trait_in_onto     TEXT,

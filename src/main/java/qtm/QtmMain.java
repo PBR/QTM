@@ -61,7 +61,7 @@ public class QtmMain {
            }
         }
 
-        String inputFile = args[args.length - 1];
+        String inputFile = args[0];
         ArrayList<String> pmcIds = new ArrayList<String>();
         BufferedReader reader = null;
 
@@ -127,6 +127,8 @@ public class QtmMain {
 
         QtlDb.insertArticleEntry(articles);
 
+        System.out.println("Searching QTL in tables");
+        System.out.println("-------------------------------------------------");
         //      STEP4 Insert in Trait Table
         QtlDb.insertQTLEntry(articles);
 

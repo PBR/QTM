@@ -234,6 +234,7 @@ public class QtlDb {
         try {
 
             for (int i = 0; i < articles.length; i++) {
+                
                 Scanner id = new Scanner(articles[i].getPmc()).useDelimiter("[^0-9]+");
                 int pmc_id = id.nextInt();
                 String pmc_tittle = articles[i].getTitle();        
@@ -249,10 +250,10 @@ public class QtlDb {
 
                     List<Trait> traits = articles[i].getTrait();
 
-                    String sql1 = "SELECT value, col_id, row_id, tab_id from CELL_ENTRY as cel" 
-                    + " WHERE type !='Empty' AND"
-                    + " col_id IN (SELECT col_id FROM COLUMN_ENTRY as col WHERE col.type='QTL descriptor')"
-                    + " AND pmc_id = "+ pmc_id + ";";
+                    String sql1 = "SELECT  Cel.value, Cel.col_id, Cel.row_id, Cel.tab_id, Col.type from CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id AND Cel.tab_id=Col.tab_id AND Cel.pmc_id = Col.pmc_id" 
+                    + " WHERE Cel.type !='Empty' AND "
+                    + " Col.type='QTL descriptor' "
+                    + " AND Cel.pmc_id = "+ pmc_id + ";";
                     
                     ResultSet rs1 = stmt1.executeQuery(sql1);
                     while (rs1.next()) {
@@ -306,10 +307,11 @@ public class QtlDb {
                         JSONObject prop = new JSONObject();
                         JSONObject otherProp = new JSONObject();
 
-                        String sql2 = "SELECT C.Value, Col.header,Col.type, Col.annot FROM CELL_ENTRY AS C INNER JOIN COLUMN_ENTRY AS Col ON C.col_id=Col.col_id AND C.tab_id=Col.tab_id AND C.pmc_id = Col.pmc_id"
+                        String sql2 = "SELECT Cel.Value, Col.header,Col.type, Col.annot FROM CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id AND Cel.tab_id=Col.tab_id AND Cel.pmc_id = Col.pmc_id"
                                 + " WHERE row_id =" + rowId + " AND"
                                         + " Col.tab_id='" + tableId + "' AND"
-                                                + " Col.Type!='QTL descriptor'";
+                                                + " Col.Type!='QTL descriptor' AND"
+                                                + " Cel.pmc_id="+ pmc_id +";" ;
                         ResultSet rs2 = stmt2.executeQuery(sql2);
 
                         
@@ -491,6 +493,11 @@ public class QtlDb {
                                 markers_icd += m.get("icd") + ";";
                             }
 
+                            if (markers_associated == "")
+                                markers_associated=null;
+                            if (gene_associated == "")
+                                gene_associated=null;
+                            
                             if ("".equals(traitAnnoJSON.get("icd")) || ";".equals(traitAnnoJSON.get("icd"))
                                     || traitAnnoJSON.isEmpty())
                                 traitAnnoJSON.put("icd", null);
@@ -504,6 +511,9 @@ public class QtlDb {
                             if ("".equals(genes_icd) || ";".equals(genes_icd) || genes_icd.isEmpty())
                                 genes_icd = null;
 
+                            System.out.println("*********************************************");
+                            System.out.println("QTL.pmc_id, QTL.tab_id, QTL.row_id is " + pmc_id + "\t" +  tableId + "\t" + rowId);
+                            
                             String insertQTLZtable = "INSERT INTO  QTL(pmc_id,tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,"
                                     + "chromosome,marker,marker_uri, gene,gene_uri)" + "VALUES("
                                     + pmc_id + "," + tableId + "," + rowId + ",'"

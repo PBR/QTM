@@ -90,10 +90,14 @@ public class TableParser {
 				Scanner tlable = new Scanner(tables[tableindex].getTable_label()).useDelimiter("[^0-9]+");
                                 int tid = tlable.nextInt();
                                 
+                                //System.out.println("sssssssssssssssssssssssssssssss is "+s); 
 				if(tableTags.size()>1){
 				
-				        
-				double tableid= tid + (s/10);    
+				//System.out.println("sssssssssssssssssssssssssssssss is "+s); 
+				//System.out.println("s is "+s%10); 
+                                
+				double tableid= tid + s/10.0;
+				
 				tables[tableindex].setTableid(tableid);    
 				}
 				else{
