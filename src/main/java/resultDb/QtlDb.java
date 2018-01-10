@@ -94,12 +94,12 @@ public class QtlDb {
     }
 
     public static void insertArticleEntry(Article articles[]) {
-        try {
+        
             //System.out.println("Article length is" + articles.length);
 
             for (int i = 0; i < articles.length; i++) {
                 //System.out.println("Article pmcid is" + articles[i].getPmc());
-
+                try {
                 if (connectionDB() & isArticleEntryAlredyIn(articles[i], conn) == false) {
                     Statement articlestmt = null;
                     articlestmt = conn.createStatement();
@@ -121,9 +121,22 @@ public class QtlDb {
                     int pmc_id = id.nextInt();
                     String pmc_tittle = articles[i].getTitle();
                     
+                    try{
+                    
                     String insertArticleTable = "INSERT INTO ARTICLE VALUES('" + pmc_id + "','" + pmc_tittle + "');";
                     articlestmt.executeUpdate(insertArticleTable);
-
+                    }
+                    catch(SQLException e){
+                        e.printStackTrace();
+                        System.out.println("*************************************************");
+                        
+                        System.out.println("Article already exits, Please provide unique entries");
+                        
+                        System.out.println("*************************************************");
+                        
+                        
+                        System.exit(1);
+                    }
                     // System.out.println("Entry done for article number" + "\t"
                     // + articleID);
 
@@ -219,14 +232,15 @@ public class QtlDb {
                     System.out.println(articles[i].getPmc() + " already exists");
 
                 }
-            }
+            
 
             //System.out.println("entry inserted into DB successfully");
             // System.exit(0);
         } catch (Exception e) {
-            System.out.println("Error is Database entry");
+            System.out.println("Error is Insert Article Function");
             e.printStackTrace();
 
+        }
         }
     }
 
@@ -548,6 +562,7 @@ public class QtlDb {
                 }
             }
         } catch (SQLException e) {
+            
             e.printStackTrace();
         } catch (Exception e){
             e.printStackTrace();
