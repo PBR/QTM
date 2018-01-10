@@ -49,11 +49,11 @@ public class Article {
 	private List<Trait> traits = new ArrayList<Trait>();
 	
 	
-	public List<Trait> getTraits() {
+	public List<Trait> getTrait() {
 		return traits;
 	}
 
-	public void setTraits(List<Trait> traits) {
+	public void setTrait(List<Trait> traits) {
 		this.traits = traits;
 	}
 

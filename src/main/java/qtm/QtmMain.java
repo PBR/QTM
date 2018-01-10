@@ -108,18 +108,18 @@ public class QtmMain {
         }
         System.out.println("\n");
 
-        // //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart
-        // solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
-        // try {
-        //     System.out.println("Restarting Solr.");
-        //     System.out.println("---------------------------------------------");
-        //
-        //     Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", solrProgram + " restart" });
-        //     p.waitFor();
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
-        // System.out.println("\n");
+        //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart
+         solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
+         try {
+             System.out.println("Restarting Solr.");
+             System.out.println("---------------------------------------------");
+        
+             Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", Configs.getPropertyQTM("solrProgram") + " restart" });
+             p.waitFor();
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+         System.out.println("\n");
 
         //STEP3 Inserting enteries into the database
         System.out.println("Insert entry to the database.");
@@ -127,20 +127,8 @@ public class QtmMain {
 
         QtlDb.insertArticleEntry(articles);
 
-        //STEP4 Insert in Trait Table
-        QtlDb.insertTraitEntry(articles);
-
-        //STEP5 Insert in Trait Values and Trait Properties
-        //qtlDB.insertTraitValuesandTraitProperties(articles);
-
-        //step6 Mine Trait-Gene / Trait-Marker relationships from Trait Properties
-        //qtlDB.insertQTLTable();
-
-        //Step7 I am here
-        System.out.println("Finding QTL statements.");
-        System.out.println("-------------------------------------------------");
-
-        QtlDb.insertQtlTable();
+        //      STEP4 Insert in Trait Table
+        QtlDb.insertQTLEntry(articles);
 
         // try {
         //     System.out.println("\nSolr stoped!");
@@ -150,24 +138,24 @@ public class QtmMain {
         //     e.printStackTrace();
         // }
         // System.out.println("\n");
-        String csvFile = "";
-        try {
-            csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
-            System.out.println("Writing results into '" + csvFile + "'");
-            System.out.println("-----------------------------------------");
-            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c",
-                    "sqlite3 -header -csv " + QtlDb.dbFile + " \"SELECT * FROM QTL;\" >" + csvFile });
-            p.waitFor();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("\n");
-        System.out.println("=================================================");
-        System.out.println("RESULTS are available in the following files:");
-        System.out.println("=================================================");
-        System.out.println("Number of processed articles:\t" + articles.length);
-        System.out.println("SQLite file: \t" + QtlDb.dbFile);
-        System.out.println("CSV file: \t" + csvFile);
+//        String csvFile = "";
+//        try {
+//            csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
+//            System.out.println("Writing results into '" + csvFile + "'");
+//            System.out.println("-----------------------------------------");
+//            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c",
+//                    "sqlite3 -header -csv " + QtlDb.dbFile + " \"SELECT * FROM QTL;\" >" + csvFile });
+//            p.waitFor();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println("\n");
+//        System.out.println("=================================================");
+//        System.out.println("RESULTS are available in the following files:");
+//        System.out.println("=================================================");
+//        System.out.println("Number of processed articles:\t" + articles.length);
+//        System.out.println("SQLite file: \t" + QtlDb.dbFile);
+//        System.out.println("CSV file: \t" + csvFile);
 
         try {
             QtlDb.conn.close();

@@ -7,6 +7,8 @@ package readers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -84,16 +86,22 @@ public class TableParser {
 				tables[tableindex].setXml(Utilities.createXMLStringFromSubNode(tablesxml.item(i)));
 
 				System.out.println("Table label: \t" + tables[tableindex].getTable_label());
-
+				
+				Scanner tlable = new Scanner(tables[tableindex].getTable_label()).useDelimiter("[^0-9]+");
+                                int tid = tlable.nextInt();
+                                
 				if(tableTags.size()>1){
-					
-				tables[tableindex].setTableid(
-						tables[tableindex].getDocumentFileName().concat("_" + tables[tableindex].getTable_label()).concat("_"+s));
+				
+				        
+				double tableid= tid + (s/10);    
+				tables[tableindex].setTableid(tableid);    
 				}
 				else{
-					tables[tableindex].setTableid(
-							tables[tableindex].getDocumentFileName().concat("_" + tables[tableindex].getTable_label()));
+				        double tableid= (double) tid;
+					tables[tableindex].setTableid(tableid);
 				}
+				
+				
 				
 				String caption = readTableCaption(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
 				System.out.println("Caption: \t" + caption);
@@ -425,7 +433,7 @@ public class TableParser {
 					tableCol[i] = new Columns();
 					tableCol[i].setHeader(headerCols[i]);
 
-					tableCol[i].setColID(table.getTableid() + "_" + (i + 1));
+					tableCol[i].setColID(i);
 				}
 
 				table.setTableHeadersColumns(headerCols);

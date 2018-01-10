@@ -17,7 +17,7 @@ import utils.Configs;
  */
 public class Table {
 
-	private String tableid;
+	private double tableid;
 	private String xml;
 	private String documentFileName;
 	public String pragmaticClass;
@@ -220,11 +220,11 @@ public class Table {
 
 	// Getters and setters
 
-	public String getTableid() {
+	public double getTableid() {
 		return tableid;
 	}
 
-	public void setTableid(String tableid) {
+	public void setTableid(double tableid) {
 		this.tableid = tableid;
 	}
 

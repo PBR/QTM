@@ -25,7 +25,7 @@ public class AbbrevtoSynonyms {
 
 	public static void abbrevToSolrSynonyms(Article articles[])
 			throws FileNotFoundException, UnsupportedEncodingException, IOException {
-		String termSynonmsFile = Configs.getPropertyQTM("solrDir")+"core1/conf/synonyms.txt";
+		String core1SynonmsFile = Configs.getPropertyQTM("solrDir")+"core1/conf/synonyms.txt";
 		
 		 
 		
@@ -33,13 +33,13 @@ public class AbbrevtoSynonyms {
 		Properties properties = new Properties();
 		
 		
-		properties.load(new FileInputStream(termSynonmsFile));
+		properties.load(new FileInputStream(core1SynonmsFile));
 
 		for (String key : properties.stringPropertyNames()) {
 			oldAbbrev.put(key.toString(), properties.get(key).toString());
 		}
 
-		FileWriter fw = new FileWriter(termSynonmsFile, true);
+		FileWriter fw = new FileWriter(core1SynonmsFile, true);
 		BufferedWriter bw = new BufferedWriter(fw);
 		PrintWriter writer = new PrintWriter(bw);
 

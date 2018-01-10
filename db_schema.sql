@@ -7,7 +7,7 @@ CREATE TABLE ARTICLE (
 CREATE TABLE TRAIT_TABLE (
   tab_id  NUMERIC NOT NULL,
   pmc_id  NUMERIC NOT NULL,
-  PRIMARY KEY(tab_id),
+  PRIMARY KEY(tab_id,pmc_id),
   FOREIGN KEY(pmc_id) REFERENCES ARTICLE(pmc_id)
 );
 
@@ -21,26 +21,32 @@ CREATE TABLE ABBREVIATION (
 CREATE TABLE COLUMN_ENTRY (
   col_id  NUMERIC NOT NULL,
   tab_id  NUMERIC NOT NULL,
+  pmc_id  NUMERIC NOT NULL,
   header  TEXT,
   type    TEXT,
   annot   TEXT,
-  PRIMARY KEY(col_id),
+  PRIMARY KEY(col_id,tab_id,pmc_id)
   FOREIGN KEY(tab_id) REFERENCES TRAIT_TABLE(tab_id)
+  FOREIGN KEY(pmc_id) REFERENCES TRAIT_TABLE(pmc_id)	
 );
 
 CREATE TABLE CELL_ENTRY (
-  row_id  NUMERIC NOT NULL,
+  row_id  INTEGER NOT NULL,
   col_id  NUMERIC NOT NULL,
+  tab_id  NUMERIC NOT NULL,
+  pmc_id  NUMERIC NOT NULL,
   value   TEXT,
   type    TEXT,
-  PRIMARY KEY (row_id, col_id),
+  PRIMARY KEY (row_id, col_id,tab_id,pmc_id),
   FOREIGN KEY(col_id) REFERENCES COLUMN_ENTRY(col_id)
+  FOREIGN KEY(tab_id) REFERENCES COLUMN_ENTRY(col_id)
+  FOREIGN KEY(pmc_id) REFERENCES COLUMN_ENTRY(col_id)
 );
 
 CREATE TABLE QTL (
   pmc_id            NUMERIC NOT NULL,
   tab_id            NUMERIC NOT NULL,
-  row_id            NUMERIC NOT NULL,
+  row_id            INTEGER NOT NULL,
   trait_in_article  TEXT,
   trait_in_onto     TEXT,
   trait_uri         TEXT,
@@ -51,4 +57,5 @@ CREATE TABLE QTL (
   gene_uri          TEXT,
   PRIMARY KEY(pmc_id, tab_id, row_id),
   FOREIGN KEY(tab_id) REFERENCES TRAIT_TABLE(tab_id)
+  FOREIGN KEY(pmc_id) REFERENCES TRAIT_TABLE(pmc_id)
 );

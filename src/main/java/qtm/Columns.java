@@ -2,7 +2,7 @@ package qtm;
 
 public class Columns {
 
-	private String colID;
+	private int colID;
 
 
 	private String header="";
@@ -14,11 +14,11 @@ public class Columns {
 	public Cell[] celz;
 
 	
-	public String getColID() {
+	public int getColID() {
 		return colID;
 	}
 
-	public void setColID(String colID) {
+	public void setColID(int colID) {
 		this.colID = colID;
 	}
 
