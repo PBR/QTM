@@ -46,7 +46,6 @@ public class QtlDb {
     private static String core1=Configs.getPropertyQTM("core1");
     private static String core2=Configs.getPropertyQTM("core2");
     private static String core3=Configs.getPropertyQTM("core3");
-    private static String core5=Configs.getPropertyQTM("core5");
     private static String coreSGNMarkers=Configs.getPropertyQTM("coreSGNMarkers");
     private static String coreSGNgenes=Configs.getPropertyQTM("coreSGNgenes");
     
@@ -525,7 +524,7 @@ public class QtlDb {
                             if ("".equals(genes_icd) || ";".equals(genes_icd) || genes_icd.isEmpty())
                                 genes_icd = null;
 
-                            System.out.println("*********************************************");
+                            System.out.println("");
                             System.out.println("QTL.pmc_id, QTL.tab_id, QTL.row_id is " + pmc_id + "\t" +  tableId + "\t" + rowId);
                             
                             String insertQTLZtable = "INSERT INTO  QTL(pmc_id,tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,"
