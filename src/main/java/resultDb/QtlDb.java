@@ -597,5 +597,44 @@ public class QtlDb {
         j.put("Uuid", s[6]);
         return j;
     }
+    
+    
+    public static int numberofTraitTable(){
+        int tables = 0;
+        try {
+            Statement stmt = null;
+            stmt = conn.createStatement();
+            String sql = "SELECT COUNT(*) as count FROM TRAIT_TABLE";
+            ResultSet rs = stmt.executeQuery(sql);
 
+            while (rs.next()) {
+                tables=rs.getInt("count");
+            }
+        }
+            catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return tables;
+    }
+
+    public static int numberofQTL(){
+        int numQTL = 0;
+        try {
+            Statement stmt = null;
+            stmt = conn.createStatement();
+            String sql = "SELECT COUNT(*) as count FROM QTL";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                numQTL=rs.getInt("count");
+            }
+        }
+            catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return numQTL;
+    }
+    
 }

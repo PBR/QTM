@@ -140,25 +140,27 @@ public class QtmMain {
         //     e.printStackTrace();
         // }
         // System.out.println("\n");
-//        String csvFile = "";
-//        try {
-//            csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
-//            System.out.println("Writing results into '" + csvFile + "'");
-//            System.out.println("-----------------------------------------");
-//            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c",
-//                    "sqlite3 -header -csv " + QtlDb.dbFile + " \"SELECT * FROM QTL;\" >" + csvFile });
-//            p.waitFor();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println("\n");
-//        System.out.println("=================================================");
-//        System.out.println("RESULTS are available in the following files:");
-//        System.out.println("=================================================");
-//        System.out.println("Number of processed articles:\t" + articles.length);
-//        System.out.println("SQLite file: \t" + QtlDb.dbFile);
-//        System.out.println("CSV file: \t" + csvFile);
-
+        String csvFile = "";
+        try {
+            csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
+            System.out.println("Writing results into '" + csvFile + "'");
+            System.out.println("-----------------------------------------");
+            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c",
+                    "sqlite3 -header -csv " + QtlDb.dbFile + " \"SELECT * FROM QTL;\" >" + csvFile });
+            p.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("\n");
+        System.out.println("=================================================");
+        System.out.println("RESULTS are available in the following files:");
+        System.out.println("=================================================");
+        System.out.println("Number of processed articles:\t" + articles.length);
+        System.out.println("Number of Trait tables founds:\t" + QtlDb.numberofTraitTable());
+        System.out.println("Number of QTL founds:\t" + QtlDb.numberofQTL());
+        System.out.println("SQLite file: \t" + QtlDb.dbFile);
+        System.out.println("CSV file: \t" + csvFile);
+        
         try {
             QtlDb.conn.close();
         } catch (SQLException e) {
