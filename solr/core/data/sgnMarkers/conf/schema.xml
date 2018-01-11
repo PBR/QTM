@@ -103,32 +103,19 @@
 
     <fieldType name="text_wageningen" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
-        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-         <filter class="solr.WordDelimiterFilterFactory"
-               generateWordParts="1"
-               generateNumberParts="1"
-               catenateWords="0"
-               catenateNumbers="0"
-               catenateAll="0"
-               preserveOriginal="1"
-               />
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_wageningen.txt" />
         <filter class="solr.LowerCaseFilterFactory"/>
-	    <filter class="solr.EnglishPossessiveFilterFactory"/>
+	<filter class="solr.EnglishPossessiveFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
         <filter class="solr.PorterStemFilterFactory"/>
       </analyzer>
       <analyzer type="query">
-        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-         <filter class="solr.WordDelimiterFilterFactory"
-               generateWordParts="1"
-               generateNumberParts="1"
-               catenateWords="0"
-               catenateNumbers="0"
-               catenateAll="0"
-               preserveOriginal="1"
-               />
-          <filter class="solr.LowerCaseFilterFactory"/>
-	         <filter class="solr.EnglishPossessiveFilterFactory"/>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+	<filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_wageningen.txt" />
+        <filter class="solr.LowerCaseFilterFactory"/>
+	<filter class="solr.EnglishPossessiveFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
         <filter class="solr.PorterStemFilterFactory"/>
       </analyzer>
@@ -159,15 +146,8 @@
 
     <fieldType name="tag" class="solr.TextField" positionIncrementGap="100" postingsFormat="Memory" omitTermFreqAndPositions="true" omitNorms="true">
       <analyzer type="index">
-        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-         <filter class="solr.WordDelimiterFilterFactory"
-               generateWordParts="1"
-               generateNumberParts="1"
-               catenateWords="0"
-               catenateNumbers="0"
-               catenateAll="0"
-               preserveOriginal="1"
-               />
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_wageningen.txt" />
         <filter class="solr.LowerCaseFilterFactory"/>
 	<filter class="solr.EnglishPossessiveFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
@@ -175,15 +155,8 @@
         <filter class="org.opensextant.solrtexttagger.ConcatenateFilterFactory"/>
       </analyzer>
       <analyzer type="query">
-        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-         <filter class="solr.WordDelimiterFilterFactory"
-               generateWordParts="1"
-               generateNumberParts="1"
-               catenateWords="0"
-               catenateNumbers="0"
-               catenateAll="0"
-               preserveOriginal="1"
-               />
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_wageningen.txt" />
         <filter class="solr.LowerCaseFilterFactory"/>
 	<filter class="solr.EnglishPossessiveFilterFactory"/>
@@ -288,7 +261,7 @@
     <fieldType name="point" class="solr.PointType" dimension="2" subFieldSuffix="_d"/>
     <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
     <fieldType name="currency" class="solr.CurrencyField" precisionStep="8" defaultCurrency="USD" currencyConfig="currency.xml" />
-
+    
    <fieldType name="text_suggest_ngram" class="solr.TextField">
       <analyzer type="index">
         <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
@@ -307,7 +280,7 @@
         <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{20})(.*)?" replacement="$1" replace="all"/>
       </analyzer>
     </fieldType>
-
+ 
     <fieldType name="alphaNumericSort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
