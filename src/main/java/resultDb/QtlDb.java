@@ -164,21 +164,19 @@ public class QtlDb {
                                 for (Columns col : t.getTableCol()) {
 
                                     String colAnno = "";
-
+                                    String colHeader=col.getHeader().replaceAll("[^\\w]", "");
                                     try {
                                         if (col.getColumns_type() == "QTL value") {
-                                            colAnno = solr.tagger.recognize.Evaluate.processString(col.getHeader(), core2,
+                                            colAnno = solr.tagger.recognize.Evaluate.processString(colHeader, core2,
                                                     match, type);
                                         } else if (col.getColumns_type() == "QTL property") {
-                                            colAnno = solr.tagger.recognize.Evaluate.processString(
-                                                    getOnlyStrings(col.getHeader()), core3, match, type);
+                                            colAnno = solr.tagger.recognize.Evaluate.processString(colHeader, core3, match, type);
                                             ;
                                         }
                                     } catch (Exception e) {
                                         colAnno = "";
-                                        System.out.println("error in column Annotation");
-                                        e.getMessage();
-                                    }
+                                        System.out.println("error in column Annotation"+colHeader);
+                                     }
 
                                     String insertColTable = "INSERT INTO COLUMN_ENTRY(col_id,tab_id, pmc_id, header,type, annot) VALUES("
                                             +col.getColID()+"," + t.getTableid() + "," + pmc_id + ",'" + col.getHeader() + "','" + col.getColumns_type() + "','"
