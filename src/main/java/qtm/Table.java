@@ -17,7 +17,7 @@ import utils.Configs;
  */
 public class Table {
 
-	private double tableid;
+	private int tab_num;
 	private String xml;
 	private String documentFileName;
 	public String pragmaticClass;
@@ -220,12 +220,12 @@ public class Table {
 
 	// Getters and setters
 
-	public double getTableid() {
-		return tableid;
+	public int getTabnum() {
+		return tab_num;
 	}
 
-	public void setTableid(double tableid) {
-		this.tableid = tableid;
+	public void setTableid(int tab_num) {
+		this.tab_num = tab_num;
 	}
 
 	public String[] getTableHeadersColumns() {

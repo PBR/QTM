@@ -1,50 +1,41 @@
 CREATE TABLE ARTICLE (
-  pmc_id  NUMERIC NOT NULL,
+  pmc_id  INTEGER NOT NULL,
   title   TEXT,
   PRIMARY KEY(pmc_id)
 );
 
 CREATE TABLE TRAIT_TABLE (
-  tab_id  REAL NOT NULL,
-  pmc_id  NUMERIC NOT NULL,
-  PRIMARY KEY(tab_id,pmc_id),
+  tab_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+  tab_num TEXT,
+  pmc_id  INTEGER NOT NULL,
   FOREIGN KEY(pmc_id) REFERENCES ARTICLE(pmc_id)
 );
 
 CREATE TABLE ABBREVIATION (
   abbrev    TEXT NOT NULL,
   expansion TEXT NOT NULL,
-  pmc_id    NUMERIC NOT NULL,
+  pmc_id    INTEGER NOT NULL,
   FOREIGN KEY(pmc_id) REFERENCES ARTICLE(pmc_id)
 );
 
 CREATE TABLE COLUMN_ENTRY (
-  col_id  NUMERIC NOT NULL,
-  tab_id  REAL NOT NULL,
-  pmc_id  NUMERIC NOT NULL,
+  col_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+  tab_id  INTEGER NOT NULL,
   header  TEXT,
   type    TEXT,
   annot   TEXT,
-  PRIMARY KEY(col_id,tab_id,pmc_id)
   FOREIGN KEY(tab_id) REFERENCES TRAIT_TABLE(tab_id)
-  FOREIGN KEY(pmc_id) REFERENCES TRAIT_TABLE(pmc_id)	
 );
 
 CREATE TABLE CELL_ENTRY (
   row_id  INTEGER NOT NULL,
-  col_id  NUMERIC NOT NULL,
-  tab_id  REAL NOT NULL,
-  pmc_id  NUMERIC NOT NULL,
+  col_id  INTEGER NOT NULL,
   value   TEXT,
-  PRIMARY KEY (row_id, col_id,tab_id,pmc_id),
   FOREIGN KEY(col_id) REFERENCES COLUMN_ENTRY(col_id)
-  FOREIGN KEY(tab_id) REFERENCES COLUMN_ENTRY(col_id)
-  FOREIGN KEY(pmc_id) REFERENCES COLUMN_ENTRY(col_id)
 );
 
 CREATE TABLE QTL (
-  pmc_id            NUMERIC NOT NULL,
-  tab_id            REAL NOT NULL,
+  tab_id            INTEGER NOT NULL,
   row_id            INTEGER NOT NULL,
   trait_in_article  TEXT,
   trait_in_onto     TEXT,
@@ -54,7 +45,5 @@ CREATE TABLE QTL (
   marker_uri        TEXT,
   gene              TEXT,
   gene_uri          TEXT,
-  PRIMARY KEY(pmc_id, tab_id, row_id),
   FOREIGN KEY(tab_id) REFERENCES TRAIT_TABLE(tab_id)
-  FOREIGN KEY(pmc_id) REFERENCES TRAIT_TABLE(pmc_id)
 );

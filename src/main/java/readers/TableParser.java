@@ -96,13 +96,11 @@ public class TableParser {
 				//System.out.println("sssssssssssssssssssssssssssssss is "+s); 
 				//System.out.println("s is "+s%10); 
                                 
-				double tableid= tid + s/10.0;
 				
-				tables[tableindex].setTableid(tableid);    
+				    tables[tableindex].setTableid(tid);    
 				}
 				else{
-				        double tableid= (double) tid;
-					tables[tableindex].setTableid(tableid);
+				    tables[tableindex].setTableid(tid);
 				}
 				
 				
@@ -125,7 +123,7 @@ public class TableParser {
 					tables[tableindex].setisTraitTable(false);
 					tables[tableindex].setNum_of_rows(0);
 					tables[tableindex].setNum_of_columns(0);
-					System.out.println(tables[tableindex].getisTraitTable() + " " + tables[tableindex].getTableid()
+					System.out.println(tables[tableindex].getisTraitTable() + " " + tables[tableindex].getTabnum()
 							+ " is not a trait table");
 					tableindex++;
 					break;
@@ -663,13 +661,13 @@ public class TableParser {
 			for (int j = 0; j < wordlist.length; j++) {
 				if (table.getTable_caption().toLowerCase().indexOf(wordlist[j]) != -1) {
 					table.setisTraitTable(true);
-					System.out.println(table.getTableid() + " is a QTL table\n");
+					System.out.println(table.getTabnum() + " is a QTL table\n");
 					return table;
 				}
 				for (String h : HeaderList) {
 					if (h.indexOf(wordlist[j]) != -1) {
 						table.setisTraitTable(true);
-						System.out.println(table.getTableid() + " is a QTL table\n");
+						System.out.println(table.getTabnum() + " is a QTL table\n");
 						return table;
 					} else {
 						continue;
@@ -677,7 +675,7 @@ public class TableParser {
 				}
 			}
 			
-			System.out.println(table.getTableid() + " is NOT a QTL table\n");
+			System.out.println(table.getTabnum() + " is NOT a QTL table\n");
 		} catch (Exception e) {
 
 		}

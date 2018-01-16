@@ -5,6 +5,7 @@
  */
 package resultDb;
 
+import java.awt.Cursor;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -36,7 +37,7 @@ import utils.Configs;
  */
 public class QtlDb {
 
-    public static Connection conn;
+    public static Connection conn = null;
 
     public static String dbDriver = Configs.getPropertyQTM("dbDriver");
     public static String dbFile = Configs.getPropertyQTM("dbFile");
@@ -55,7 +56,8 @@ public class QtlDb {
     private static String core1Dir = Configs.getPropertyQTM("core1Dir");
 
     public static boolean connectionDB() {
-        conn = null;
+     if(conn == null){
+        
         try {
 
             Class.forName("org.sqlite.JDBC");
@@ -69,6 +71,10 @@ public class QtlDb {
             System.exit(0);
         }
         return true;
+     } else
+         return true;
+     
+     
     }
 
     public static void createTables() {
@@ -103,6 +109,9 @@ public class QtlDb {
 
                     Statement abbrevstmt = null;
                     abbrevstmt = conn.createStatement();
+
+                    Statement getRowidStmt = null;
+                    getRowidStmt = conn.createStatement();
 
                     // Article Table entry
                     Scanner id = new Scanner(articles[i].getPmc()).useDelimiter("[^0-9]+");
@@ -153,18 +162,24 @@ public class QtlDb {
                         try {
                             if (t.isaTraitTable()) {
 
-                                System.out.println("Inserting entries for Table: \t" + t.getTableid());
+                                System.out.println("Inserting entries for Table: \t" + t.getTabnum());
 
-                                String insertTraitTable = "INSERT INTO TRAIT_TABLE VALUES" + "(?,?); ";
+                                
+                                String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_num, pmc_id) VALUES" + "(?,?); ";
 
                                 PreparedStatement traitTableStmt = conn.prepareStatement(insertTraitTable);
 
-                                traitTableStmt.setDouble(1, t.getTableid());
+                                traitTableStmt.setInt(1, t.getTabnum());
                                 traitTableStmt.setInt(2, pmc_id);
-
+                                
                                 traitTableStmt.executeUpdate();
-
+                                
                                 traitTableStmt.close();
+
+                                String getTabid = "select max(tab_id) from TRAIT_TABLE;";
+
+                                ResultSet rs1 = getRowidStmt.executeQuery(getTabid);
+                                int tab_id=rs1.getInt("max(tab_id)");
 
                                 for (Columns col : t.getTableCol()) {
 
@@ -186,31 +201,29 @@ public class QtlDb {
                                         colAnno = null;
                                     }
 
-                                    String insertColTable = "INSERT INTO COLUMN_ENTRY(col_id,tab_id, pmc_id, header,type, annot) VALUES"
-                                            + "(?,?,?,?,?,?)";
+                                    String insertColTable = "INSERT INTO COLUMN_ENTRY(tab_id, header,type, annot) VALUES"
+                                            + "(?,?,?,?)";
 
                                     PreparedStatement colStmt = conn.prepareStatement(insertColTable);
 
-                                    colStmt.setInt(1, col.getColID());
-                                    colStmt.setDouble(2, t.getTableid());
-                                    colStmt.setInt(3, pmc_id);
+                                    colStmt.setInt(1, tab_id);
 
                                     try {
-                                        colStmt.setString(4, col.getHeader());
+                                        colStmt.setString(2, col.getHeader());
+                                    } catch (NullPointerException e) {
+                                        colStmt.setNull(2, java.sql.Types.VARCHAR);
+                                    }
+
+                                    try {
+                                        colStmt.setString(3, col.getColumns_type());
+                                    } catch (NullPointerException e) {
+                                        colStmt.setNull(3, java.sql.Types.VARCHAR);
+                                    }
+
+                                    try {
+                                        colStmt.setString(4, colAnno);
                                     } catch (NullPointerException e) {
                                         colStmt.setNull(4, java.sql.Types.VARCHAR);
-                                    }
-
-                                    try {
-                                        colStmt.setString(5, col.getColumns_type());
-                                    } catch (NullPointerException e) {
-                                        colStmt.setNull(5, java.sql.Types.VARCHAR);
-                                    }
-
-                                    try {
-                                        colStmt.setString(6, colAnno);
-                                    } catch (NullPointerException e) {
-                                        colStmt.setNull(6, java.sql.Types.VARCHAR);
                                     }
 
                                     colStmt.executeUpdate();
@@ -219,6 +232,14 @@ public class QtlDb {
                                     // DB");
                                     colStmt.close();
 
+
+                                    String getColid = "select max(col_id) from COLUMN_ENTRY;";
+
+                                    ResultSet rs2 = getRowidStmt.executeQuery(getColid);
+                                    int col_id=rs2.getInt("max(col_id)");
+
+                                    
+                                    
                                     for (Cell cel : col.getcelz()) {
 
                                         if (cel.getcell_value().indexOf("'") != -1)
@@ -227,20 +248,18 @@ public class QtlDb {
                                         if (cel.getcell_value().equals("") || cel.getcell_value().equals(" "))
                                             cel.setcell_values(null);
 
-                                        String insertCellTable = "INSERT INTO CELL_ENTRY(row_id, col_id, tab_id, pmc_id, value) VALUES"
-                                                + "(?, ?, ?, ?, ?)";
+                                        String insertCellTable = "INSERT INTO CELL_ENTRY(row_id, col_id, value) VALUES"
+                                                + "(?, ?, ?)";
 
                                         PreparedStatement cellStmt = conn.prepareStatement(insertCellTable);
 
                                         cellStmt.setInt(1, cel.getRow_number());
-                                        cellStmt.setInt(2, col.getColID());
-                                        cellStmt.setDouble(3, t.getTableid());
-                                        cellStmt.setInt(4, pmc_id);
-
+                                        cellStmt.setInt(2, col_id);
+                                        
                                         try {
-                                            cellStmt.setString(5, cel.getcell_value());
+                                            cellStmt.setString(3, cel.getcell_value());
                                         } catch (NullPointerException e) {
-                                            cellStmt.setNull(5, java.sql.Types.VARCHAR);
+                                            cellStmt.setNull(3, java.sql.Types.VARCHAR);
                                         }
 
                                         cellStmt.executeUpdate();
@@ -273,352 +292,341 @@ public class QtlDb {
         }
     }
 
-    public static void insertQTLEntry(Article articles[]) {
+    public static void insertQTLEntry() {
         try {
 
-            for (int i = 0; i < articles.length; i++) {
+            if (connectionDB()) {
+                Statement stmt1 = null;
+                Statement stmt2 = null;
+                Statement stmt3 = null;
+                stmt1 = conn.createStatement();
+                stmt2 = conn.createStatement();
+                stmt3 = conn.createStatement();
+                // System.out.println("I am here");
 
-                Scanner id = new Scanner(articles[i].getPmc()).useDelimiter("[^0-9]+");
-                int pmc_id = id.nextInt();
-                String pmc_tittle = articles[i].getTitle();
+                //                    List<Trait> traits = articles[i].getTrait();
 
-                if (connectionDB()) {
-                    Statement stmt1 = null;
-                    Statement stmt2 = null;
-                    Statement stmt3 = null;
-                    stmt1 = conn.createStatement();
-                    stmt2 = conn.createStatement();
-                    stmt3 = conn.createStatement();
-                    // System.out.println("I am here");
+                String sql1 = "SELECT  Cel.value, Cel.col_id, Cel.row_id, Col.tab_id, Col.type from CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id"
+                        + " WHERE Cel.value IS NOT null AND " + " Col.type='QTL descriptor' ;";
 
-                    List<Trait> traits = articles[i].getTrait();
+                ResultSet rs1 = stmt1.executeQuery(sql1);
+                while (rs1.next()) {
+                    String pTrait = rs1.getString("value");
+                    int colId = rs1.getInt("col_id");
+                    int tableId = rs1.getInt("tab_id");
+                    int rowId = rs1.getInt("row_id");
 
-                    String sql1 = "SELECT  Cel.value, Cel.col_id, Cel.row_id, Cel.tab_id, Col.type from CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id AND Cel.tab_id=Col.tab_id AND Cel.pmc_id = Col.pmc_id"
-                            + " WHERE Cel.value IS NOT null AND " + " Col.type='QTL descriptor' " + " AND Cel.pmc_id = " + pmc_id
-                            + ";";
+                    //System.out.println("**********");
+                    //System.out.println(value + "\t" + colId + "\t" + tableId + "\t" + row);
+                    //System.out.println("**********");
 
-                    ResultSet rs1 = stmt1.executeQuery(sql1);
-                    while (rs1.next()) {
-                        String pTrait = rs1.getString("value");
-                        int colId = rs1.getInt("col_id");
-                        double tableId = rs1.getDouble("tab_id");
-                        int rowId = rs1.getInt("row_id");
+                    Trait T = new Trait(pTrait);
 
-                        //System.out.println("**********");
-                        //System.out.println(value + "\t" + colId + "\t" + tableId + "\t" + row);
-                        //System.out.println("**********");
+                    String traitAnno = "";
+                    traitAnno = solr.tagger.recognize.Evaluate.processString(getOnlyStrings(T.getTraitName()), core1, match,
+                            type);
 
-                        Trait T = new Trait(pTrait);
+                    JSONObject traitAnnoJSON = new JSONObject();
 
-                        String traitAnno = "";
-                        traitAnno = solr.tagger.recognize.Evaluate.processString(getOnlyStrings(T.getTraitName()), core1, match,
-                                type);
+                    if (!"".equals(traitAnno)) {
+                        traitAnnoJSON = processSolrOutputtoJson(traitAnno);
+                        System.out.println(traitAnnoJSON.toJSONString());
+                    }
 
-                        JSONObject traitAnnoJSON = new JSONObject();
+                    else {
+                        traitAnnoJSON.put("icd", "");
+                        traitAnnoJSON.put("matchingText", T.getTraitName());
+                        traitAnnoJSON.put("prefTerm", T.getTraitName());
+                        traitAnnoJSON.put("Term", "");
+                        traitAnnoJSON.put("start", "");
+                        traitAnnoJSON.put("end", "");
+                        traitAnnoJSON.put("Uuid", "");
+                    }
 
-                        if (!"".equals(traitAnno)) {
-                            traitAnnoJSON = processSolrOutputtoJson(traitAnno);
-                            System.out.println(traitAnnoJSON.toJSONString());
+                    String ChromosomeNumber = "";
+                    String gene_associated = "";
+                    String geneOntologyAnnotation = "";
+                    String markers_associated = "";
+                    String markerOntologyAnnotation = "";
+
+                    JSONObject markerJSON = new JSONObject();
+                    JSONObject geneJSON = new JSONObject();
+                    JSONObject snpJSON = new JSONObject();
+
+                    Set<JSONObject> markers = new HashSet<JSONObject>();
+
+                    Set<JSONObject> genes = new HashSet<JSONObject>();
+
+                    JSONObject vals = new JSONObject();
+                    JSONObject prop = new JSONObject();
+                    JSONObject otherProp = new JSONObject();
+
+                    String sql2 = "SELECT Cel.Value, Col.header,Col.type, Col.annot FROM CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id"
+                            + " WHERE row_id =" + rowId + " AND" + " Col.tab_id='" + tableId + "' AND"
+                            + " Col.Type!='QTL descriptor' ;";
+                    ResultSet rs2 = stmt2.executeQuery(sql2);
+
+                    while (rs2.next()) {
+                        String cellValue = "";
+                        String colHeader = "";
+                        String colType = "";
+                        String colAnno = "";
+
+                        try {
+                            cellValue = rs2.getString("value").replaceAll("\n", "").replace("\r", "");
+                            colHeader = rs2.getString("header").replaceAll("\n", "").replace("\r", "");
+                            colType = rs2.getString("type").replaceAll("\n", "").replace("\r", "");
+                            colAnno = rs2.getString("annot").replaceAll("\n", "").replace("\r", "");
+                        } catch (NullPointerException e) {
                         }
 
-                        else {
-                            traitAnnoJSON.put("icd", "");
-                            traitAnnoJSON.put("matchingText", T.getTraitName());
-                            traitAnnoJSON.put("prefTerm", T.getTraitName());
-                            traitAnnoJSON.put("Term", "");
-                            traitAnnoJSON.put("start", "");
-                            traitAnnoJSON.put("end", "");
-                            traitAnnoJSON.put("Uuid", "");
+                        JSONObject colAnnoJSON = new JSONObject();
+
+                        if (!"".equals(colAnno)) {
+                            colAnnoJSON = processSolrOutputtoJson(colAnno);
+                            colAnnoJSON.put("actualValue", cellValue);
+                        } else {
+                            colAnnoJSON.put("icd", "");
+                            colAnnoJSON.put("matchingText", colHeader);
+                            colAnnoJSON.put("prefTerm", colHeader);
+                            colAnnoJSON.put("Term", "");
+                            colAnnoJSON.put("start", "");
+                            colAnnoJSON.put("end", "");
+                            colAnnoJSON.put("Uuid", "");
+                            colAnnoJSON.put("actualValue", cellValue);
                         }
 
-                        String ChromosomeNumber = "";
-                        String gene_associated = "";
-                        String geneOntologyAnnotation = "";
-                        String markers_associated = "";
-                        String markerOntologyAnnotation = "";
+                        //System.out.println("Entry " + "\t" + cellValue + "\t" + colHeader + "\t" + colType);
 
-                        JSONObject markerJSON = new JSONObject();
-                        JSONObject geneJSON = new JSONObject();
-                        JSONObject snpJSON = new JSONObject();
+                        if (colType.equals("QTL value")) {
+                            // System.out.println("cell Values is" +
+                            // cellValue);
 
-                        Set<JSONObject> markers = new HashSet<JSONObject>();
+                            String regex = "chr";
+                            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
-                        Set<JSONObject> genes = new HashSet<JSONObject>();
+                            Matcher matcher1 = pattern.matcher(cellValue);
+                            Matcher matcher2 = pattern.matcher(colHeader);
 
-                        JSONObject vals = new JSONObject();
-                        JSONObject prop = new JSONObject();
-                        JSONObject otherProp = new JSONObject();
-
-                        String sql2 = "SELECT Cel.Value, Col.header,Col.type, Col.annot FROM CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id AND Cel.tab_id=Col.tab_id AND Cel.pmc_id = Col.pmc_id"
-                                + " WHERE row_id =" + rowId + " AND" + " Col.tab_id='" + tableId + "' AND"
-                                + " Col.Type!='QTL descriptor' AND" + " Cel.pmc_id=" + pmc_id + ";";
-                        ResultSet rs2 = stmt2.executeQuery(sql2);
-
-                        while (rs2.next()) {
-                            String cellValue = "";
-                            String colHeader = "";
-                            String colType = "";
-                            String colAnno = "";
-
-                            try {
-                                cellValue = rs2.getString("value").replaceAll("\n", "").replace("\r", "");
-                                colHeader = rs2.getString("header").replaceAll("\n", "").replace("\r", "");
-                                colType = rs2.getString("type").replaceAll("\n", "").replace("\r", "");
-                                colAnno = rs2.getString("annot").replaceAll("\n", "").replace("\r", "");
-                            } catch (NullPointerException e) {
+                            if (matcher1.find() || matcher2.find()) {
+                                ChromosomeNumber += cellValue.toString();
                             }
 
-                            JSONObject colAnnoJSON = new JSONObject();
+                            vals.put(colAnnoJSON, colHeader);
 
-                            if (!"".equals(colAnno)) {
-                                colAnnoJSON = processSolrOutputtoJson(colAnno);
-                                colAnnoJSON.put("actualValue", cellValue);
-                            } else {
-                                colAnnoJSON.put("icd", "");
-                                colAnnoJSON.put("matchingText", colHeader);
-                                colAnnoJSON.put("prefTerm", colHeader);
-                                colAnnoJSON.put("Term", "");
-                                colAnnoJSON.put("start", "");
-                                colAnnoJSON.put("end", "");
-                                colAnnoJSON.put("Uuid", "");
-                                colAnnoJSON.put("actualValue", cellValue);
-                            }
+                        } else if (colType.equals("QTL property")) {
 
-                            //System.out.println("Entry " + "\t" + cellValue + "\t" + colHeader + "\t" + colType);
+                            String regex1 = "marker";
+                            String regex2 = "snp";
 
-                            if (colType.equals("QTL value")) {
-                                // System.out.println("cell Values is" +
-                                // cellValue);
+                            Pattern pattern1 = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE);
+                            Pattern pattern2 = Pattern.compile(regex2, Pattern.CASE_INSENSITIVE);
 
-                                String regex = "chr";
-                                Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                            Matcher matcher1 = pattern1.matcher(cellValue);
+                            Matcher matcher2 = pattern1.matcher(colHeader);
 
-                                Matcher matcher1 = pattern.matcher(cellValue);
-                                Matcher matcher2 = pattern.matcher(colHeader);
+                            Matcher matcher3 = pattern2.matcher(cellValue);
+                            Matcher matcher4 = pattern2.matcher(colHeader);
 
-                                if (matcher1.find() || matcher2.find()) {
-                                    ChromosomeNumber += cellValue.toString();
-                                }
+                            if (matcher1.find() || matcher2.find() || matcher3.find() || matcher4.find()) {
 
-                                vals.put(colAnnoJSON, colHeader);
+                                markers_associated += cellValue + " ; ";
 
-                            } else if (colType.equals("QTL property")) {
+                                try {
+                                    markerOntologyAnnotation = solr.tagger.recognize.Evaluate.processString(markers_associated,
+                                            coreSGNMarkers, match, type);
 
-                                String regex1 = "marker";
-                                String regex2 = "snp";
-
-                                Pattern pattern1 = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE);
-                                Pattern pattern2 = Pattern.compile(regex2, Pattern.CASE_INSENSITIVE);
-
-                                Matcher matcher1 = pattern1.matcher(cellValue);
-                                Matcher matcher2 = pattern1.matcher(colHeader);
-
-                                Matcher matcher3 = pattern2.matcher(cellValue);
-                                Matcher matcher4 = pattern2.matcher(colHeader);
-
-                                if (matcher1.find() || matcher2.find() || matcher3.find() || matcher4.find()) {
-
-                                    markers_associated += cellValue + " ; ";
-
-                                    try {
-                                        markerOntologyAnnotation = solr.tagger.recognize.Evaluate
-                                                .processString(markers_associated, coreSGNMarkers, match, type);
-
-                                    } catch (Exception e) {
-                                        markerOntologyAnnotation = "";
-                                        System.out.println("error in solar annotations");
-
-                                    }
-
-                                    if (!"".equals(markerOntologyAnnotation)) {
-                                        markerJSON = processSolrOutputtoJson(markerOntologyAnnotation);
-                                        markers.add(markerJSON);
-                                    }
-
-                                    else {
-                                        markerJSON.put("icd", "");
-                                        markerJSON.put("matchingText", markers_associated);
-                                        markerJSON.put("prefTerm", markers_associated);
-                                        markerJSON.put("Term", "");
-                                        markerJSON.put("start", "");
-                                        markerJSON.put("end", "");
-                                        markerJSON.put("Uuid", "");
-                                        markers.add(markerJSON);
-                                    }
+                                } catch (Exception e) {
+                                    markerOntologyAnnotation = "";
+                                    System.out.println("error in solar annotations");
 
                                 }
 
-                                // Filterout Gene
-                                regex1 = "gen[eo]";
-                                regex2 = "solyc";
-                                pattern1 = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE);
-                                pattern2 = Pattern.compile(regex2, Pattern.CASE_INSENSITIVE);
+                                if (!"".equals(markerOntologyAnnotation)) {
+                                    markerJSON = processSolrOutputtoJson(markerOntologyAnnotation);
+                                    markers.add(markerJSON);
+                                }
 
-                                matcher1 = pattern1.matcher(cellValue);
-                                matcher2 = pattern1.matcher(colHeader);
+                                else {
+                                    markerJSON.put("icd", "");
+                                    markerJSON.put("matchingText", markers_associated);
+                                    markerJSON.put("prefTerm", markers_associated);
+                                    markerJSON.put("Term", "");
+                                    markerJSON.put("start", "");
+                                    markerJSON.put("end", "");
+                                    markerJSON.put("Uuid", "");
+                                    markers.add(markerJSON);
+                                }
 
-                                matcher3 = pattern2.matcher(cellValue);
-                                matcher4 = pattern2.matcher(colHeader);
+                            }
 
-                                if (matcher1.find() || matcher2.find() || matcher3.find() || matcher4.find()) {
+                            // Filterout Gene
+                            regex1 = "gen[eo]";
+                            regex2 = "solyc";
+                            pattern1 = Pattern.compile(regex1, Pattern.CASE_INSENSITIVE);
+                            pattern2 = Pattern.compile(regex2, Pattern.CASE_INSENSITIVE);
 
-                                    //System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
-                                    gene_associated += cellValue + "; ";
-                                    //System.out.println("gene is"+gene_associated);
+                            matcher1 = pattern1.matcher(cellValue);
+                            matcher2 = pattern1.matcher(colHeader);
 
-                                    try {
-                                        geneOntologyAnnotation = solr.tagger.recognize.Evaluate.processString(gene_associated,
-                                                coreSGNgenes, match, type);
+                            matcher3 = pattern2.matcher(cellValue);
+                            matcher4 = pattern2.matcher(colHeader);
 
-                                    } catch (Exception e) {
-                                        geneOntologyAnnotation = "";
-                                        System.out.println("error in solar annotations");
+                            if (matcher1.find() || matcher2.find() || matcher3.find() || matcher4.find()) {
 
-                                    }
+                                //System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
+                                gene_associated += cellValue + "; ";
+                                //System.out.println("gene is"+gene_associated);
 
-                                    if (!"".equals(geneOntologyAnnotation)) {
+                                try {
+                                    geneOntologyAnnotation = solr.tagger.recognize.Evaluate.processString(gene_associated,
+                                            coreSGNgenes, match, type);
 
-                                        geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
-                                        genes.add(geneJSON);
-                                    }
-
-                                    else {
-                                        geneJSON.put("icd", "");
-                                        geneJSON.put("matchingText", gene_associated);
-                                        geneJSON.put("prefTerm", gene_associated);
-                                        geneJSON.put("Term", "");
-                                        geneJSON.put("start", "");
-                                        geneJSON.put("end", "");
-                                        geneJSON.put("Uuid", "");
-
-                                        genes.add(geneJSON);
-                                    }
+                                } catch (Exception e) {
+                                    geneOntologyAnnotation = "";
+                                    System.out.println("error in solar annotations");
 
                                 }
 
-                                prop.put(colAnnoJSON, colHeader);
+                                if (!"".equals(geneOntologyAnnotation)) {
 
-                            } else {
-                                otherProp.put(colAnnoJSON, colHeader);
+                                    geneJSON = processSolrOutputtoJson(geneOntologyAnnotation);
+                                    genes.add(geneJSON);
+                                }
+
+                                else {
+                                    geneJSON.put("icd", "");
+                                    geneJSON.put("matchingText", gene_associated);
+                                    geneJSON.put("prefTerm", gene_associated);
+                                    geneJSON.put("Term", "");
+                                    geneJSON.put("start", "");
+                                    geneJSON.put("end", "");
+                                    geneJSON.put("Uuid", "");
+
+                                    genes.add(geneJSON);
+                                }
 
                             }
 
-                        }
+                            prop.put(colAnnoJSON, colHeader);
 
-                        T.setTraitValues(vals);
-                        T.setTraitProperties(prop);
-                        T.setOtherProperties(otherProp);
-
-                        traits.add(T);
-
-                        System.out.println(T.getTraitName());
-
-                        if (markers_associated != "" || gene_associated != "") {
-
-                            String genes_icd = "";
-
-                            for (JSONObject g : genes) {
-                                genes_icd += g.get("icd") + ";";
-                            }
-
-                            String markers_icd = "";
-
-                            for (JSONObject m : markers) {
-                                markers_icd += m.get("icd") + ";";
-                            }
-
-                            if (markers_associated == "")
-                                markers_associated = null;
-                            if (gene_associated == "")
-                                gene_associated = null;
-
-                            if ("".equals(traitAnnoJSON.get("icd")) || ";".equals(traitAnnoJSON.get("icd"))
-                                    || traitAnnoJSON.isEmpty())
-                                traitAnnoJSON.put("icd", null);
-
-                            if ("".equals(ChromosomeNumber) || ";".equals(ChromosomeNumber) || ChromosomeNumber.isEmpty())
-                                ChromosomeNumber = null;
-
-                            if ("".equals(markers_icd) || ";".equals(markers_icd) || markers_icd.isEmpty())
-                                markers_icd = null;
-
-                            if ("".equals(genes_icd) || ";".equals(genes_icd) || genes_icd.isEmpty())
-                                genes_icd = null;
-
-                            System.out.println("");
-                            System.out.println("QTL.pmc_id, QTL.tab_id, QTL.row_id is " + pmc_id + "\t" + tableId + "\t" + rowId);
-
-                            String insertTableSQL = "INSERT INTO QTL"
-                                    + "(pmc_id,tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,chromosome,marker,marker_uri, gene,gene_uri) VALUES"
-                                    + "(?,?,?,?,?,?,?,?,?,?,?)";
-                            PreparedStatement preparedStatement = conn.prepareStatement(insertTableSQL);
-
-                            preparedStatement.setInt(1, pmc_id);
-                            preparedStatement.setDouble(2, tableId);
-                            preparedStatement.setInt(3, rowId);
-
-                            try {
-                                preparedStatement.setString(4, T.getTraitName());
-                            } catch (NullPointerException e) {
-                                preparedStatement.setNull(4, java.sql.Types.VARCHAR);
-                            }
-                            try {
-                                preparedStatement.setString(5, traitAnnoJSON.get("prefTerm").toString());
-                            } catch (NullPointerException e) {
-                                preparedStatement.setNull(5, java.sql.Types.VARCHAR);
-                            }
-                            try {
-                                preparedStatement.setString(6, traitAnnoJSON.get("icd").toString());
-                            } catch (NullPointerException e) {
-                                preparedStatement.setNull(6, java.sql.Types.VARCHAR);
-                            }
-                            try {
-                                preparedStatement.setString(7, ChromosomeNumber);
-                            } catch (NullPointerException e) {
-                                preparedStatement.setNull(7, java.sql.Types.VARCHAR);
-                            }
-                            try {
-                                preparedStatement.setString(8, markers_associated);
-                            } catch (NullPointerException e) {
-                                preparedStatement.setNull(8, java.sql.Types.VARCHAR);
-                            }
-
-                            try {
-                                preparedStatement.setString(9, markers_icd);
-                            } catch (NullPointerException e) {
-                                preparedStatement.setNull(9, java.sql.Types.VARCHAR);
-                            }
-                            try {
-                                preparedStatement.setString(10, gene_associated);
-                            } catch (NullPointerException e) {
-                                preparedStatement.setNull(10, java.sql.Types.VARCHAR);
-                            }
-                            try {
-                                preparedStatement.setString(11, genes_icd);
-                            } catch (NullPointerException e) {
-                                preparedStatement.setNull(11, java.sql.Types.VARCHAR);
-                            }
-
-                            preparedStatement.executeUpdate();
-
-                            //                            
-                            //                            String insertQTLZtable = "INSERT INTO  QTL(pmc_id,tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,"
-                            //                                    + "chromosome,marker,marker_uri, gene,gene_uri)" + "VALUES(" + pmc_id + "," + tableId + ","
-                            //                                    + rowId + ",'" + T.getTraitName() + "','" + traitAnnoJSON.get("prefTerm") + "','"
-                            //                                    + traitAnnoJSON.get("icd") + "','" + ChromosomeNumber + "','" + markers_associated + "','"
-                            //                                    + markers_icd + "','" + gene_associated + "','" + genes_icd + "');";
-                            //
-                            //                            stmt3.executeUpdate(insertQTLZtable);
+                        } else {
+                            otherProp.put(colAnnoJSON, colHeader);
 
                         }
 
                     }
-                    stmt1.close();
-                    stmt2.close();
-                    stmt3.close();
+
+                    T.setTraitValues(vals);
+                    T.setTraitProperties(prop);
+                    T.setOtherProperties(otherProp);
+
+                    System.out.println(T.getTraitName());
+
+                    if (markers_associated != "" || gene_associated != "") {
+
+                        String genes_icd = "";
+
+                        for (JSONObject g : genes) {
+                            genes_icd += g.get("icd") + ";";
+                        }
+
+                        String markers_icd = "";
+
+                        for (JSONObject m : markers) {
+                            markers_icd += m.get("icd") + ";";
+                        }
+
+                        if (markers_associated == "")
+                            markers_associated = null;
+                        if (gene_associated == "")
+                            gene_associated = null;
+
+                        if ("".equals(traitAnnoJSON.get("icd")) || ";".equals(traitAnnoJSON.get("icd"))
+                                || traitAnnoJSON.isEmpty())
+                            traitAnnoJSON.put("icd", null);
+
+                        if ("".equals(ChromosomeNumber) || ";".equals(ChromosomeNumber) || ChromosomeNumber.isEmpty())
+                            ChromosomeNumber = null;
+
+                        if ("".equals(markers_icd) || ";".equals(markers_icd) || markers_icd.isEmpty())
+                            markers_icd = null;
+
+                        if ("".equals(genes_icd) || ";".equals(genes_icd) || genes_icd.isEmpty())
+                            genes_icd = null;
+
+                        System.out.println("");
+
+                        String insertTableSQL = "INSERT INTO QTL"
+                                + "(tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,chromosome,marker,marker_uri, gene,gene_uri) VALUES"
+                                + "(?,?,?,?,?,?,?,?,?,?)";
+                        PreparedStatement preparedStatement = conn.prepareStatement(insertTableSQL);
+
+                        preparedStatement.setDouble(1, tableId);
+                        preparedStatement.setInt(2, rowId);
+
+                        try {
+                            preparedStatement.setString(3, T.getTraitName());
+                        } catch (NullPointerException e) {
+                            preparedStatement.setNull(3, java.sql.Types.VARCHAR);
+                        }
+                        try {
+                            preparedStatement.setString(4, traitAnnoJSON.get("prefTerm").toString());
+                        } catch (NullPointerException e) {
+                            preparedStatement.setNull(4, java.sql.Types.VARCHAR);
+                        }
+                        try {
+                            preparedStatement.setString(5, traitAnnoJSON.get("icd").toString());
+                        } catch (NullPointerException e) {
+                            preparedStatement.setNull(5, java.sql.Types.VARCHAR);
+                        }
+                        try {
+                            preparedStatement.setString(6, ChromosomeNumber);
+                        } catch (NullPointerException e) {
+                            preparedStatement.setNull(6, java.sql.Types.VARCHAR);
+                        }
+                        try {
+                            preparedStatement.setString(7, markers_associated);
+                        } catch (NullPointerException e) {
+                            preparedStatement.setNull(7, java.sql.Types.VARCHAR);
+                        }
+
+                        try {
+                            preparedStatement.setString(8, markers_icd);
+                        } catch (NullPointerException e) {
+                            preparedStatement.setNull(8, java.sql.Types.VARCHAR);
+                        }
+                        try {
+                            preparedStatement.setString(9, gene_associated);
+                        } catch (NullPointerException e) {
+                            preparedStatement.setNull(9, java.sql.Types.VARCHAR);
+                        }
+                        try {
+                            preparedStatement.setString(10, genes_icd);
+                        } catch (NullPointerException e) {
+                            preparedStatement.setNull(10, java.sql.Types.VARCHAR);
+                        }
+
+                        preparedStatement.executeUpdate();
+
+                        //                            
+                        //                            String insertQTLZtable = "INSERT INTO  QTL(pmc_id,tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,"
+                        //                                    + "chromosome,marker,marker_uri, gene,gene_uri)" + "VALUES(" + pmc_id + "," + tableId + ","
+                        //                                    + rowId + ",'" + T.getTraitName() + "','" + traitAnnoJSON.get("prefTerm") + "','"
+                        //                                    + traitAnnoJSON.get("icd") + "','" + ChromosomeNumber + "','" + markers_associated + "','"
+                        //                                    + markers_icd + "','" + gene_associated + "','" + genes_icd + "');";
+                        //
+                        //                            stmt3.executeUpdate(insertQTLZtable);
+
+                    }
 
                 }
+                stmt1.close();
+                stmt2.close();
+                stmt3.close();
+
             }
+
         } catch (SQLException e) {
 
             e.printStackTrace();

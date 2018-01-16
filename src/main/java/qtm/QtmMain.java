@@ -132,7 +132,7 @@ public class QtmMain {
         System.out.println("Searching QTL in tables");
         System.out.println("-------------------------------------------------");
         //      STEP4 Insert in Trait Table
-        QtlDb.insertQTLEntry(articles);
+        QtlDb.insertQTLEntry();
 
         // try {
         //     System.out.println("\nSolr stoped!");
