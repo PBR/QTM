@@ -36,7 +36,6 @@ CREATE TABLE CELL_ENTRY (
   tab_id  REAL NOT NULL,
   pmc_id  NUMERIC NOT NULL,
   value   TEXT,
-  type    TEXT,
   PRIMARY KEY (row_id, col_id,tab_id,pmc_id),
   FOREIGN KEY(col_id) REFERENCES COLUMN_ENTRY(col_id)
   FOREIGN KEY(tab_id) REFERENCES COLUMN_ENTRY(col_id)
