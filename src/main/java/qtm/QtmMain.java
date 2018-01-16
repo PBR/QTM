@@ -115,7 +115,9 @@ public class QtmMain {
              System.out.println("---------------------------------------------");
         
              Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", Configs.getPropertyQTM("solrRun") + " restart" });
+            
              p.waitFor();
+             
          } catch (Exception e) {
              e.printStackTrace();
          }

@@ -65,6 +65,20 @@ public class AbbrevtoSynonyms {
 		}
 		writer.close();
 
+		String statoConfDir = Configs.getPropertyQTM("solrDir")+Configs.getPropertyQTM("core2")+"/conf/";
+		String propTermsConfDir = Configs.getPropertyQTM("solrDir")+Configs.getPropertyQTM("core3")+"/conf/";
+		
+		try{
+		    Process p1 = Runtime.getRuntime().exec("cp "+ core1SynonmsFile + " "+ statoConfDir);
+	             p1.waitFor();
+	             Process p2 = Runtime.getRuntime().exec("cp "+ core1SynonmsFile + " "+ propTermsConfDir);
+                     p2.waitFor();
+                     
+		}
+		catch(Exception e){
+		    
+		}
+		
 		
 	}
 
