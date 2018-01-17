@@ -83,14 +83,12 @@ public class QtmMain {
         // String solrProgram = Configs.getPropertyQTM("solrProgram");
         System.out.println("===============");
         System.out.println("QTLTableMiner++");
-        System.out.println("===============\n\n");
+        System.out.println("===============\n");
 
         //intialisation
         QtlDb.createTables();
 
-        System.out.println("\n");
-
-        //Step1:  reading xml files with pmc ids
+       //Step1:  reading xml files with pmc ids
         File[] xmlFiles = new File[pmcIds.size()];
         Article[] articles = new Article[pmcIds.size()];
 

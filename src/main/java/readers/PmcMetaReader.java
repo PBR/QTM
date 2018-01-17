@@ -45,7 +45,7 @@ import utils.Utilities;
  * PMCXMLReader class is used to read and parse XML data from PubMed Central database The class takes as input folder with XML
  * documents extracted from PMC database and creates array of Articles {@link Article} as output
  *
- * @author Nikola Milosevic
+ * @author Gurnoor Singh
  */
 public class PmcMetaReader {
 
@@ -151,7 +151,7 @@ public class PmcMetaReader {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("Problem in reading xml file");
+            System.out.println("Problem in processing xml file");
         }
 
         art.setNumQTLtables();
@@ -464,13 +464,13 @@ public class PmcMetaReader {
         return nodeList;
     }
 
-    public static File pmcDowloadXml(String PMCID) throws IOException, MalformedURLException {
+    public static File pmcDowloadXml(String pmcId) throws IOException, MalformedURLException {
 
-        File xmlfile = new File(PMCID + ".xml");
-
-        if (!xmlfile.exists()) {
+        File xmlfile = new File(pmcId + ".xml");
+        try{
+        if (!xmlfile.exists() || xmlfile.length()==0 ) {
             xmlfile.createNewFile();
-            String pmcWebserviceUrl = Configs.getPropertyQTM("pmcWebservicesEndpoint")+ PMCID + "/fullTextXML";
+            String pmcWebserviceUrl = Configs.getPropertyQTM("pmcWebservicesEndpoint")+ pmcId + "/fullTextXML";
             URL website = new URL(pmcWebserviceUrl);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(xmlfile);
@@ -478,6 +478,15 @@ public class PmcMetaReader {
             fos.close();
         }
         return xmlfile;
+        }
+        catch(Exception e){
+            if (xmlfile.exists()) {
+                Process p = Runtime.getRuntime().exec("rm "+pmcId+".xml");
+            }
+            System.out.println("xml file for "+pmcId+" not found");
+            return null;
+            
+        }
     }
 
 }

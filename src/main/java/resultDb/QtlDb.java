@@ -73,8 +73,6 @@ public class QtlDb {
         return true;
      } else
          return true;
-     
-     
     }
 
     public static void createTables() {
@@ -274,8 +272,6 @@ public class QtlDb {
                         }
 
                     }
-
-                    // InsertTraitEntry(a);
 
                 } else {
                     System.out.println(articles[i].getPmc() + " already exists");
