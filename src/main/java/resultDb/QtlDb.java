@@ -132,14 +132,13 @@ public class QtlDb {
                         articlestmt.executeUpdate();
                         articlestmt.close();
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                         System.out.println("*************************************************");
 
                         System.out.println("Article already exits, Please provide unique entries");
 
                         System.out.println("*************************************************");
-
-                        System.exit(1);
+                        break;
                     }
                     // System.out.println("Entry done for article number" + "\t"
                     // + articleID);
@@ -273,6 +272,8 @@ public class QtlDb {
 
                     }
 
+                    
+                    
                 } else {
                     System.out.println(articles[i].getPmc() + " already exists");
 
@@ -286,7 +287,13 @@ public class QtlDb {
 
             }
         }
+        System.out.println("Searching QTL in tables");
+        System.out.println("-------------------------------------------------");
+        insertQTLEntry(); 
+        
+    
     }
+        
 
     public static void insertQTLEntry() {
         try {
@@ -602,9 +609,14 @@ public class QtlDb {
                         } catch (NullPointerException e) {
                             preparedStatement.setNull(10, java.sql.Types.VARCHAR);
                         }
-
+                        
+                        try{ 
                         preparedStatement.executeUpdate();
-
+                        }catch(SQLException e){
+                            System.out.println("QTL detected is not Unique. Already exiting: " + T.getTraitName() );
+                            //throw e;
+                        }
+                        
                         //                            
                         //                            String insertQTLZtable = "INSERT INTO  QTL(pmc_id,tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,"
                         //                                    + "chromosome,marker,marker_uri, gene,gene_uri)" + "VALUES(" + pmc_id + "," + tableId + ","

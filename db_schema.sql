@@ -45,5 +45,6 @@ CREATE TABLE QTL (
   marker_uri        TEXT,
   gene              TEXT,
   gene_uri          TEXT,
+  PRIMARY KEY(tab_id, row_id),  	
   FOREIGN KEY(tab_id) REFERENCES TRAIT_TABLE(tab_id)
 );

@@ -125,21 +125,20 @@ public class QtmMain {
         System.out.println("Insert entry to the database.");
         System.out.println("-------------------------------------------------");
 
+        try{
         QtlDb.insertArticleEntry(articles);
+        }catch(Exception e){
+            System.exit(1);
+            
+        }
+        
+//        System.out.println("Searching QTL in tables");
+//        System.out.println("-------------------------------------------------");
+//        //      STEP4 Insert in QTL Table
+//        QtlDb.insertQTLEntry();
+        
+        
 
-        System.out.println("Searching QTL in tables");
-        System.out.println("-------------------------------------------------");
-        //      STEP4 Insert in Trait Table
-        QtlDb.insertQTLEntry();
-
-        // try {
-        //     System.out.println("\nSolr stoped!");
-        //     Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", solrProgram + " stop" });
-        //     p.waitFor();
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
-        // System.out.println("\n");
         String csvFile = "";
         try {
             csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
