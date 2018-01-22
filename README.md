@@ -47,8 +47,8 @@ ARGUMENTS
 
 OPTIONS
 =======
-  -o|--output FILE_PREFIX	Output files in SQLite/CSV formats.
+  -o, --output FILE_PREFIX	Output files in SQLite/CSV formats.
 				(default: qtl.{db,csv})
-  -v|--version			Print software version.
-  -h|--help			Print this help message.
+  -v, --version			Print software version.
+  -h, --help			Print this help message.
 ```
