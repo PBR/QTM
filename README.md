@@ -29,6 +29,9 @@ solr/install_solr.sh # install & start server at http://localhost:8983/
 
 ## Example use
 
+- input: `articles.txt`
+- output: `qtl.csv` and `qtl.db` (see the ER diagram [here](doc/ER_diagram.png))
+
 `./QTM articles.txt`
 
 `./QTM -h`
