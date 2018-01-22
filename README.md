@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/candYgene/QTM.svg?branch=master)](https://travis-ci.org/candYgene/QTM)
 
+## Description
 A significant amount of experimental information about [_Quantitative Trait Locus_](https://en.wikipedia.org/wiki/Quantitative_trait_locus) (QTL) studies are described in (heterogenous) tables of scientific articles. Briefly, a QTL is a genomic region that correlates with a trait of interest (phenotype). _QTM_ is a command-line tool to retrieve and semantically annotate results obtained from QTL mapping experiments. It takes full-text articles from the [Europe PMC](https://europepmc.org/) repository as input and outputs the extracted QTLs into a relational database (SQLite) and text file (CSV).
 
 ## Requirements
@@ -18,7 +19,7 @@ A significant amount of experimental information about [_Quantitative Trait Locu
   * [Chemical Entities of Biological Interest](https://www.ebi.ac.uk/chebi/) (ChEBI)
 * access to full-text articles (in XML) from [Europe PMC](https://europepmc.org/)
 
-## Install
+## Installation
 
 ```
 git clone https://github.com/PBR/QTM.git
