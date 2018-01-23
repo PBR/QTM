@@ -191,9 +191,25 @@ public class QtlDb {
                                         System.out.println("error in column Annotation" + colHeader);
                                     }
 
-                                    if (colAnno.equals("") || colAnno.equals(" ")) {
-                                        colAnno = null;
+                                    
+                                    JSONObject colAnnoJSON = new JSONObject();
+
+                                    try{
+                                    if (!"".equals(colAnno)) {
+                                        colAnnoJSON = processSolrOutputtoJson(colAnno);
+                                    } else {
+                                        colAnnoJSON.put("icd", "");
+                                        colAnnoJSON.put("matchingText", colHeader);
+                                        colAnnoJSON.put("prefTerm", colHeader);
+                                        colAnnoJSON.put("Term", "");
+                                        colAnnoJSON.put("start", "");
+                                        colAnnoJSON.put("end", "");
+                                        colAnnoJSON.put("Uuid", "");
                                     }
+                                    }catch(Exception e){
+                                        continue;
+                                    }
+                                    
 
                                     String insertColTable = "INSERT INTO COLUMN_ENTRY(tab_id, header,type, annot) VALUES"
                                             + "(?,?,?,?)";
@@ -215,7 +231,7 @@ public class QtlDb {
                                     }
 
                                     try {
-                                        colStmt.setString(4, colAnno);
+                                        colStmt.setString(4, colAnnoJSON.get("icd").toString());
                                     } catch (NullPointerException e) {
                                         colStmt.setNull(4, java.sql.Types.VARCHAR);
                                     }
@@ -357,11 +373,11 @@ public class QtlDb {
 
                     Set<JSONObject> genes = new HashSet<JSONObject>();
 
-                    JSONObject vals = new JSONObject();
-                    JSONObject prop = new JSONObject();
-                    JSONObject otherProp = new JSONObject();
+                    //JSONObject vals = new JSONObject();
+                    //JSONObject prop = new JSONObject();
+                    //JSONObject otherProp = new JSONObject();
 
-                    String sql2 = "SELECT Cel.Value, Col.header,Col.type, Col.annot FROM CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id"
+                    String sql2 = "SELECT Cel.Value, Col.header,Col.type FROM CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id"
                             + " WHERE row_id =" + rowId + " AND" + " Col.tab_id='" + tableId + "' AND"
                             + " Col.Type!='QTL descriptor' ;";
                     ResultSet rs2 = stmt2.executeQuery(sql2);
@@ -370,31 +386,16 @@ public class QtlDb {
                         String cellValue = "";
                         String colHeader = "";
                         String colType = "";
-                        String colAnno = "";
-
+                        
                         try {
                             cellValue = rs2.getString("value").replaceAll("\n", "").replace("\r", "");
                             colHeader = rs2.getString("header").replaceAll("\n", "").replace("\r", "");
                             colType = rs2.getString("type").replaceAll("\n", "").replace("\r", "");
-                            colAnno = rs2.getString("annot").replaceAll("\n", "").replace("\r", "");
+                           
                         } catch (NullPointerException e) {
                         }
 
-                        JSONObject colAnnoJSON = new JSONObject();
-
-                        if (!"".equals(colAnno)) {
-                            colAnnoJSON = processSolrOutputtoJson(colAnno);
-                            colAnnoJSON.put("actualValue", cellValue);
-                        } else {
-                            colAnnoJSON.put("icd", "");
-                            colAnnoJSON.put("matchingText", colHeader);
-                            colAnnoJSON.put("prefTerm", colHeader);
-                            colAnnoJSON.put("Term", "");
-                            colAnnoJSON.put("start", "");
-                            colAnnoJSON.put("end", "");
-                            colAnnoJSON.put("Uuid", "");
-                            colAnnoJSON.put("actualValue", cellValue);
-                        }
+                        
 
                         //System.out.println("Entry " + "\t" + cellValue + "\t" + colHeader + "\t" + colType);
 
@@ -412,7 +413,7 @@ public class QtlDb {
                                 ChromosomeNumber += cellValue.toString();
                             }
 
-                            vals.put(colAnnoJSON, colHeader);
+                            //vals.put(colAnnoJSON, colHeader);
 
                         } else if (colType.equals("QTL property")) {
 
@@ -507,18 +508,18 @@ public class QtlDb {
 
                             }
 
-                            prop.put(colAnnoJSON, colHeader);
+                            //prop.put(colAnnoJSON, colHeader);
 
                         } else {
-                            otherProp.put(colAnnoJSON, colHeader);
+                            //otherProp.put(colAnnoJSON, colHeader);
 
                         }
 
                     }
 
-                    T.setTraitValues(vals);
-                    T.setTraitProperties(prop);
-                    T.setOtherProperties(otherProp);
+                    //T.setTraitValues(vals);
+                    //T.setTraitProperties(prop);
+                    //T.setOtherProperties(otherProp);
 
                     System.out.println(T.getTraitName());
 
