@@ -248,7 +248,7 @@ public class QtlDb {
 
                                         PreparedStatement cellStmt = conn.prepareStatement(insertCellTable);
 
-                                        cellStmt.setInt(1, cel.getRow_number());
+                                        cellStmt.setInt(1, cel.getRow_number()+1);
                                         cellStmt.setInt(2, col_id);
                                         
                                         try {

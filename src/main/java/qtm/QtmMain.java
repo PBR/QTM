@@ -80,12 +80,13 @@ public class QtmMain {
             e.printStackTrace();
         }
         reader.close();
-        System.out.println(pmcIds.toString());
         // String solrProgram = Configs.getPropertyQTM("solrProgram");
         System.out.println("===============");
         System.out.println("QTLTableMiner++");
         System.out.println("===============\n");
 
+        System.out.println("Input List: \t"+pmcIds.toString());
+        
         //intialisation
         QtlDb.createTables();
 
