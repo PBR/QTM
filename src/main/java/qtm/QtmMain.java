@@ -53,12 +53,12 @@ public class QtmMain {
         }
 
         if (Arrays.asList(args).contains("-o")) {
-           String outFile = args[Arrays.asList(args).indexOf("-o") + 1];
-           if (outFile.endsWith(".db")) {
-               QtlDb.dbFile=args[Arrays.asList(args).indexOf("-o") + 1];
-           } else {
-               QtlDb.dbFile=args[Arrays.asList(args).indexOf("-o") + 1] + ".db";
-           }
+            String outFile = args[Arrays.asList(args).indexOf("-o") + 1];
+            if (outFile.endsWith(".db")) {
+                QtlDb.dbFile = args[Arrays.asList(args).indexOf("-o") + 1];
+            } else {
+                QtlDb.dbFile = args[Arrays.asList(args).indexOf("-o") + 1] + ".db";
+            }
         }
 
         String inputFile = args[0];
@@ -67,10 +67,11 @@ public class QtmMain {
 
         try {
             reader = new BufferedReader(new FileReader(inputFile));
-            String pmcId = null;
-
-            while ((pmcId = reader.readLine()) != null) {
-                pmcIds.add(pmcId);
+            String pmcIdline = null;
+            while ((pmcIdline = reader.readLine()) != null) {
+                pmcIdline = pmcIdline.trim();
+                if (!pmcIdline.equals(""))
+                    pmcIds.add(pmcIdline);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Input file '" + inputFile + "' not found.");
@@ -79,85 +80,78 @@ public class QtmMain {
             e.printStackTrace();
         }
         reader.close();
-
+        System.out.println(pmcIds.toString());
         // String solrProgram = Configs.getPropertyQTM("solrProgram");
         System.out.println("===============");
         System.out.println("QTLTableMiner++");
         System.out.println("===============\n");
 
-        
         //intialisation
         QtlDb.createTables();
 
-       //Step1:  reading xml files with pmc ids
+        //Step1:  reading xml files with pmc ids
         File[] xmlFiles = new File[pmcIds.size()];
         Article[] articles = new Article[pmcIds.size()];
 
         for (int i = 0; i < pmcIds.size(); i++) {
-            if(QtlDb.isPmcIdAlredyInDb(pmcIds.get(i))== false)
-            {
-            
-            xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
-            articles[i] = new Article("");
-            PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
+            if (QtlDb.isPmcIdAlredyInDb(pmcIds.get(i)) == false) {
 
-            //Parsing meta-data, cell entries and finding the abbreviations
-            System.out.println("Processing article:\n");
-            System.out.println("\t" + pmcIds.get(i));
-            System.out.println("---------------------------------------------");
-            articles[i] = pmcMetaReader.read();
-            }
-            else
-            {
-                System.out.println("EuroPMC article arlready exits"+pmcIds.get(i));
-                if (pmcIds.size()==i+1)
+                xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
+                articles[i] = new Article("");
+                PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
+
+                //Parsing meta-data, cell entries and finding the abbreviations
+                System.out.println("Processing article:\n");
+                System.out.println("\t" + pmcIds.get(i));
+                System.out.println("---------------------------------------------");
+                articles[i] = pmcMetaReader.read();
+            } else {
+                System.out.println("EuroPMC article arlready exits" + pmcIds.get(i));
+                if (pmcIds.size() == i + 1)
                     return;
                 else
                     continue;
             }
         }
         System.out.println("\n");
-        
+
         //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart
-        
+
         solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
-        
-        
+
         try {
-             System.out.println("Restarting Solr.");
-             System.out.println("---------------------------------------------");
-        
-             Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", Configs.getPropertyQTM("solrRun") + " restart" });
-            
-             p.waitFor();
-             
-         } catch (Exception e) {
-             e.printStackTrace();
-         }
-         System.out.println("\n");
+            System.out.println("Restarting Solr.");
+            System.out.println("---------------------------------------------");
+
+            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", Configs.getPropertyQTM("solrRun") + " restart" });
+
+            p.waitFor();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("\n");
 
         //STEP3 Inserting enteries into the database
         System.out.println("Insert entry to the database.");
         System.out.println("-------------------------------------------------");
 
-        for(int i=0; i<articles.length;i++){
-        try{
-            if(articles[i] != null)
-                QtlDb.insertArticleEntry(articles[i]);
-            else
-                continue;
-        }catch(Exception e){
-            System.exit(1);
-            
+        for (int i = 0; i < articles.length; i++) {
+            try {
+                if (articles[i] != null)
+                    QtlDb.insertArticleEntry(articles[i]);
+                else
+                    continue;
+            } catch (Exception e) {
+                System.exit(1);
+
+            }
         }
-        }
-        
-//        System.out.println("Searching QTL in tables");
-//        System.out.println("-------------------------------------------------");
-//        //      STEP4 Insert in QTL Table
-//        QtlDb.insertQTLEntry();
-        
-        
+
+        //        System.out.println("Searching QTL in tables");
+        //        System.out.println("-------------------------------------------------");
+        //        //      STEP4 Insert in QTL Table
+        //        QtlDb.insertQTLEntry();
 
         String csvFile = "";
         try {
@@ -179,7 +173,7 @@ public class QtmMain {
         System.out.println("Number of QTL founds:\t" + QtlDb.numberofQTL());
         System.out.println("SQLite file: \t" + QtlDb.dbFile);
         System.out.println("CSV file: \t" + csvFile);
-        
+
         try {
             QtlDb.conn.close();
         } catch (SQLException e) {
@@ -209,11 +203,11 @@ public class QtmMain {
         System.out.println("  QTM [-o FILE_PREFIX] FILE\n");
         System.out.println("ARGUMENTS");
         System.out.println("=========");
-        System.out.println("  FILE\t\t\t\tList of full-text articles from Europe PMC.\n"
-          + "\t\t\t\tEnter one PMCID per line.\n");
+        System.out.println("  FILE\t\t\t\tList of full-text articles from Europe PMC.\n" + "\t\t\t\tEnter one PMCID per line.\n");
         System.out.println("OPTIONS");
         System.out.println("=======");
-        System.out.println("  -o, --output FILE_PREFIX\tOutput files in SQLite/" + "CSV formats.\n\t\t\t\t(default: qtl.{db,csv})");
+        System.out
+                .println("  -o, --output FILE_PREFIX\tOutput files in SQLite/" + "CSV formats.\n\t\t\t\t(default: qtl.{db,csv})");
         System.out.println("  -v, --version\t\t\tPrint software version.");
         System.out.println("  -h, --help\t\t\tPrint this help message.\n");
     }
