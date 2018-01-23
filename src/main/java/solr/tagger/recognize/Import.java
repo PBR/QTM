@@ -14,8 +14,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -25,7 +23,7 @@ import solr.tagger.utils.Permutations;
 
 public class Import {
 
-    static Logger logger = LogManager.getRootLogger();
+    //static Logger logger = LogManager.getRootLogger();
 
     public static void main(String[] args) {
 
@@ -51,7 +49,7 @@ public class Import {
 	    }
 	} catch (ParseException e) {
 	    System.err.println("Parsing failed.  Reason: " + e.getMessage());
-	    logger.error("Parsing failed.  Reason: " + e.getMessage());
+	    //logger.error("Parsing failed.  Reason: " + e.getMessage());
 	} catch (SolrServerException e) {
 	    e.printStackTrace();
 	} catch (IOException e) {

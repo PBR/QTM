@@ -85,7 +85,7 @@ public class QtmMain {
         System.out.println("QTLTableMiner++");
         System.out.println("===============\n");
 
-        System.out.println("Input List: \t"+pmcIds.toString());
+        System.out.println("Input List: \t"+pmcIds.toString()+"\n");
         
         //intialisation
         QtlDb.createTables();
@@ -107,7 +107,7 @@ public class QtmMain {
                 System.out.println("---------------------------------------------");
                 articles[i] = pmcMetaReader.read();
             } else {
-                System.out.println("EuroPMC article arlready exits" + pmcIds.get(i));
+                System.out.println("EuroPMC article arlready exits " + pmcIds.get(i));
                 if (pmcIds.size() == i + 1)
                     return;
                 else

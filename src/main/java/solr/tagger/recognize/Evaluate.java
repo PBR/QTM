@@ -29,11 +29,10 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.jena.ext.com.google.common.net.UrlEscapers;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.util.ClientUtils;
 
@@ -48,7 +47,8 @@ import solr.tagger.utils.TagResponse;
 
 public class Evaluate {
 
-	//static Logger logger = org.apache.log4j.LogManager.getRootLogger();
+	static Logger logger = org.apache.log4j.LogManager.getRootLogger();
+	
 	static CloseableHttpClient client = HttpClients.createDefault();
 	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
 	static HashMap<String, String> headers = new HashMap<String, String>();
@@ -146,6 +146,7 @@ public class Evaluate {
         }
 
 	public static String processString(String input, String core, String match, String type) throws UnsupportedEncodingException, FileNotFoundException, IOException{
+	    logger.setLevel(Level.OFF);
 	    String output="";
 	try {
 	            //String request = "http://localhost:8983/solr/" + core + "/tag?fl=uuid,code,prefterm,term&overlaps=" + URLEncoder.encode(match, "UTF-8") + "&matchText=true&tagsLimit=5000&wt=json";

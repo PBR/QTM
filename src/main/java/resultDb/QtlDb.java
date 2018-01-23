@@ -185,8 +185,7 @@ public class QtlDb {
                                             colAnno = solr.tagger.recognize.Evaluate.processString(colHeader, core2, match, type);
                                         } else if (col.getColumns_type() == "QTL property") {
                                             colAnno = solr.tagger.recognize.Evaluate.processString(colHeader, core3, match, type);
-                                            ;
-                                        }
+                                            }
                                     } catch (Exception e) {
                                         colAnno = "";
                                         System.out.println("error in column Annotation" + colHeader);
@@ -430,8 +429,7 @@ public class QtlDb {
                             Matcher matcher4 = pattern2.matcher(colHeader);
 
                             if (matcher1.find() || matcher2.find() || matcher3.find() || matcher4.find()) {
-
-                                markers_associated += cellValue + " ; ";
+                                markers_associated += cellValue + "; ";
 
                                 try {
                                     markerOntologyAnnotation = solr.tagger.recognize.Evaluate.processString(markers_associated,
@@ -529,13 +527,13 @@ public class QtlDb {
                         String genes_icd = "";
 
                         for (JSONObject g : genes) {
-                            genes_icd += g.get("icd") + ";";
+                            genes_icd += g.get("icd") + "; ";
                         }
 
                         String markers_icd = "";
 
                         for (JSONObject m : markers) {
-                            markers_icd += m.get("icd") + ";";
+                            markers_icd += m.get("icd") + "; ";
                         }
 
                         if (markers_associated == "")
@@ -587,22 +585,51 @@ public class QtlDb {
                             preparedStatement.setNull(6, java.sql.Types.VARCHAR);
                         }
                         try {
+                            
+                            int count=0;
+                            for (int i = 0; i < markers_associated.length(); i++) {
+                                if (markers_associated.charAt(i) == ';')
+                                    count++;
+                                if(count==1)
+                                   markers_associated=markers_associated.replace(";","");
+                            }    
                             preparedStatement.setString(7, markers_associated);
                         } catch (NullPointerException e) {
                             preparedStatement.setNull(7, java.sql.Types.VARCHAR);
                         }
 
                         try {
+                            int count=0;
+                            for (int i = 0; i < markers_icd.length(); i++) {
+                                if (markers_icd.charAt(i) == ';')
+                                    count++;
+                                if(count==1)
+                                   markers_icd=markers_icd.replace(";","");
+                            }
                             preparedStatement.setString(8, markers_icd);
                         } catch (NullPointerException e) {
                             preparedStatement.setNull(8, java.sql.Types.VARCHAR);
                         }
                         try {
+                            int count=0;
+                            for (int i = 0; i < gene_associated.length(); i++) {
+                                if (gene_associated.charAt(i) == ';')
+                                    count++;
+                                if(count==1)
+                                   gene_associated=gene_associated.replace(";","");
+                            }
                             preparedStatement.setString(9, gene_associated);
                         } catch (NullPointerException e) {
                             preparedStatement.setNull(9, java.sql.Types.VARCHAR);
                         }
                         try {
+                            int count=0;
+                            for (int i = 0; i < genes_icd.length(); i++) {
+                                if (genes_icd.charAt(i) == ';')
+                                    count++;
+                                if(count==1)
+                                    genes_icd=genes_icd.replace(";","");
+                            }
                             preparedStatement.setString(10, genes_icd);
                         } catch (NullPointerException e) {
                             preparedStatement.setNull(10, java.sql.Types.VARCHAR);
