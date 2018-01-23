@@ -85,6 +85,7 @@ public class QtmMain {
         System.out.println("QTLTableMiner++");
         System.out.println("===============\n");
 
+        
         //intialisation
         QtlDb.createTables();
 
@@ -93,6 +94,9 @@ public class QtmMain {
         Article[] articles = new Article[pmcIds.size()];
 
         for (int i = 0; i < pmcIds.size(); i++) {
+            if(QtlDb.isPmcIdAlredyInDb(pmcIds.get(i))== false)
+            {
+            
             xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
             articles[i] = new Article("");
             PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
@@ -102,13 +106,24 @@ public class QtmMain {
             System.out.println("\t" + pmcIds.get(i));
             System.out.println("---------------------------------------------");
             articles[i] = pmcMetaReader.read();
-
+            }
+            else
+            {
+                System.out.println("EuroPMC article arlready exits"+pmcIds.get(i));
+                if (pmcIds.size()==i+1)
+                    return;
+                else
+                    continue;
+            }
         }
         System.out.println("\n");
-
+        
         //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart
-         solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
-         try {
+        
+        solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
+        
+        
+        try {
              System.out.println("Restarting Solr.");
              System.out.println("---------------------------------------------");
         
@@ -125,11 +140,16 @@ public class QtmMain {
         System.out.println("Insert entry to the database.");
         System.out.println("-------------------------------------------------");
 
+        for(int i=0; i<articles.length;i++){
         try{
-        QtlDb.insertArticleEntry(articles);
+            if(articles[i] != null)
+                QtlDb.insertArticleEntry(articles[i]);
+            else
+                continue;
         }catch(Exception e){
             System.exit(1);
             
+        }
         }
         
 //        System.out.println("Searching QTL in tables");

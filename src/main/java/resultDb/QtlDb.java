@@ -96,14 +96,12 @@ public class QtlDb {
         return number;
     }
 
-    public static void insertArticleEntry(Article articles[]) {
+    public static void insertArticleEntry(Article article) {
 
         //System.out.println("Article length is" + articles.length);
-
-        for (int i = 0; i < articles.length; i++) {
             //System.out.println("Article pmcid is" + articles[i].getPmc());
             try {
-                if (connectionDB() & isArticleEntryAlredyIn(articles[i], conn) == false) {
+                if (connectionDB() & isArticleEntryAlredyIn(article) == false) {
 
                     Statement abbrevstmt = null;
                     abbrevstmt = conn.createStatement();
@@ -112,9 +110,9 @@ public class QtlDb {
                     getRowidStmt = conn.createStatement();
 
                     // Article Table entry
-                    Scanner id = new Scanner(articles[i].getPmc()).useDelimiter("[^0-9]+");
+                    Scanner id = new Scanner(article.getPmc()).useDelimiter("[^0-9]+");
                     int pmc_id = id.nextInt();
-                    String pmc_tittle = articles[i].getTitle();
+                    String pmc_tittle = article.getTitle();
 
                     try {
 
@@ -138,22 +136,22 @@ public class QtlDb {
                         System.out.println("Article already exits, Please provide unique entries");
 
                         System.out.println("*************************************************");
-                        break;
+                    
                     }
                     // System.out.println("Entry done for article number" + "\t"
                     // + articleID);
 
-                    for (String key : articles[i].getAbbreviations().keySet()) {
+                    for (String key : article.getAbbreviations().keySet()) {
 
                         String insertAbrevTable = "INSERT INTO ABBREVIATION VALUES('" + key + "','"
-                                + articles[i].getAbbreviations().get(key) + "','" + pmc_id + "');";
+                                + article.getAbbreviations().get(key) + "','" + pmc_id + "');";
                         abbrevstmt.executeUpdate(insertAbrevTable);
                     }
                     abbrevstmt.close();
                     // System.out.println("Abbreviation entries inserted in the
                     // DB");
                     // QTL table entries
-                    for (Table t : articles[i].getTables()) {
+                    for (Table t : article.getTables()) {
 
                         // checking if table exists
                         try {
@@ -275,7 +273,7 @@ public class QtlDb {
                     
                     
                 } else {
-                    System.out.println(articles[i].getPmc() + " already exists");
+                    System.out.println(article.getPmc() + " already exists");
 
                 }
 
@@ -286,7 +284,7 @@ public class QtlDb {
                 e.printStackTrace();
 
             }
-        }
+       
         System.out.println("Searching QTL in tables");
         System.out.println("-------------------------------------------------");
         insertQTLEntry(); 
@@ -644,19 +642,56 @@ public class QtlDb {
         // System.exit(0);
     }
 
-    public static boolean isArticleEntryAlredyIn(Article a, Connection c) {
+    
+    public static boolean isPmcIdAlredyInDb(String pmc) {
         Boolean check = false;
+        Scanner id = new Scanner(pmc).useDelimiter("[^0-9]+");
+        int pid = id.nextInt();
+        
         try {
             Statement stmt = null;
-            stmt = c.createStatement();
+            stmt = conn.createStatement();
 
             // System.out.println("I am here");
             String sql = "SELECT pmc_id FROM Article";
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                String pmcId = rs.getString("pmc_id");
-                if (pmcId.equals(a.getPmc())) {
+                int pmcId = rs.getInt("pmc_id");
+                
+                               
+                if (pmcId == pid) {
+                    check = true;
+                    return check;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return check;
+
+    }
+    
+    
+    public static boolean isArticleEntryAlredyIn(Article a) {
+        Boolean check = false;
+        try {
+            Statement stmt = null;
+            stmt = conn.createStatement();
+
+            // System.out.println("I am here");
+            String sql = "SELECT pmc_id FROM Article";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int pmcId = rs.getInt("pmc_id");
+                
+                Scanner id = new Scanner(a.getPmc()).useDelimiter("[^0-9]+");
+                int pid = id.nextInt();
+                
+                if (pmcId == pid) {
                     check = true;
                     return check;
                 }
