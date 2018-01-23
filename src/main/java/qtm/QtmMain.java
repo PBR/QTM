@@ -213,10 +213,8 @@ public class QtmMain {
           + "\t\t\t\tEnter one PMCID per line.\n");
         System.out.println("OPTIONS");
         System.out.println("=======");
-        System.out.println(
-                "  -o|--output FILE_PREFIX\tOutput files in SQLite/" + "CSV formats.\n\t\t\t\t(default: qtl.{db,csv})");
-        System.out.println("  -v|--version\t\t\tPrint software version.");
-        System.out.println("  -h|--help\t\t\tPrint this help message.");
-        System.out.println("\n");
+        System.out.println("  -o, --output FILE_PREFIX\tOutput files in SQLite/" + "CSV formats.\n\t\t\t\t(default: qtl.{db,csv})");
+        System.out.println("  -v, --version\t\t\tPrint software version.");
+        System.out.println("  -h, --help\t\t\tPrint this help message.\n");
     }
 }

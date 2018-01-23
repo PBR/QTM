@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/candYgene/QTM.svg?branch=master)](https://travis-ci.org/candYgene/QTM)
 
+## Description
 A significant amount of experimental information about [_Quantitative Trait Locus_](https://en.wikipedia.org/wiki/Quantitative_trait_locus) (QTL) studies are described in (heterogenous) tables of scientific articles. Briefly, a QTL is a genomic region that correlates with a trait of interest (phenotype). _QTM_ is a command-line tool to retrieve and semantically annotate results obtained from QTL mapping experiments. It takes full-text articles from the [Europe PMC](https://europepmc.org/) repository as input and outputs the extracted QTLs into a relational database (SQLite) and text file (CSV).
 
 ## Requirements
@@ -18,7 +19,7 @@ A significant amount of experimental information about [_Quantitative Trait Locu
   * [Chemical Entities of Biological Interest](https://www.ebi.ac.uk/chebi/) (ChEBI)
 * access to full-text articles (in XML) from [Europe PMC](https://europepmc.org/)
 
-## Install
+## Installation
 
 ```
 git clone https://github.com/PBR/QTM.git
@@ -28,6 +29,9 @@ solr/install_solr.sh # install & start server at http://localhost:8983/
 ```
 
 ## Example use
+
+- input: `articles.txt`
+- output: `qtl.csv` and `qtl.db` (see the ER diagram [here](doc/ER_diagram.png))
 
 `./QTM articles.txt`
 
@@ -47,8 +51,8 @@ ARGUMENTS
 
 OPTIONS
 =======
-  -o|--output FILE_PREFIX	Output files in SQLite/CSV formats.
+  -o, --output FILE_PREFIX	Output files in SQLite/CSV formats.
 				(default: qtl.{db,csv})
-  -v|--version			Print software version.
-  -h|--help			Print this help message.
+  -v, --version			Print software version.
+  -h, --help			Print this help message.
 ```
