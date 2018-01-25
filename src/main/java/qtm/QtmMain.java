@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.base.Sys;
@@ -85,8 +86,8 @@ public class QtmMain {
         System.out.println("QTLTableMiner++");
         System.out.println("===============\n");
 
-        System.out.println("Input List: \t"+pmcIds.toString()+"\n");
-        
+        System.out.println("Input List: \t" + pmcIds.toString() + "\n");
+
         //intialisation
         QtlDb.createTables();
 
@@ -188,8 +189,15 @@ public class QtmMain {
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
 
+        String eTime = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(elapsedTime),
+                TimeUnit.MILLISECONDS.toMinutes(elapsedTime)
+                        - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedTime)), // The change is in this line
+                TimeUnit.MILLISECONDS.toSeconds(elapsedTime)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
+
         System.out.println("Memory used (bytes): \t" + memory);
-        System.out.println("Total runtime (s): \t" + elapsedTime);
+        System.out.println("Total runtime (s): \t" + eTime);
+
     }
 
     public static void printHelp() {
