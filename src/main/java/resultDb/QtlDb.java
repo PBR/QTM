@@ -198,13 +198,13 @@ public class QtlDb {
                                     if (!"".equals(colAnno)) {
                                         colAnnoJSON = processSolrOutputtoJson(colAnno);
                                     } else {
-                                        colAnnoJSON.put("icd", null);
                                         colAnnoJSON.put("matchingText", colHeader);
                                         colAnnoJSON.put("prefTerm", colHeader);
                                         colAnnoJSON.put("Term", null);
                                         colAnnoJSON.put("start", null);
                                         colAnnoJSON.put("end", null);
                                         colAnnoJSON.put("Uuid", null);
+                                        colAnnoJSON.put("icd", null);
                                     }
                                     }catch(Exception e){
                                         continue;
