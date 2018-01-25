@@ -24,7 +24,7 @@ public class AbbrevtoSynonyms {
 
     public static void abbrevToSolrSynonyms(Article articles[])
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        String core1SynonmsFile = Configs.getPropertyQTM("solrDir") + "core1/conf/synonyms.txt";
+        String core1SynonmsFile = Configs.getPropertyQTM("solrDir") + "/" + Configs.getPropertyQTM("core1") + "/conf/synonyms.txt";
 
         HashMap<String, String> oldAbbrev = new HashMap<String, String>();
         Properties properties = new Properties();

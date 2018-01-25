@@ -48,13 +48,12 @@ public class QtlDb {
     private static String core1 = Configs.getPropertyQTM("core1");
     private static String core2 = Configs.getPropertyQTM("core2");
     private static String core3 = Configs.getPropertyQTM("core3");
-    private static String coreSGNMarkers = Configs.getPropertyQTM("coreSGNMarkers");
-    private static String coreSGNgenes = Configs.getPropertyQTM("coreSGNgenes");
+    private static String core4 = Configs.getPropertyQTM("core4");
+    private static String core5 = Configs.getPropertyQTM("core5");
 
     private static String match = Configs.getPropertyQTM("match");
     private static String type = Configs.getPropertyQTM("type");
-    private static String core1Dir = Configs.getPropertyQTM("core1Dir");
-
+    
     public static boolean connectionDB() {
      if(conn == null){
         
@@ -434,7 +433,7 @@ public class QtlDb {
 
                                 try {
                                     markerOntologyAnnotation = solr.tagger.recognize.Evaluate.processString(markers_associated,
-                                            coreSGNMarkers, match, type);
+                                            core4, match, type);
 
                                 } catch (Exception e) {
                                     markerOntologyAnnotation = "";
@@ -480,7 +479,7 @@ public class QtlDb {
 
                                 try {
                                     geneOntologyAnnotation = solr.tagger.recognize.Evaluate.processString(gene_associated,
-                                            coreSGNgenes, match, type);
+                                            core5, match, type);
 
                                 } catch (Exception e) {
                                     geneOntologyAnnotation = "";
