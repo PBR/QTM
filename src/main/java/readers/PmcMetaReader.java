@@ -156,7 +156,7 @@ public class PmcMetaReader {
 
         art.setNumQTLtables();
 
-        System.out.println("NUMBER OF QTL TABLESSS:" + art.getNumQTLtables());
+        System.out.println("NUMBER OF QTL TABLES:" + art.getNumQTLtables());
 
         if (art.getNumQTLtables() > 0) {
             for (Table t : art.getTables()) {

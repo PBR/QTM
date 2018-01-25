@@ -170,9 +170,9 @@ public class QtmMain {
         System.out.println("=================================================");
         System.out.println("RESULTS are available in the following files:");
         System.out.println("=================================================");
-        System.out.println("Number of processed articles:\t" + articles.length);
-        System.out.println("Number of Trait tables founds:\t" + QtlDb.numberofTraitTable());
-        System.out.println("Number of QTL founds:\t" + QtlDb.numberofQTL());
+        System.out.println("Total number of processed articles:\t" + articles.length);
+        System.out.println("Total number of trait tables:\t" + QtlDb.numberofTraitTable());
+        System.out.println("Total number of QTL statements:\t" + QtlDb.numberofQTL());
         System.out.println("SQLite file: \t" + QtlDb.dbFile);
         System.out.println("CSV file: \t" + csvFile);
 
@@ -196,7 +196,7 @@ public class QtmMain {
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
 
         System.out.println("Memory used (KB): \t" + memory);
-        System.out.println("Total runtime (s): \t" + eTime);
+        System.out.println("Total runtime (HH:MM:SS): \t" + eTime);
 
     }
 
