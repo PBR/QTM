@@ -185,7 +185,7 @@ public class QtmMain {
 
         Runtime runtime = Runtime.getRuntime();
         runtime.gc();
-        long memory = runtime.totalMemory() - runtime.freeMemory();
+        long memory = (runtime.totalMemory() - runtime.freeMemory()) / 1024;
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
 
@@ -195,7 +195,7 @@ public class QtmMain {
                 TimeUnit.MILLISECONDS.toSeconds(elapsedTime)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
 
-        System.out.println("Memory used (bytes): \t" + memory);
+        System.out.println("Memory used (KB): \t" + memory);
         System.out.println("Total runtime (s): \t" + eTime);
 
     }
