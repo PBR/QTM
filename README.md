@@ -30,8 +30,8 @@ solr/install_solr.sh # install & start server at http://localhost:8983/
 
 ## Example use
 
-- input: `articles.txt`
-- output: `qtl.csv` and `qtl.db` (see the ER diagram [here](doc/ER_diagram.png))
+- input: `articles.txt` with PMCIDs (one per line)
+- output: `qtl.csv` and `qtl.db` (see the database model or Entity-Relationship diagram [here](doc/ER_diagram.png))
 
 `./QTM articles.txt`
 
