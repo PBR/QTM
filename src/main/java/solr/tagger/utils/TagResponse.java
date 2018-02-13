@@ -6,22 +6,22 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 public class TagResponse {
-    private List<TagItem> items = new ArrayList<TagItem>();
+	private List<TagItem> items = new ArrayList<TagItem>();
 
-    public List<TagItem> getItems() {
-        return items;
-    }
+	public List<TagItem> getItems() {
+		return items;
+	}
 
-    public void setItems(List<TagItem> items) {
-        this.items = items;
-    }
-    
-    public void add(TagItem item){
-	this.items.add(item);
-    }
-    
-    @Override
-    public String toString(){
-	return StringUtils.join(items,",");
-    }
+	public void setItems(List<TagItem> items) {
+		this.items = items;
+	}
+
+	public void add(TagItem item) {
+		this.items.add(item);
+	}
+
+	@Override
+	public String toString() {
+		return StringUtils.join(items, ",");
+	}
 }

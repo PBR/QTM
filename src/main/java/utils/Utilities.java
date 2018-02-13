@@ -34,10 +34,9 @@ public class Utilities {
 			Double.parseDouble(str);
 		} catch (NumberFormatException nfe) {
 			return false;
+		} catch (NullPointerException e) {
+			return false;
 		}
-                catch(NullPointerException e){
-                    return false;
-                }
 		return true;
 	}
 
@@ -69,15 +68,16 @@ public class Utilities {
 	 *            the xml
 	 * @return the string
 	 */
-	public static String createXMLStringFromSubNodeWithoutDeclaration(Node xml) {
+	public static String createXMLStringFromSubNodeWithoutDeclaration(
+			Node xml) {
 		xml = xml.getFirstChild();
 		String result = "";
 		try {
 			StringWriter sw = new StringWriter();
 			Transformer serializer = TransformerFactory.newInstance()
 					.newTransformer();
-			serializer
-					.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
+					"yes");
 			serializer.transform(new DOMSource(xml), new StreamResult(sw));
 			result = sw.toString();
 		} catch (Exception ex) {
@@ -96,7 +96,6 @@ public class Utilities {
 		return result;
 	}
 
-
 	public static boolean isSpaceOrEmpty(String s) {
 		if (s == null)
 			return false;
@@ -105,8 +104,8 @@ public class Utilities {
 		if (s.length() == 0)
 			return true;
 		char ch = s.charAt(0);
-		if (((int) ch) == 8195 || (int) ch == 160 || (int) ch == ' '
-				|| (int) ch == 8194 || (int) ch == 8201)
+		if ((ch) == 8195 || ch == 160 || ch == ' '
+				|| ch == 8194 || ch == 8201)
 			return true;
 		else
 			return false;
@@ -135,7 +134,6 @@ public class Utilities {
 		}
 	}
 
-
 	public static int getFirstValue(String s) {
 		int numericStart = 0;
 		int numericCount = 0;
@@ -155,8 +153,8 @@ public class Utilities {
 		}
 		int num = 0;
 		if (numericCount > 0)
-			num = Integer.parseInt(s.substring(numericStart, numericStart
-					+ numericCount));
+			num = Integer.parseInt(
+					s.substring(numericStart, numericStart + numericCount));
 		return num;
 
 	}

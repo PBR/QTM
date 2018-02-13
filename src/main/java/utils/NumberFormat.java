@@ -9,20 +9,17 @@ public class NumberFormat {
 	private String number;
 	private String format;
 	private float value;
-	
-	public NumberFormat(String num,String form)
-	{
+
+	public NumberFormat(String num, String form) {
 		this.number = num.replace(" ", "");
 		this.format = form;
-		try{
+		try {
 			value = Float.parseFloat(num);
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			value = 0;
 		}
 	}
-	
+
 	public String getNumber() {
 		return number;
 	}

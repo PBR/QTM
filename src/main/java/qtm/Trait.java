@@ -1,13 +1,18 @@
+/**
+ * @author gurnoor
+ * The Class Trait.
+ */
+
 package qtm;
 
 import org.json.simple.JSONObject;
 
 public class Trait {
-	
-private static int traitId;
-	
+
+	private static int traitId;
+
 	private String TraitName;
-	
+
 	public static int getTraitID() {
 		return traitId;
 	}
@@ -40,9 +45,9 @@ private static int traitId;
 		this.traitValues = traitValues;
 	}
 
-	private JSONObject traitProperties=new JSONObject();
-	
-	private JSONObject otherProperties= new JSONObject();
+	private JSONObject traitProperties = new JSONObject();
+
+	private JSONObject otherProperties = new JSONObject();
 
 	public JSONObject getOtherProperties() {
 		return otherProperties;
@@ -52,23 +57,19 @@ private static int traitId;
 		this.otherProperties = otherProperties;
 	}
 
-	private JSONObject traitValues=new JSONObject();
+	private JSONObject traitValues = new JSONObject();
 
-	public Trait(String traitName){
+	public Trait(String traitName) {
 		super();
 		this.TraitName = traitName;
 	}
-	
-	public Trait(String traitName, JSONObject traitProperties, JSONObject traitValues) {
+
+	public Trait(String traitName, JSONObject traitProperties,
+			JSONObject traitValues) {
 		super();
 		this.TraitName = traitName;
 		this.traitProperties = traitProperties;
 		this.traitValues = traitValues;
 	}
-	
-	
-	
-	
-    
-	 
+
 }

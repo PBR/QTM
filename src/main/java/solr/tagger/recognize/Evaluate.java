@@ -45,21 +45,31 @@ import solr.tagger.utils.Position;
 import solr.tagger.utils.TagItem;
 import solr.tagger.utils.TagResponse;
 
+/**
+ * @author gurnoor
+ */
 public class Evaluate {
 
 	static Logger logger = org.apache.log4j.LogManager.getRootLogger();
-	
+
 	static CloseableHttpClient client = HttpClients.createDefault();
-	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+	static SimpleDateFormat dateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd-HHmmss");
 	static HashMap<String, String> headers = new HashMap<String, String>();
-	static FileNameExtensionFilter filter = new FileNameExtensionFilter("text only", "txt");
+	static FileNameExtensionFilter filter = new FileNameExtensionFilter(
+			"text only", "txt");
 
 	public static void main(String[] args) throws URISyntaxException {
-		Options options = new Options().addOption("solr", true, "SOLR repository").addOption("core", true, "SOLR core")
-				.addOption("outputfolder", true, "output folder for results file")
-				.addOption("input",true,"input text to tag")
-				.addOption("match", true, "match type: ALL, NO_SUB or LONGEST_DOMINANT_RIGHT (default)")
-				.addOption("type", true, "optional file type").addOption("output", true, "optional output file");
+		Options options = new Options()
+				.addOption("solr", true, "SOLR repository")
+				.addOption("core", true, "SOLR core")
+				.addOption("outputfolder", true,
+						"output folder for results file")
+				.addOption("input", true, "input text to tag")
+				.addOption("match", true,
+						"match type: ALL, NO_SUB or LONGEST_DOMINANT_RIGHT (default)")
+				.addOption("type", true, "optional file type")
+				.addOption("output", true, "optional output file");
 
 		CommandLineParser parser = new DefaultParser();
 
@@ -72,39 +82,55 @@ public class Evaluate {
 				throw new ParseException("unknown arguments");
 			}
 
-			String solr = line.hasOption("solr") ? line.getOptionValue("solr") : "http://localhost:8983/solr";
-			String core = line.hasOption("core") ? line.getOptionValue("core") : "sgnMarkers";
-			String match = line.hasOption("match") ? line.getOptionValue("match") : "LONGEST_DOMINANT_RIGHT";
-			String input = line.hasOption("input") ? line.getOptionValue("input") : null;
-			String outputfolder = line.hasOption("outputfolder") ? line.getOptionValue("outputfolder") : "data/Resultdata";
-			String type = line.hasOption("type") ? line.getOptionValue("type") : "dictionary";
+			String solr = line.hasOption("solr")
+					? line.getOptionValue("solr")
+					: "http://localhost:8983/solr";
+			String core = line.hasOption("core")
+					? line.getOptionValue("core")
+					: "sgnMarkers";
+			String match = line.hasOption("match")
+					? line.getOptionValue("match")
+					: "LONGEST_DOMINANT_RIGHT";
+			String input = line.hasOption("input")
+					? line.getOptionValue("input")
+					: null;
+			String outputfolder = line.hasOption("outputfolder")
+					? line.getOptionValue("outputfolder")
+					: "data/Resultdata";
+			String type = line.hasOption("type")
+					? line.getOptionValue("type")
+					: "dictionary";
 
-			String output = line.hasOption("output") ? line.getOptionValue("output"): "TixdbSolarOutput";
+			String output = line.hasOption("output")
+					? line.getOptionValue("output")
+					: "TixdbSolarOutput";
 
-			if (solr != null && core != null && type != null && match != null && output != null
-					) {
-				//logger.info("output file = " + output);
-				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output), "UTF-8"));
+			if (solr != null && core != null && type != null && match != null
+					&& output != null) {
+				// logger.info("output file = " + output);
+				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream(output), "UTF-8"));
 				out.write(StringUtils.join(
-						new String[] { "SET", "FILE", "CODE", "MATCHTEXT", "PREFTERM", "TERM", "START", "END", "UUID" },
+						new String[]{"SET", "FILE", "CODE", "MATCHTEXT",
+								"PREFTERM", "TERM", "START", "END", "UUID"},
 						"|"));
 				out.newLine();
-				
-				processArray(out, input,core, match, type);
-				
-				//String in="solcap_snp_sl_100001";
-				
-				//processString(in, core, match, type);
-				
+
+				processArray(out, input, core, match, type);
+
+				// String in="solcap_snp_sl_100001";
+
+				// processString(in, core, match, type);
+
 				out.close();
 			} else {
-				new HelpFormatter().printHelp(Evaluate.class.getCanonicalName(), options);
+				new HelpFormatter().printHelp(Evaluate.class.getCanonicalName(),
+						options);
 			}
-
 
 		} catch (ParseException e) {
 			System.err.println("Parsing failed.  Reason: " + e.getMessage());
-			//logger.error("Parsing failed.  Reason: " + e.getMessage());
+			// logger.error("Parsing failed. Reason: " + e.getMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -114,87 +140,122 @@ public class Evaluate {
 	 * this method generates a new output file name based on the various
 	 * parameters
 	 */
-	public static void processArray(BufferedWriter out, String input, String core,String match, String type) throws UnsupportedEncodingException, FileNotFoundException, IOException{
-			//String [] line={"Solyc03g112630.2.1","Solyc03g112670.2.1","Solyc05g052410.1.1"};
-	                String [] line={"solcap_snp_sl_100001","J1","TG194-TG523","At4g10050","cLEX-4-G10","TG194-J1","T0408","TG194-J1","TG194-TG523"};
-			//String [] line={"Late blight", "Maturity", "Yield", "Fruit Shape", "Fruit Quality"};
-			//String [] line={"chromosome","abbreviation","Mean","H2","Variation", "Regression results P-value","Regression results R2" };
-    	    //String [] line={"Trait","Genotype","Chr.", "Effect under HL a","Detection year under HL","Effect under LL"};
-			int offset =0;
-    	    for(int i=0; i< line.length; i++){
-    	  //input="This invention relates to methods for identifying maize plants having increased culturability and/or transformability. The methods use molecular markers to identify and to select plants with increased culturability and/or transformability or to identify and deselect plants with decreased culturability and/or transformability. Maize plants generated by the methods of the invention are also a feature of the invention.";
+	public static void processArray(BufferedWriter out, String input,
+			String core, String match, String type)
+			throws UnsupportedEncodingException, FileNotFoundException,
+			IOException {
+		// String []
+		// line={"Solyc03g112630.2.1","Solyc03g112670.2.1","Solyc05g052410.1.1"};
+		String[] line = {"solcap_snp_sl_100001", "J1", "TG194-TG523",
+				"At4g10050", "cLEX-4-G10", "TG194-J1", "T0408", "TG194-J1",
+				"TG194-TG523"};
+		// String [] line={"Late blight", "Maturity", "Yield", "Fruit Shape",
+		// "Fruit Quality"};
+		// String [] line={"chromosome","abbreviation","Mean","H2","Variation",
+		// "Regression results P-value","Regression results R2" };
+		// String [] line={"Trait","Genotype","Chr.", "Effect under HL
+		// a","Detection year under HL","Effect under LL"};
+		int offset = 0;
+		for (int i = 0; i < line.length; i++) {
+			// input="This invention relates to methods for identifying maize
+			// plants having increased culturability and/or transformability.
+			// The methods use molecular markers to identify and to select
+			// plants with increased culturability and/or transformability or to
+			// identify and deselect plants with decreased culturability and/or
+			// transformability. Maize plants generated by the methods of the
+			// invention are also a feature of the invention.";
+			try {
+				String request = "http://localhost:8983/solr/" + core
+						+ "/tag?fl=uuid,code,prefterm,term&overlaps="
+						+ URLEncoder.encode(match, "UTF-8")
+						+ "&matchText=true&tagsLimit=5000&wt=json";
+
+				// System.out.println(request);
+
+				TagResponse response = parse(
+						getStringContent(request, line[i], headers));
+
+				for (TagItem item : response.getItems()) {
+					Integer start = item.getStart();
+					Integer end = item.getEnd();
+					out.write(StringUtils.join(new String[]{item.getIcd10(),
+							item.getMatchText(), item.getPrefTerm(),
+							item.getTerm(), start.toString(), end.toString(),
+							item.getUuid()}, "|"));
+					out.newLine();
+				}
+
+				System.out.println(response.toString());
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static String processString(String input, String core, String match,
+			String type) throws UnsupportedEncodingException,
+			FileNotFoundException, IOException {
+		logger.setLevel(Level.OFF);
+		String output = "";
 		try {
-		    String request = "http://localhost:8983/solr/" + core + "/tag?fl=uuid,code,prefterm,term&overlaps=" + URLEncoder.encode(match, "UTF-8") + "&matchText=true&tagsLimit=5000&wt=json";
-                     
-		       //System.out.println(request);
-        		    
-        		    TagResponse response = parse(getStringContent(request, line[i], headers));
-        		    
-        		    for (TagItem item : response.getItems()){
-            			Integer start = item.getStart();
-            			Integer end = item.getEnd();
-            			out.write(StringUtils.join(new String[]{item.getIcd10(), item.getMatchText(), item.getPrefTerm(), item.getTerm(), start.toString(), end.toString(), item.getUuid()},"|"));
-            			out.newLine();
-        		    }
+			// String request = "http://localhost:8983/solr/" + core +
+			// "/tag?fl=uuid,code,prefterm,term&overlaps=" +
+			// URLEncoder.encode(match, "UTF-8") +
+			// "&matchText=true&tagsLimit=5000&wt=json";
+			String request = "http://localhost:8983/solr/" + core
+					+ "/tag?fl=uuid,code,prefterm,term&overlaps="
+					+ URLEncoder.encode(match)
+					+ "&matchText=true&tagsLimit=5000&wt=json";
 
-        		    System.out.println(response.toString());
+			String content = getStringContent(request, input, headers);
 
-    	    	}catch(Exception e){
-    	    		e.printStackTrace();
-    	    		}
-    	    }
-        }
+			System.out.println("***" + content);
 
-	public static String processString(String input, String core, String match, String type) throws UnsupportedEncodingException, FileNotFoundException, IOException{
-	    logger.setLevel(Level.OFF);
-	    String output="";
-	try {
-	            //String request = "http://localhost:8983/solr/" + core + "/tag?fl=uuid,code,prefterm,term&overlaps=" + URLEncoder.encode(match, "UTF-8") + "&matchText=true&tagsLimit=5000&wt=json";
-    		    String request = "http://localhost:8983/solr/" + core + "/tag?fl=uuid,code,prefterm,term&overlaps=" + URLEncoder.encode(match) + "&matchText=true&tagsLimit=5000&wt=json";
-                
-    		    
-    		    String content=getStringContent(request, input, headers);
+			TagResponse response = parse(content);
 
-    		    System.out.println("***"+content);
+			for (TagItem item : response.getItems()) {
+				Integer start = item.getStart();
+				Integer end = item.getEnd();
+				output = StringUtils.join(new String[]{item.getIcd10(),
+						item.getMatchText(), item.getPrefTerm(), item.getTerm(),
+						start.toString(), end.toString(), item.getUuid()}, "|");
+				output += "\n";
+			}
 
-    		    TagResponse response = parse(content);
-
-    		    for (TagItem item : response.getItems()){
-        			Integer start = item.getStart();
-        			Integer end = item.getEnd();
-        			output= StringUtils.join(new String[]{item.getIcd10(), item.getMatchText(), item.getPrefTerm(), item.getTerm(), start.toString(), end.toString(), item.getUuid()},"|");
-        			output+= "\n";
-    		    }
-
-	    	}catch(Exception e){
-	    		e.printStackTrace();
-	    		output="";
-	    		return output;
-	    		}
-
+		} catch (Exception e) {
+			e.printStackTrace();
+			output = "";
 			return output;
+		}
+
+		return output;
 	}
 
-	public static String processString2(String input, String core, String match, String type) throws UnsupportedEncodingException, FileNotFoundException, IOException{
-	    String res="";
+	public static String processString2(String input, String core, String match,
+			String type) throws UnsupportedEncodingException,
+			FileNotFoundException, IOException {
+		String res = "";
 		try {
-    		    String request = "http://localhost:8983/solr/" + core + "/tag?fl=uuid,code,prefterm,term&overlaps=" + URLEncoder.encode(match) + "&matchText=true&tagsLimit=5000&wt=json";
-    		    res=getStringContent(request, input, headers);
+			String request = "http://localhost:8983/solr/" + core
+					+ "/tag?fl=uuid,code,prefterm,term&overlaps="
+					+ URLEncoder.encode(match)
+					+ "&matchText=true&tagsLimit=5000&wt=json";
+			res = getStringContent(request, input, headers);
 
-	    	}catch(Exception e){
-	    		e.printStackTrace();
-	    		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-			return(res);
+		return (res);
 	}
 
-
-	public static String getStringContent(String uri, String postData, HashMap<String, String> headers)
-			throws Exception {
+	public static String getStringContent(String uri, String postData,
+			HashMap<String, String> headers) throws Exception {
 		HttpPost request = new HttpPost(uri);
-		
-		request.setEntity(new StringEntity(ClientUtils.escapeQueryChars(postData), "UTF-8"));
 
+		request.setEntity(new StringEntity(
+				ClientUtils.escapeQueryChars(postData), "UTF-8"));
 
 		for (Entry<String, String> s : headers.entrySet()) {
 			request.setHeader(s.getKey(), s.getValue());
@@ -203,12 +264,13 @@ public class Evaluate {
 		HttpResponse response = client.execute(request);
 
 		InputStream ips = response.getEntity().getContent();
-		BufferedReader buf = new BufferedReader(new InputStreamReader(ips, "UTF-8"));
+		BufferedReader buf = new BufferedReader(
+				new InputStreamReader(ips, "UTF-8"));
 
-//		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-//			throw new Exception(response.getStatusLine().getReasonPhrase());
-//
-//		}
+		// if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+		// throw new Exception(response.getStatusLine().getReasonPhrase());
+		//
+		// }
 		StringBuilder sb = new StringBuilder();
 		String s;
 		while (true) {
@@ -236,29 +298,31 @@ public class Evaluate {
 			String aMatchText = null;
 			for (int i = 0; i < tag.size(); i += 2) {
 				switch (tag.get(i).getAsString()) {
-				case "matchText":
-					aMatchText = tag.get(i + 1).getAsString();
-					break;
-				case "startOffset":
-					aStartOffset = tag.get(i + 1).getAsInt();
-					break;
-				case "endOffset":
-					aEndOffset = tag.get(i + 1).getAsInt();
-					break;
-				case "ids":
-					for (JsonElement id : tag.get(i + 1).getAsJsonArray()) {
-						String uuid = id.getAsString();
-						if (!positions.containsKey(uuid)) {
-							positions.put(uuid, new ArrayList<Position>());
+					case "matchText" :
+						aMatchText = tag.get(i + 1).getAsString();
+						break;
+					case "startOffset" :
+						aStartOffset = tag.get(i + 1).getAsInt();
+						break;
+					case "endOffset" :
+						aEndOffset = tag.get(i + 1).getAsInt();
+						break;
+					case "ids" :
+						for (JsonElement id : tag.get(i + 1).getAsJsonArray()) {
+							String uuid = id.getAsString();
+							if (!positions.containsKey(uuid)) {
+								positions.put(uuid, new ArrayList<Position>());
+							}
+							positions.get(uuid).add(new Position(aMatchText,
+									aStartOffset, aEndOffset));
 						}
-						positions.get(uuid).add(new Position(aMatchText, aStartOffset, aEndOffset));
-					}
-					break;
+						break;
 				}
 			}
 		}
 
-		JsonObject response = jobject.getAsJsonObject().getAsJsonObject("response");
+		JsonObject response = jobject.getAsJsonObject()
+				.getAsJsonObject("response");
 		for (JsonElement doc : response.getAsJsonArray("docs")) {
 			String uuid = doc.getAsJsonObject().get("uuid").getAsString();
 			for (Position position : positions.get(uuid)) {
@@ -266,7 +330,8 @@ public class Evaluate {
 				item.setUuid(uuid);
 				item.setIcd10(doc.getAsJsonObject().get("code").getAsString());
 				item.setTerm(doc.getAsJsonObject().get("term").getAsString());
-				item.setPrefTerm(doc.getAsJsonObject().get("prefterm").getAsString());
+				item.setPrefTerm(
+						doc.getAsJsonObject().get("prefterm").getAsString());
 				item.setStart(position.getStart());
 				item.setEnd(position.getEnd());
 				item.setMatchText(position.getMatchText());

@@ -1,18 +1,15 @@
 /**
- *
  * @author gurnoor
+ * The Class Cell. One cell of the table. Contains all necessary information
+ * about cell
  */
 
 package qtm;
 
 import org.json.simple.JSONObject;
+
 import utils.Utilities;
 
-/**
- * The Class Cell. One cell of the table. Contains all necessary information
- * about cell
- *
- */
 public class Cell {
 
 	/** The row_number. */
@@ -147,7 +144,7 @@ public class Cell {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String getcell_value() {

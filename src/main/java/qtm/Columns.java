@@ -1,19 +1,22 @@
+/**
+ * @author gurnoor
+ * The Class Column. One Column of the table. Contains all necessary information
+ * about column
+ */
 package qtm;
 
 public class Columns {
 
 	private int colID;
 
+	private String header = "";
 
-	private String header="";
-	
-	private String columns_type="";
-	
-	public String[] entries; 
-	
+	private String columns_type = "";
+
+	public String[] entries;
+
 	public Cell[] celz;
 
-	
 	public int getColID() {
 		return colID;
 	}
@@ -22,19 +25,8 @@ public class Columns {
 		this.colID = colID;
 	}
 
-	
 	public Columns() {
 	}
-	
-//	public void CreateCells(int Rows )
-//	{
-//		RowEntries = new C[Rows];
-//		for(int i=0;i<Rows;i++)
-//		{
-//			 RowEntries[i] = new C();
-//			}
-//		}
-	
 
 	public Cell[] getcelz() {
 		return celz;
@@ -44,9 +36,7 @@ public class Columns {
 		celz = c;
 	}
 
-	
-	
-   	public String getColumns_type() {
+	public String getColumns_type() {
 		return columns_type;
 	}
 
@@ -61,16 +51,13 @@ public class Columns {
 	public void setHeader(String h) {
 		header = h;
 	}
-	
+
 	public String[] getRowEntries() {
 		return entries;
 	}
-
 
 	public void setRowEntries(String[] rowEntries) {
 		entries = rowEntries;
 	}
 
-	
-	
 }

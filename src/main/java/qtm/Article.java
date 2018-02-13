@@ -1,6 +1,6 @@
 /**
- *
  * @author gurnoor
+ * Artilce class
  */
 
 package qtm;
@@ -11,22 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import utils.Author;
-
-
-/**
- * 
- * The Class Article. Used for holding various data about crawled article and tables in it
- * @author Nikola Milosevic
- * 
- */
 public class Article {
 	private String title;
 	private String venue;
 	private String pmid;
 	private String pmc;
 	private String doi;
-	
-
 	private String pissn;
 	private String eissn;
 	private String file_name;
@@ -47,8 +37,7 @@ public class Article {
 	private int numQTLtables;
 	private HashMap<String, String> abbreviations;
 	private List<Trait> traits = new ArrayList<Trait>();
-	
-	
+
 	public List<Trait> getTrait() {
 		return traits;
 	}
@@ -70,24 +59,23 @@ public class Article {
 	}
 
 	public void setNumQTLtables() {
-		int i=0;
+		int i = 0;
 		for (Table t : this.tables) {
-			//System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
-			try{
-			if(t.getisTraitTable()==true){
-				//System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
-				i++;
+			// System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
+			try {
+				if (t.getisTraitTable() == true) {
+					// System.out.println("&*&*"+t.getTableid()+"\t\t"+t.getisTraitTable());
+					i++;
+				}
+			} catch (NullPointerException e) {
+
+			}
 		}
-		}catch(NullPointerException e){
-			
-		}
-		}
-			this.numQTLtables=i;
+		this.numQTLtables = i;
 	}
 
-	//Constructors
-	public Article(String filename)
-	{
+	// Constructors
+	public Article(String filename) {
 		setFile_name(filename);
 	}
 
@@ -242,7 +230,8 @@ public class Article {
 	}
 
 	/**
-	 * @param journal_name the journal_name to set
+	 * @param journal_name
+	 *            the journal_name to set
 	 */
 	public void setJournal_name(String journal_name) {
 		this.journal_name = journal_name;
@@ -256,7 +245,8 @@ public class Article {
 	}
 
 	/**
-	 * @param spec_id the spec_id to set
+	 * @param spec_id
+	 *            the spec_id to set
 	 */
 	public void setSpec_id(String spec_id) {
 		this.spec_id = spec_id;
@@ -270,25 +260,26 @@ public class Article {
 	}
 
 	/**
-	 * @param source the source to set
+	 * @param source
+	 *            the source to set
 	 */
 	public void setSource(String source) {
 		this.source = source;
 	}
 
-    /**
-     * @return the ContainingTraitTables
-     */
-    public boolean isCotainingTraitTables() {
-        return hasTraitTables;
-    }
+	/**
+	 * @return the ContainingTraitTables
+	 */
+	public boolean isCotainingTraitTables() {
+		return hasTraitTables;
+	}
 
-    /**
-     * @param CotainsTraitTables the ContainingTraitTables to set
-     */
-    public void setCotainingTraitTables(boolean CotainsTraitTables) {
-        this.hasTraitTables = CotainsTraitTables;
-    }
-
+	/**
+	 * @param CotainsTraitTables
+	 *            the ContainingTraitTables to set
+	 */
+	public void setCotainingTraitTables(boolean CotainsTraitTables) {
+		this.hasTraitTables = CotainsTraitTables;
+	}
 
 }

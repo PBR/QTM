@@ -1,6 +1,6 @@
 /**
- *
  * @author gurnoor
+ * The main file of the QTLTableminer++
  */
 
 package qtm;
@@ -16,10 +16,6 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.jena.base.Sys;
-import org.apache.zookeeper.Shell.ExitCodeException;
-
-import com.github.andrewoma.dexx.collection.List;
 
 import readers.PmcMetaReader;
 import resultDb.QtlDb;
@@ -27,197 +23,208 @@ import utils.Configs;
 
 public class QtmMain {
 
-    public static boolean doXMLInput = false;
-    public static Configs confi = new Configs();
-    private static final long megabyte = 1024L * 1024L;
+	public static boolean doXMLInput = false;
+	public static Configs confi = new Configs();
+	private static final long megabyte = 1024L * 1024L;
 
-    //	public static HashMmyp8ap<String, Integer> headermap = new HashMap<String, Integer>();
-    //	public static HashMap<String, Integer> stubmap = new HashMap<String, Integer>();
-    //	public static LinkedList<stats.TableStats> TStats = new LinkedList<stats.TableStats>();
+	public static void main(String[] args) throws IOException {
 
-    public static long bytesToMegabytes(long bytes) {
-        return bytes / megabyte;
-    }
+		long startTime = System.currentTimeMillis();// to calculate run-time
 
-    public static void main(String[] args) throws IOException {
+		if (args.length == 0 | Arrays.asList(args).contains("-h")
+				| Arrays.asList(args).contains("--help")) {
+			printHelp();
+			return;
+		}
 
-        long startTime = System.currentTimeMillis();//to calculate run-time
+		if (Arrays.asList(args).contains("-v")
+				| Arrays.asList(args).contains("--version")) {
+			System.out.println("1.0 ");
+			return;
+		}
 
-        if (args.length == 0 | Arrays.asList(args).contains("-h") | Arrays.asList(args).contains("--help")) {
-            printHelp();
-            return;
-        }
+		if (Arrays.asList(args).contains("-o")) {
+			String outFile = args[Arrays.asList(args).indexOf("-o") + 1];
+			if (outFile.endsWith(".db")) {
+				QtlDb.dbFile = args[Arrays.asList(args).indexOf("-o") + 1];
+			} else {
+				QtlDb.dbFile = args[Arrays.asList(args).indexOf("-o") + 1]
+						+ ".db";
+			}
+		}
 
-        if (Arrays.asList(args).contains("-v") | Arrays.asList(args).contains("--version")) {
-            System.out.println("1.0 ");
-            return;
-        }
+		String inputFile = args[0];
+		ArrayList<String> pmcIds = new ArrayList<String>();
+		BufferedReader reader = null;
 
-        if (Arrays.asList(args).contains("-o")) {
-            String outFile = args[Arrays.asList(args).indexOf("-o") + 1];
-            if (outFile.endsWith(".db")) {
-                QtlDb.dbFile = args[Arrays.asList(args).indexOf("-o") + 1];
-            } else {
-                QtlDb.dbFile = args[Arrays.asList(args).indexOf("-o") + 1] + ".db";
-            }
-        }
+		try {
+			reader = new BufferedReader(new FileReader(inputFile));
+			String pmcIdline = null;
+			while ((pmcIdline = reader.readLine()) != null) {
+				pmcIdline = pmcIdline.trim();
+				if (!pmcIdline.equals(""))
+					pmcIds.add(pmcIdline);
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Input file '" + inputFile + "' not found.");
+			System.exit(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		reader.close();
+		System.out.println("===============");
+		System.out.println("QTLTableMiner++");
+		System.out.println("===============\n");
 
-        String inputFile = args[0];
-        ArrayList<String> pmcIds = new ArrayList<String>();
-        BufferedReader reader = null;
+		System.out.println("Input List: \t" + pmcIds.toString() + "\n");
 
-        try {
-            reader = new BufferedReader(new FileReader(inputFile));
-            String pmcIdline = null;
-            while ((pmcIdline = reader.readLine()) != null) {
-                pmcIdline = pmcIdline.trim();
-                if (!pmcIdline.equals(""))
-                    pmcIds.add(pmcIdline);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Input file '" + inputFile + "' not found.");
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        reader.close();
-        // String solrProgram = Configs.getPropertyQTM("solrProgram");
-        System.out.println("===============");
-        System.out.println("QTLTableMiner++");
-        System.out.println("===============\n");
+		// intialisation
+		QtlDb.createTables();
 
-        System.out.println("Input List: \t" + pmcIds.toString() + "\n");
+		// Step1: reading xml files with pmc ids
+		File[] xmlFiles = new File[pmcIds.size()];
+		Article[] articles = new Article[pmcIds.size()];
 
-        //intialisation
-        QtlDb.createTables();
+		for (int i = 0; i < pmcIds.size(); i++) {
+			if (QtlDb.isPmcIdAlredyInDb(pmcIds.get(i)) == false) {
 
-        //Step1:  reading xml files with pmc ids
-        File[] xmlFiles = new File[pmcIds.size()];
-        Article[] articles = new Article[pmcIds.size()];
+				xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
+				articles[i] = new Article("");
+				PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
 
-        for (int i = 0; i < pmcIds.size(); i++) {
-            if (QtlDb.isPmcIdAlredyInDb(pmcIds.get(i)) == false) {
+				// Parsing meta-data, cell entries and finding the abbreviations
+				System.out.println("Processing article:\n");
+				System.out.println("\t" + pmcIds.get(i));
+				System.out.println(
+						"---------------------------------------------");
+				articles[i] = pmcMetaReader.read();
+			} else {
+				System.out.println(
+						"EuroPMC article arlready exits " + pmcIds.get(i));
+				if (pmcIds.size() == i + 1)
+					return;
+				else
+					continue;
+			}
+		}
+		System.out.println("\n");
 
-                xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
-                articles[i] = new Article("");
-                PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
+		// STEP2 Add abbreviations to Solr synonyms files in all 4 cores and
+		// restart
+		solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
+		try {
+			System.out.println("Restarting Solr.");
+			System.out.println("---------------------------------------------");
 
-                //Parsing meta-data, cell entries and finding the abbreviations
-                System.out.println("Processing article:\n");
-                System.out.println("\t" + pmcIds.get(i));
-                System.out.println("---------------------------------------------");
-                articles[i] = pmcMetaReader.read();
-            } else {
-                System.out.println("EuroPMC article arlready exits " + pmcIds.get(i));
-                if (pmcIds.size() == i + 1)
-                    return;
-                else
-                    continue;
-            }
-        }
-        System.out.println("\n");
+			Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c",
+					Configs.getPropertyQTM("solrRun") + " restart"});
 
-        //STEP2 Add abbreviations to Solr synonyms files in all 4 cores and restart
+			p.waitFor();
 
-        solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("\n");
 
-        try {
-            System.out.println("Restarting Solr.");
-            System.out.println("---------------------------------------------");
+		// STEP3 Inserting enteries into the database
+		System.out.println("Insert entry to the database.");
+		System.out.println("-------------------------------------------------");
+		for (int i = 0; i < articles.length; i++) {
+			try {
+				if (articles[i] != null)
+					QtlDb.insertArticleEntry(articles[i]);
+				else
+					continue;
+			} catch (Exception e) {
+				System.exit(1);
 
-            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", Configs.getPropertyQTM("solrRun") + " restart" });
+			}
+		}
 
-            p.waitFor();
+		System.out.println("Searching QTL in tables");
+		System.out.println("-------------------------------------------------");
+		QtlDb.insertQTLEntry();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("\n");
+		String csvFile = "";
+		try {
+			csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
+			System.out.println("Writing results into '" + csvFile + "'");
+			System.out.println("-----------------------------------------");
+			Process p = Runtime.getRuntime()
+					.exec(new String[]{"bash", "-c",
+							"sqlite3 -header -csv " + QtlDb.dbFile
+									+ " \"SELECT * FROM QTL;\" >" + csvFile});
+			p.waitFor();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("\n");
+		System.out.println("=================================================");
+		System.out.println("RESULTS are available in the following files:");
+		System.out.println("=================================================");
+		System.out.println(
+				"Total number of processed articles:\t" + articles.length);
+		System.out.println(
+				"Total number of trait tables:\t" + QtlDb.numberofTraitTable());
+		System.out.println(
+				"Total number of QTL statements:\t" + QtlDb.numberofQTL());
+		System.out.println("SQLite file: \t" + QtlDb.dbFile);
+		System.out.println("CSV file: \t" + csvFile);
 
-        //STEP3 Inserting enteries into the database
-        System.out.println("Insert entry to the database.");
-        System.out.println("-------------------------------------------------");
+		try {
+			QtlDb.conn.close();
+		} catch (SQLException e) {
+			System.out.println("SQL Exception is clossing the conection");
+			e.printStackTrace();
+		}
 
-        for (int i = 0; i < articles.length; i++) {
-            try {
-                if (articles[i] != null)
-                    QtlDb.insertArticleEntry(articles[i]);
-                else
-                    continue;
-            } catch (Exception e) {
-                System.exit(1);
+		Runtime runtime = Runtime.getRuntime();
+		runtime.gc();
+		long memory = (runtime.totalMemory() - runtime.freeMemory()) / 1024;
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
 
-            }
-        }
+		String eTime = String.format("%02d:%02d:%02d",
+				TimeUnit.MILLISECONDS.toHours(elapsedTime),
+				TimeUnit.MILLISECONDS.toMinutes(elapsedTime) - TimeUnit.HOURS
+						.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedTime)), // The
+																				// change
+																				// is
+																				// in
+																				// this
+																				// line
+				TimeUnit.MILLISECONDS.toSeconds(elapsedTime)
+						- TimeUnit.MINUTES.toSeconds(
+								TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
 
-        //        System.out.println("Searching QTL in tables");
-        //        System.out.println("-------------------------------------------------");
-        //        //      STEP4 Insert in QTL Table
-        //        QtlDb.insertQTLEntry();
+		System.out.println("Memory used (KB): \t" + memory);
+		System.out.println("Total runtime (HH:MM:SS): \t" + eTime);
+	}
 
-        String csvFile = "";
-        try {
-            csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
-            System.out.println("Writing results into '" + csvFile + "'");
-            System.out.println("-----------------------------------------");
-            Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c",
-                    "sqlite3 -header -csv " + QtlDb.dbFile + " \"SELECT * FROM QTL;\" >" + csvFile });
-            p.waitFor();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("\n");
-        System.out.println("=================================================");
-        System.out.println("RESULTS are available in the following files:");
-        System.out.println("=================================================");
-        System.out.println("Total number of processed articles:\t" + articles.length);
-        System.out.println("Total number of trait tables:\t" + QtlDb.numberofTraitTable());
-        System.out.println("Total number of QTL statements:\t" + QtlDb.numberofQTL());
-        System.out.println("SQLite file: \t" + QtlDb.dbFile);
-        System.out.println("CSV file: \t" + csvFile);
+	public static long bytesToMegabytes(long bytes) {
+		return bytes / megabyte;
+	}
 
-        try {
-            QtlDb.conn.close();
-        } catch (SQLException e) {
-            System.out.println("SQL Exception is clossing the conection");
-            e.printStackTrace();
-        }
-
-        Runtime runtime = Runtime.getRuntime();
-        runtime.gc();
-        long memory = (runtime.totalMemory() - runtime.freeMemory()) / 1024;
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-
-        String eTime = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(elapsedTime),
-                TimeUnit.MILLISECONDS.toMinutes(elapsedTime)
-                        - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedTime)), // The change is in this line
-                TimeUnit.MILLISECONDS.toSeconds(elapsedTime)
-                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
-
-        System.out.println("Memory used (KB): \t" + memory);
-        System.out.println("Total runtime (HH:MM:SS): \t" + eTime);
-
-    }
-
-    public static void printHelp() {
-        System.out.println("\nDESCRIPTION");
-        System.out.println("===========");
-        System.out.println("QTL TableMiner++ is a command-line tool to retrieve"
-                + " and semantically annotate\nresults of QTL mapping studies"
-                + " described in tables of scientific articles.\n");
-        System.out.println("USAGE");
-        System.out.println("=====");
-        System.out.println("  QTM [-v|-h]");
-        System.out.println("  QTM [-o FILE_PREFIX] FILE\n");
-        System.out.println("ARGUMENTS");
-        System.out.println("=========");
-        System.out.println("  FILE\t\t\t\tList of full-text articles from Europe PMC.\n" + "\t\t\t\tEnter one PMCID per line.\n");
-        System.out.println("OPTIONS");
-        System.out.println("=======");
-        System.out
-                .println("  -o, --output FILE_PREFIX\tOutput files in SQLite/" + "CSV formats.\n\t\t\t\t(default: qtl.{db,csv})");
-        System.out.println("  -v, --version\t\t\tPrint software version.");
-        System.out.println("  -h, --help\t\t\tPrint this help message.\n");
-    }
+	public static void printHelp() {
+		System.out.println("\nDESCRIPTION");
+		System.out.println("===========");
+		System.out.println("QTL TableMiner++ is a command-line tool to retrieve"
+				+ " and semantically annotate\nresults of QTL mapping studies"
+				+ " described in tables of scientific articles.\n");
+		System.out.println("USAGE");
+		System.out.println("=====");
+		System.out.println("  QTM [-v|-h]");
+		System.out.println("  QTM [-o FILE_PREFIX] FILE\n");
+		System.out.println("ARGUMENTS");
+		System.out.println("=========");
+		System.out.println(
+				"  FILE\t\t\t\tList of full-text articles from Europe PMC.\n"
+						+ "\t\t\t\tEnter one PMCID per line.\n");
+		System.out.println("OPTIONS");
+		System.out.println("=======");
+		System.out.println("  -o, --output FILE_PREFIX\tOutput files in SQLite/"
+				+ "CSV formats.\n\t\t\t\t(default: qtl.{db,csv})");
+		System.out.println("  -v, --version\t\t\tPrint software version.");
+		System.out.println("  -h, --help\t\t\tPrint this help message.\n");
+	}
 }

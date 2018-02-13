@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author gurnoor
+ * Table Parser Class
  */
 package readers;
 
@@ -22,30 +21,25 @@ import qtm.Table;
 //import stats.Statistics;
 import utils.Utilities;
 
-/**
- *
- * @author gurnoor
- */
 public class TableParser {
-
-	// private static String FileName;
 
 	/**
 	 * Parses table, makes matrix of cells and put it into Article object
-	 * 
+	 *
 	 * @param article
 	 *            - Article to populate
 	 * @param parse
 	 *            - Document which is being parsed
 	 * @return populated Article
 	 */
-	public static Article parseTables(Article article, Document parse) throws Exception {
+	public static Article parseTables(Article article, Document parse)
+			throws Exception {
 
 		// read table-wrap in xml
 		NodeList tablesxml = parse.getElementsByTagName("table-wrap");
 
 		int numOfTables = getNumOfTablesInArticle(tablesxml);
-			
+
 		// Table[] tables = new Table[tablesxml.getLength()];
 		Table[] tables = new Table[numOfTables];
 		article.setTables(tables);
@@ -54,28 +48,29 @@ public class TableParser {
 		// Iterate over <table-wrap></table-wrap>
 		for (int i = 0; i < tablesxml.getLength(); i++) {
 
-			List<Node> tableTags = getChildrenByTagName(tablesxml.item(i),"table");
-			//System.out.println("---------"+tableTags.size());
-			
-			if(tableTags.size()==0){
+			List<Node> tableTags = getChildrenByTagName(tablesxml.item(i),
+					"table");
+			// System.out.println("---------"+tableTags.size());
+
+			if (tableTags.size() == 0) {
 				tableTags.clear();
-				List<Node> alternative = getChildrenByTagName(tablesxml.item(i),"alternatives");
-				//System.out.println("---------alternative"+alternative.size());
-				
-				if(alternative.size()>0){
-					for(int p=0; p < alternative.size(); p++ ){
-					List<Node> tableTags2 = getChildrenByTagName(alternative.get(p),"table");
-					tableTags=tableTags2;
+				List<Node> alternative = getChildrenByTagName(tablesxml.item(i),
+						"alternatives");
+				// System.out.println("---------alternative"+alternative.size());
+
+				if (alternative.size() > 0) {
+					for (int p = 0; p < alternative.size(); p++) {
+						List<Node> tableTags2 = getChildrenByTagName(
+								alternative.get(p), "table");
+						tableTags = tableTags2;
 					}
-					
+
 				}
-				
+
 			}
-			
-			
+
 			for (int s = 0; s < tableTags.size(); s++) {
-			
-					
+
 				String label = readTableLabel(tablesxml.item(i));
 
 				tables[tableindex] = new Table(label);
@@ -83,87 +78,94 @@ public class TableParser {
 				tables[tableindex].setDocumentFileName(article.getPmc());
 
 				// table in xml
-				tables[tableindex].setXml(Utilities.createXMLStringFromSubNode(tablesxml.item(i)));
+				tables[tableindex].setXml(Utilities
+						.createXMLStringFromSubNode(tablesxml.item(i)));
 
-				System.out.println("Table label: \t" + tables[tableindex].getTable_label());
-				
-				Scanner tlable = new Scanner(tables[tableindex].getTable_label()).useDelimiter("[^0-9]+");
-                                int tid = tlable.nextInt();
-                                
-                                //System.out.println("sssssssssssssssssssssssssssssss is "+s); 
-				if(tableTags.size()>1){
-				
-				//System.out.println("sssssssssssssssssssssssssssssss is "+s); 
-				//System.out.println("s is "+s%10); 
-                                
-				
-				    tables[tableindex].setTableid(tid);    
+				System.out.println("Table label: \t"
+						+ tables[tableindex].getTable_label());
+
+				Scanner tlable = new Scanner(
+						tables[tableindex].getTable_label())
+								.useDelimiter("[^0-9]+");
+				int tid = tlable.nextInt();
+
+				// System.out.println("sssssssssssssssssssssssssssssss is "+s);
+				if (tableTags.size() > 1) {
+
+					// System.out.println("sssssssssssssssssssssssssssssss is
+					// "+s);
+					// System.out.println("s is "+s%10);
+
+					tables[tableindex].setTableid(tid);
+				} else {
+					tables[tableindex].setTableid(tid);
 				}
-				else{
-				    tables[tableindex].setTableid(tid);
-				}
-				
-				
-				
-				String caption = readTableCaption(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
+
+				String caption = readTableCaption(tablesxml.item(i))
+						.replaceAll("\n", "").replace("\r", "");
 				System.out.println("Caption: \t" + caption);
 				tables[tableindex].setTable_caption(caption);
 
-				String foot = readTableFooter(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
+				String foot = readTableFooter(tablesxml.item(i))
+						.replaceAll("\n", "").replace("\r", "");
 				tables[tableindex].setTable_footer(foot);
-				//System.out.println("Foot: " + foot);
+				// System.out.println("Foot: " + foot);
 
-				List<Node> thead = getChildrenByTagName(tableTags.get(s), "thead");
-				List<Node> tbody = getChildrenByTagName(tableTags.get(s), "tbody");
+				List<Node> thead = getChildrenByTagName(tableTags.get(s),
+						"thead");
+				List<Node> tbody = getChildrenByTagName(tableTags.get(s),
+						"tbody");
 
 				int numofCol = countColumns(tbody, thead);
 
 				if (numofCol == 0) {
-					System.out.println("Table cannot be processed as number of colums are zero");
+					System.out.println(
+							"Table cannot be processed as number of colums are zero");
 					tables[tableindex].setisTraitTable(false);
 					tables[tableindex].setNum_of_rows(0);
 					tables[tableindex].setNum_of_columns(0);
-					System.out.println(tables[tableindex].getisTraitTable() + " " + tables[tableindex].getTabnum()
+					System.out.println(tables[tableindex].getisTraitTable()
+							+ " " + tables[tableindex].getTabnum()
 							+ " is not a trait table");
 					tableindex++;
 					break;
 				}
 
-				tables[tableindex] = processTableHeader(tables[tableindex], numofCol, thead);
-				tables[tableindex] = processTableBody(tables[tableindex], numofCol, tbody);
+				tables[tableindex] = processTableHeader(tables[tableindex],
+						numofCol, thead);
+				tables[tableindex] = processTableBody(tables[tableindex],
+						numofCol, tbody);
 
-				tables[tableindex] = parseTableCaptionandTableHeadingsforTraitRelatedWords(tables[tableindex]);
+				tables[tableindex] = parseTableCaptionandTableHeadingsforTraitRelatedWords(
+						tables[tableindex]);
 
-				
 				if (tables[tableindex].isaTraitTable()) {
-				    // entering table values of num of rows and cols
-					int numOfRows=0;
-				    for (Columns col : tables[tableindex].getTableCol()) {
-				        if (numOfRows < col.getcelz().length){
-				           numOfRows=col.getcelz().length;
-				        }
-				        
-				        
-				    }
-				        tables[tableindex]
-							.setNum_of_rows(numOfRows);
-					
-										
+					// entering table values of num of rows and cols
+					int numOfRows = 0;
+					for (Columns col : tables[tableindex].getTableCol()) {
+						if (numOfRows < col.getcelz().length) {
+							numOfRows = col.getcelz().length;
+						}
+
+					}
+					tables[tableindex].setNum_of_rows(numOfRows);
+
 					tables[tableindex].setNum_of_columns(numofCol);
-					
-					
-					System.out.println("Number of Rows in " + tables[tableindex].getTable_label()
-							+ " is: " + tables[tableindex].getNum_of_rows());
-					System.out.println("Number of Columns in "+ tables[tableindex].getTable_label()
-							+ " is: " + tables[tableindex].getNum_of_columns());
+
+					System.out.println("Number of Rows in "
+							+ tables[tableindex].getTable_label() + " is: "
+							+ tables[tableindex].getNum_of_rows());
+					System.out.println("Number of Columns in "
+							+ tables[tableindex].getTable_label() + " is: "
+							+ tables[tableindex].getNum_of_columns());
 					System.out.println("\n");
 
-					
-					//table classification
-					tables[tableindex] = tables[tableindex].tableClassification();
+					// table classification
+					tables[tableindex] = tables[tableindex]
+							.tableClassification();
 					tables[tableindex].printTable2();
 					System.out.println(
-		                                "____________________________________________________________________________________________________________________________\n");
+							"____________________________________________________________________________________________________________________________\n");
 
 					tableindex++;
 				}
@@ -268,12 +270,17 @@ public class TableParser {
 			if (rowsbody != null) {
 				for (int row = 0; row < rowsbody.size(); row++) {
 					int cnt = 0;
-					List<Node> tds = getChildrenByTagName(rowsbody.get(row), "td");
+					List<Node> tds = getChildrenByTagName(rowsbody.get(row),
+							"td");
 					for (int k = 0; k < tds.size(); k++) {
-						if (tds.get(k).getAttributes().getNamedItem("colspan") != null && Utilities
-								.getFirstValue(tds.get(k).getAttributes().getNamedItem("colspan").getNodeValue()) > 1) {
-							cnt += Utilities
-									.getFirstValue(tds.get(k).getAttributes().getNamedItem("colspan").getNodeValue());
+						if (tds.get(k).getAttributes()
+								.getNamedItem("colspan") != null
+								&& Utilities.getFirstValue(tds.get(k)
+										.getAttributes().getNamedItem("colspan")
+										.getNodeValue()) > 1) {
+							cnt += Utilities.getFirstValue(tds.get(k)
+									.getAttributes().getNamedItem("colspan")
+									.getNodeValue());
 						} else {
 							cnt++;
 						}
@@ -306,7 +313,8 @@ public class TableParser {
 	public static int countHeaderColumns(List<Node> headerRows) {
 		int cols = 0;
 		for (int k = 0; k < headerRows.size(); k++) {
-			List<Node> headerCells = getChildrenByTagName(headerRows.get(k), "td");
+			List<Node> headerCells = getChildrenByTagName(headerRows.get(k),
+					"td");
 			if (headerCells.size() == 0) {
 				headerCells = getChildrenByTagName(headerRows.get(k), "th");
 			}
@@ -331,7 +339,8 @@ public class TableParser {
 	 *            the num_of_columns
 	 * @return the table
 	 */
-	public static Table processTableHeader(Table table, int numberofCol, List<Node> thead) {
+	public static Table processTableHeader(Table table, int numberofCol,
+			List<Node> thead) {
 		List<Node> headerRows = null;
 
 		String[] headerCols = new String[numberofCol];
@@ -343,8 +352,10 @@ public class TableParser {
 			for (int j = 0; j < thead.size(); j++) {
 				headerRows = getChildrenByTagName(thead.get(j), "tr");
 
-				//System.out.println("Number of Rows in Table Headings are" + headerRows.size());
-				//System.out.println("Number of Columns in Table Headings are" + numberofCol);
+				// System.out.println("Number of Rows in Table Headings are" +
+				// headerRows.size());
+				// System.out.println("Number of Columns in Table Headings are"
+				// + numberofCol);
 
 				int rowLine = 0;
 				int colLine = 0;
@@ -356,11 +367,11 @@ public class TableParser {
 
 					List<Node> th = null;
 					th = getChildrenByTagName(headerRows.get(k), "th");
-					
-					if(th.isEmpty()){
+
+					if (th.isEmpty()) {
 						th = getChildrenByTagName(headerRows.get(k), "td");
 					}
-					
+
 					// System.out.println("----------------------------header
 					// cells Size" + th.size());
 
@@ -369,56 +380,78 @@ public class TableParser {
 						int colspan = 1;
 
 						// check Later?????
-//						while (headerCells[rowLine][colLine].getHeadercell_value() != null) {
-//							colLine++;
-//						}
+						// while
+						// (headerCells[rowLine][colLine].getHeadercell_value()
+						// != null) {
+						// colLine++;
+						// }
 
 						try {
-							rowspan = Utilities
-									.getFirstValue(th.get(l).getAttributes().getNamedItem("rowspan").getNodeValue());
+							rowspan = Utilities.getFirstValue(th.get(l)
+									.getAttributes().getNamedItem("rowspan")
+									.getNodeValue());
 
 						} catch (NullPointerException e) {
 						}
 
 						try {
-							colspan = Utilities
-									.getFirstValue(th.get(l).getAttributes().getNamedItem("colspan").getNodeValue());
+							colspan = Utilities.getFirstValue(th.get(l)
+									.getAttributes().getNamedItem("colspan")
+									.getNodeValue());
 
 						} catch (NullPointerException e) {
 						}
 
-						
-						
-						
 						if (rowspan == 1 && colspan == 1) {
-//							headerCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+							// headerCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n",
+							// "").replace("\r", ""));
 
 							if (headerCols[colLine] == null)
-								headerCols[colLine] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+								headerCols[colLine] = th.get(l).getTextContent()
+										.replaceAll("\n", "").replace("\r", "");
 							else
-								headerCols[colLine] = headerCols[colLine] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+								headerCols[colLine] = headerCols[colLine] + " "
+										+ th.get(l).getTextContent()
+												.replaceAll("\n", "")
+												.replace("\r", "");
 
 							colLine++;
 						} else if (rowspan == 1 && colspan > 1) {
-								for (int n = colLine; n < colLine + colspan; n++) {
+							for (int n = colLine; n < colLine + colspan; n++) {
 
-//								headerCells[rowLine][n].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+								// headerCells[rowLine][n].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n",
+								// "").replace("\r", ""));
 
 								if (headerCols[n] == null)
-									headerCols[n] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+									headerCols[n] = th.get(l).getTextContent()
+											.replaceAll("\n", "")
+											.replace("\r", "");
 								else
-									headerCols[n] = headerCols[n] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+									headerCols[n] = headerCols[n] + " "
+											+ th.get(l).getTextContent()
+													.replaceAll("\n", "")
+													.replace("\r", "");
 							}
 							colLine += colspan;
 						} else if (rowspan > 1 && colspan == 1) {
-//							headerCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
-							for (int m = rowLine + 1; m < rowLine + rowspan; m++) {
-//								headerCells[m][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+							// headerCells[rowLine][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n",
+							// "").replace("\r", ""));
+							for (int m = rowLine + 1; m < rowLine
+									+ rowspan; m++) {
+								// headerCells[m][colLine].setHeadercell_values(th.get(l).getTextContent().replaceAll("\n",
+								// "").replace("\r", ""));
 
 								if (headerCols[colLine] == null)
-									headerCols[colLine] = th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+									headerCols[colLine] = th.get(l)
+											.getTextContent()
+											.replaceAll("\n", "")
+											.replace("\r", "");
 								else
-									headerCols[colLine] = headerCols[colLine] + " " + th.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+									headerCols[colLine] = headerCols[colLine]
+											+ " "
+											+ th.get(l).getTextContent()
+													.replaceAll("\n", "")
+													.replace("\r", "");
 							}
 							colLine++;
 						}
@@ -426,12 +459,12 @@ public class TableParser {
 				}
 
 				for (int i = 0; i < numberofCol; i++) {
-					try{
-					headerCols[i] = headerCols[i].trim();
-					}catch(Exception e){
-						headerCols[i]="";
+					try {
+						headerCols[i] = headerCols[i].trim();
+					} catch (Exception e) {
+						headerCols[i] = "";
 					}
-					
+
 					tableCol[i] = new Columns();
 					tableCol[i].setHeader(headerCols[i]);
 
@@ -440,7 +473,7 @@ public class TableParser {
 
 				table.setTableHeadersColumns(headerCols);
 				table.setTableCol(tableCol);
-//				table.setTableHeadercells(headerCells);
+				// table.setTableHeadercells(headerCells);
 
 				// Printing Header Cells
 				// System.out.println("***Header Tables***");
@@ -473,7 +506,8 @@ public class TableParser {
 	 *            the num_of_columns
 	 * @return the table
 	 */
-	public static Table processTableBody(Table table, int numberofCol, List<Node> tbody) {
+	public static Table processTableBody(Table table, int numberofCol,
+			List<Node> tbody) {
 
 		List<Node> Rows = null;
 
@@ -486,20 +520,22 @@ public class TableParser {
 			for (int j = 0; j < tbody.size(); j++) {
 				Rows = getChildrenByTagName(tbody.get(j), "tr");
 
-				//System.out.println("Number of Rows in Table body are" + Rows.size());
+				// System.out.println("Number of Rows in Table body are" +
+				// Rows.size());
 
 				for (Columns column : tableCol) {
 					column.entries = new String[Rows.size()];
 					column.celz = new Cell[Rows.size()];
 				}
 
-				//System.out.println("Number of Columns in Table body are" + numberofCol);
+				// System.out.println("Number of Columns in Table body are" +
+				// numberofCol);
 
 				// create empty cells
-				//table.createCells(Rows.size(), numberofCol);
+				// table.createCells(Rows.size(), numberofCol);
 				// table.CreateLOC(Rows.size(),numberofCol);
 
-				//C[][] c = table.getTable_cells();
+				// C[][] c = table.getTable_cells();
 				// List<C[]> LOC=table.getTable_cellList();
 
 				// System.out.println("&&"+LOC.size());
@@ -523,53 +559,95 @@ public class TableParser {
 						int colspan = 1;
 
 						try {
-							rowspan = Utilities
-									.getFirstValue(td.get(l).getAttributes().getNamedItem("rowspan").getNodeValue());
-							colspan = Utilities
-									.getFirstValue(td.get(l).getAttributes().getNamedItem("colspan").getNodeValue());
+							rowspan = Utilities.getFirstValue(td.get(l)
+									.getAttributes().getNamedItem("rowspan")
+									.getNodeValue());
+							colspan = Utilities.getFirstValue(td.get(l)
+									.getAttributes().getNamedItem("colspan")
+									.getNodeValue());
 						} catch (NullPointerException e) {
 							// continue;
 						}
-						
-						
-						if(tableCol[colLine].celz[rowLine]!=null && rowLine < Rows.size()) //|| tableCol[colLine].celz[rowLine]!=null
+
+						if (tableCol[colLine].celz[rowLine] != null
+								&& rowLine < Rows.size()) // ||
+															// tableCol[colLine].celz[rowLine]!=null
 							colLine++;
-						//System.out.println("row line is::: \t\t "+rowLine +"\t\t col line is"+colLine+"value is \t"+td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
-						
+						// System.out.println("row line is::: \t\t "+rowLine
+						// +"\t\t col line is"+colLine+"value is
+						// \t"+td.get(l).getTextContent().replaceAll("\n",
+						// "").replace("\r", ""));
+
 						if (rowLine < Rows.size() || colLine < numberofCol) {
 							if (rowspan == 1 && colspan == 1) {
 
-								//c[rowLine][colLine].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+								// c[rowLine][colLine].setcell_values(td.get(l).getTextContent().replaceAll("\n",
+								// "").replace("\r", ""));
 
-								Cell Entry = new Cell(rowLine, td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
-								tableCol[colLine].celz[rowLine] = new Cell(Entry);
+								Cell Entry = new Cell(rowLine,
+										td.get(l).getTextContent()
+												.replaceAll("\n", "")
+												.replace("\r", ""));
+								tableCol[colLine].celz[rowLine] = new Cell(
+										Entry);
 
-								if (tableCol[colLine].getRowEntries()[rowLine] == null)
-									tableCol[colLine].getRowEntries()[rowLine] = td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+								if (tableCol[colLine]
+										.getRowEntries()[rowLine] == null)
+									tableCol[colLine]
+											.getRowEntries()[rowLine] = td
+													.get(l).getTextContent()
+													.replaceAll("\n", "")
+													.replace("\r", "");
 								else
 									tableCol[colLine]
-											.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine] + " "
-													+ td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
-								
+											.getRowEntries()[rowLine] = tableCol[colLine]
+													.getRowEntries()[rowLine]
+													+ " "
+													+ td.get(l).getTextContent()
+															.replaceAll("\n",
+																	"")
+															.replace("\r", "");
+
 								colLine++;
 							} else if (rowspan > 1 && colspan == 1) {
 								// forloop rowspan
-								for (int m = rowLine; m < rowLine + rowspan; m++) {
-									//c[m][colLine].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+								for (int m = rowLine; m < rowLine
+										+ rowspan; m++) {
+									// c[m][colLine].setcell_values(td.get(l).getTextContent().replaceAll("\n",
+									// "").replace("\r", ""));
 									// System.out.println("@@@@@"+td.get(l).getTextContent());
 
-									//System.out.print("m is "+m +"\t::");
-									Cell Entry = new Cell(m, td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+									// System.out.print("m is "+m +"\t::");
+									Cell Entry = new Cell(m,
+											td.get(l).getTextContent()
+													.replaceAll("\n", "")
+													.replace("\r", ""));
 									tableCol[colLine].celz[m] = new Cell(Entry);
-									System.out.println(tableCol[colLine].celz[m].getcell_value());
-									
-									if (tableCol[colLine].getRowEntries()[m] == null)
-										tableCol[colLine].getRowEntries()[m] = td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+									System.out.println(tableCol[colLine].celz[m]
+											.getcell_value());
+
+									if (tableCol[colLine]
+											.getRowEntries()[m] == null)
+										tableCol[colLine]
+												.getRowEntries()[m] = td.get(l)
+														.getTextContent()
+														.replaceAll("\n", "")
+														.replace("\r", "");
 									else
-										tableCol[colLine].getRowEntries()[m] = tableCol[colLine].getRowEntries()[m]
-												+ " " + td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
-									
-									System.out.println("Row span entry"+td.get(l).getTextContent());
+										tableCol[colLine]
+												.getRowEntries()[m] = tableCol[colLine]
+														.getRowEntries()[m]
+														+ " "
+														+ td.get(l)
+																.getTextContent()
+																.replaceAll(
+																		"\n",
+																		"")
+																.replace("\r",
+																		"");
+
+									System.out.println("Row span entry"
+											+ td.get(l).getTextContent());
 								}
 								colLine++;
 							} else if (rowspan == 1 && colspan > 1) {
@@ -577,26 +655,47 @@ public class TableParser {
 								// are*****"+rowLine+"&& "+colLine);
 
 								// forloop colspan
-								for (int n = colLine; n < colLine + colspan; n++) {
-									//c[rowLine][n].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+								for (int n = colLine; n < colLine
+										+ colspan; n++) {
+									// c[rowLine][n].setcell_values(td.get(l).getTextContent().replaceAll("\n",
+									// "").replace("\r", ""));
 									// System.out.println("//////"+td.get(l).getTextContent());
 
-									Cell Entry = new Cell(rowLine, td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+									Cell Entry = new Cell(rowLine,
+											td.get(l).getTextContent()
+													.replaceAll("\n", "")
+													.replace("\r", ""));
 									tableCol[n].celz[rowLine] = new Cell(Entry);
 
-									if (tableCol[n].getRowEntries()[rowLine] == null)
-										tableCol[n].getRowEntries()[rowLine] = td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+									if (tableCol[n]
+											.getRowEntries()[rowLine] == null)
+										tableCol[n]
+												.getRowEntries()[rowLine] = td
+														.get(l).getTextContent()
+														.replaceAll("\n", "")
+														.replace("\r", "");
 									else
 										tableCol[n]
-												.getRowEntries()[rowLine] = tableCol[colLine].getRowEntries()[rowLine]
-														+ " " + td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
+												.getRowEntries()[rowLine] = tableCol[colLine]
+														.getRowEntries()[rowLine]
+														+ " "
+														+ td.get(l)
+																.getTextContent()
+																.replaceAll(
+																		"\n",
+																		"")
+																.replace("\r",
+																		"");
 
 								}
 								colLine += colspan;
 							} else if (rowspan > 1 && colspan > 1) {
-								for (int m = rowLine; m < rowLine + rowspan; m++) {
-									for (int n = colLine; n < colLine + colspan; n++) {
-										//c[m][n].setcell_values(td.get(l).getTextContent().replaceAll("\n", "").replace("\r", ""));
+								for (int m = rowLine; m < rowLine
+										+ rowspan; m++) {
+									for (int n = colLine; n < colLine
+											+ colspan; n++) {
+										// c[m][n].setcell_values(td.get(l).getTextContent().replaceAll("\n",
+										// "").replace("\r", ""));
 									}
 								}
 
@@ -608,7 +707,7 @@ public class TableParser {
 
 				}
 
-				//table.setTable_cells(c);
+				// table.setTable_cells(c);
 
 				// System.out.println("***body Tables***");
 				// for(int p=0;p<Rows.size();p++){
@@ -637,9 +736,11 @@ public class TableParser {
 	 */
 	public static List<Node> getChildrenByTagName(Node parent, String name) {
 		List<Node> nodeList = new ArrayList<Node>();
-		for (Node child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
-			if (child.getNodeType() == Node.ELEMENT_NODE && name.equals(child.getNodeName())) {
-				nodeList.add((Node) child);
+		for (Node child = parent.getFirstChild(); child != null; child = child
+				.getNextSibling()) {
+			if (child.getNodeType() == Node.ELEMENT_NODE
+					&& name.equals(child.getNodeName())) {
+				nodeList.add(child);
 			}
 		}
 
@@ -649,17 +750,20 @@ public class TableParser {
 	/*
 	 * Parse Table caption for Traits
 	 */
-	public static Table parseTableCaptionandTableHeadingsforTraitRelatedWords(Table table) {
+	public static Table parseTableCaptionandTableHeadingsforTraitRelatedWords(
+			Table table) {
 		List<String> HeaderList = new ArrayList<String>();
 
 		for (Columns col : table.getTableCol()) {
 			HeaderList.add(col.getHeader().toLowerCase());
-				} 
-			try {
-			String[] wordlist = { "trait", "qtl", "quantitavie trait loci", "phenotype" };
+		}
+		try {
+			String[] wordlist = {"trait", "qtl", "quantitavie trait loci",
+					"phenotype"};
 
 			for (int j = 0; j < wordlist.length; j++) {
-				if (table.getTable_caption().toLowerCase().indexOf(wordlist[j]) != -1) {
+				if (table.getTable_caption().toLowerCase()
+						.indexOf(wordlist[j]) != -1) {
 					table.setisTraitTable(true);
 					System.out.println(table.getTabnum() + " is a QTL table\n");
 					return table;
@@ -667,14 +771,15 @@ public class TableParser {
 				for (String h : HeaderList) {
 					if (h.indexOf(wordlist[j]) != -1) {
 						table.setisTraitTable(true);
-						System.out.println(table.getTabnum() + " is a QTL table\n");
+						System.out.println(
+								table.getTabnum() + " is a QTL table\n");
 						return table;
 					} else {
 						continue;
 					}
 				}
 			}
-			
+
 			System.out.println(table.getTabnum() + " is NOT a QTL table\n");
 		} catch (Exception e) {
 
