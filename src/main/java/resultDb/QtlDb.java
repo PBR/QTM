@@ -449,7 +449,7 @@ public class QtlDb {
 							if (matcher1.find() || matcher2.find()
 									|| matcher3.find() || matcher4.find()) {
 								markers_associated += cellValue + "; ";
-
+								markers_associated = markers_associated.replace("\n", "").replace("\r", "");
 								try {
 									markerOntologyAnnotation = solr.tagger.recognize.Evaluate
 											.processString(markers_associated,
@@ -502,6 +502,8 @@ public class QtlDb {
 
 								// System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
 								gene_associated += cellValue + "; ";
+								gene_associated = gene_associated.replace("\n", "").replace("\r", "");
+
 								// System.out.println("gene
 								// is"+gene_associated);
 
