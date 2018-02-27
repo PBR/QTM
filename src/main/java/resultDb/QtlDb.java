@@ -157,10 +157,10 @@ public class QtlDb {
 					try {
 						if (t.isaTraitTable()) {
 
-							System.out.println("Inserting entries for Table: \t"
+							System.out.println("Inserting entries into TRAIT_TABLE: \t"
 									+ t.getTabnum());
 
-							String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_num, pmc_id) VALUES"
+							String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_lb, pmc_id) VALUES"
 									+ "(?,?); ";
 
 							PreparedStatement traitTableStmt = conn
@@ -173,7 +173,7 @@ public class QtlDb {
 
 							traitTableStmt.close();
 
-							String getTabid = "select max(tab_id) from TRAIT_TABLE;";
+							String getTabid = "SELECT MAX(tab_id) FROM TRAIT_TABLE";
 
 							ResultSet rs1 = getRowidStmt.executeQuery(getTabid);
 							int tab_id = rs1.getInt("max(tab_id)");
@@ -221,7 +221,7 @@ public class QtlDb {
 									continue;
 								}
 
-								String insertColTable = "INSERT INTO COLUMN_ENTRY(tab_id, header,type, annot) VALUES"
+								String insertColTable = "INSERT INTO COLUMN_ENTRY (tab_id, header,type, annot) VALUES"
 										+ "(?,?,?,?)";
 
 								PreparedStatement colStmt = conn
@@ -254,7 +254,7 @@ public class QtlDb {
 								// DB");
 								colStmt.close();
 
-								String getColid = "select max(col_id) from COLUMN_ENTRY;";
+								String getColid = "SELECT MAX(col_id) FROM COLUMN_ENTRY;";
 
 								ResultSet rs2 = getRowidStmt
 										.executeQuery(getColid);
@@ -270,7 +270,7 @@ public class QtlDb {
 											|| cel.getcell_value().equals(" "))
 										cel.setcell_values(null);
 
-									String insertCellTable = "INSERT INTO CELL_ENTRY(row_id, col_id, value) VALUES"
+									String insertCellTable = "INSERT INTO CELL_ENTRY (row_id, col_id, value) VALUES"
 											+ "(?, ?, ?)";
 
 									PreparedStatement cellStmt = conn
@@ -290,19 +290,15 @@ public class QtlDb {
 									cellStmt.executeUpdate();
 									cellStmt.close();
 								}
-
 							}
-
 						}
 					} catch (NullPointerException e) {
 						continue;
 					}
-
 				}
 
 			} else {
 				System.out.println(article.getPmc() + " already exists");
-
 			}
 
 			// System.out.println("entry inserted into DB successfully");
@@ -310,14 +306,11 @@ public class QtlDb {
 		} catch (Exception e) {
 			System.out.println("Error is Insert Article Function");
 			e.printStackTrace();
-
 		}
-
 	}
 
 	public static void insertQTLEntry() {
 		try {
-
 			if (connectionDB()) {
 				Statement stmt1 = null;
 				Statement stmt2 = null;
@@ -331,7 +324,7 @@ public class QtlDb {
 
 				String sql1 = "SELECT  Cel.value, Cel.col_id, Cel.row_id, Col.tab_id, Col.type from CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id"
 						+ " WHERE Cel.value IS NOT null AND "
-						+ " Col.type='QTL descriptor' ;";
+						+ " Col.type='QTL descriptor'";
 
 				ResultSet rs1 = stmt1.executeQuery(sql1);
 				while (rs1.next()) {

@@ -53,8 +53,8 @@ public class QtmMain {
 			}
 		}
 		
-		// start Solr server
-		controlSolr("start");
+		// (re)start Solr server
+		controlSolr("restart");
 		
 		String inputFile = args[0];
 		ArrayList<String> pmcIds = new ArrayList<String>();
@@ -141,10 +141,10 @@ public class QtmMain {
 			csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
 			System.out.println("Writing results into '" + csvFile + "'");
 			System.out.println("-----------------------------------------");
-			Process p = Runtime.getRuntime()
-					.exec(new String[]{"bash", "-c",
-							"sqlite3 -header -csv " + QtlDb.dbFile
-									+ " \"SELECT * FROM QTL;\" >" + csvFile});
+			String[] cmdline = {"bash", "-c", "sqlite3 -header -csv " + QtlDb.dbFile +
+                         " \"SELECT * FROM V_QTL\" >" + csvFile};
+			System.out.println(String.join(" ", cmdline));
+			Process p = Runtime.getRuntime().exec(cmdline);
 			p.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
