@@ -52,7 +52,10 @@ public class QtmMain {
 						+ ".db";
 			}
 		}
-
+		
+		// start Solr server
+		controlSolr("start");
+		
 		String inputFile = args[0];
 		ArrayList<String> pmcIds = new ArrayList<String>();
 		BufferedReader reader = null;
@@ -112,19 +115,7 @@ public class QtmMain {
 		// STEP2 Add abbreviations to Solr synonyms files in all 4 cores and
 		// restart
 		solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
-		try {
-			System.out.println("Restarting Solr.");
-			System.out.println("---------------------------------------------");
-
-			Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c",
-					Configs.getPropertyQTM("solrRun") + " restart"});
-
-			p.waitFor();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("\n");
+		controlSolr("restart");
 
 		// STEP3 Inserting enteries into the database
 		System.out.println("Insert entry to the database.");
@@ -187,24 +178,35 @@ public class QtmMain {
 		String eTime = String.format("%02d:%02d:%02d",
 				TimeUnit.MILLISECONDS.toHours(elapsedTime),
 				TimeUnit.MILLISECONDS.toMinutes(elapsedTime) - TimeUnit.HOURS
-						.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedTime)), // The
-																				// change
-																				// is
-																				// in
-																				// this
-																				// line
+						.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedTime)),
 				TimeUnit.MILLISECONDS.toSeconds(elapsedTime)
 						- TimeUnit.MINUTES.toSeconds(
 								TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
 
 		System.out.println("Memory used (KB): \t" + memory);
 		System.out.println("Total runtime (HH:MM:SS): \t" + eTime);
+
+		// finally stop Solr server
+		controlSolr("stop");
 	}
 
 	public static long bytesToMegabytes(long bytes) {
 		return bytes / megabyte;
 	}
 
+	public static void controlSolr(String cmd) {
+		System.out.println("Solr server has been " + cmd + "ed.");
+		System.out.println("--------------------------------------------");		
+		try {
+			Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c",
+					Configs.getPropertyQTM("solrRun") + " " + cmd });
+			p.waitFor();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("\n");
+	}
+	
 	public static void printHelp() {
 		System.out.println("\nDESCRIPTION");
 		System.out.println("===========");
