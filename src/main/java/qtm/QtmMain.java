@@ -198,8 +198,11 @@ public class QtmMain {
 		System.out.println("Solr server has been " + cmd + "ed.");
 		System.out.println("--------------------------------------------");		
 		try {
-			Process p = Runtime.getRuntime().exec(new String[]{"bash", "-c",
-					Configs.getPropertyQTM("solrRun") + " " + cmd });
+			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd,
+												  Configs.getPropertyQTM("solrPort"),
+												  Configs.getPropertyQTM("solrCorePath")};
+			//System.out.println(String.join(" ", cmdline));
+			Process p = Runtime.getRuntime().exec(cmdline);
 			p.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();

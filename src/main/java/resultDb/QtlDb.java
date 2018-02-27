@@ -36,7 +36,6 @@ public class QtlDb {
 
 	public static String dbDriver = Configs.getPropertyQTM("dbDriver");
 	public static String dbFile = Configs.getPropertyQTM("dbFile");
-	private static String solrUri = Configs.getPropertyQTM("solrUri");
 	private static String solrRun = Configs.getPropertyQTM("solrRun");
 	private static String core1 = Configs.getPropertyQTM("core1");
 	private static String core2 = Configs.getPropertyQTM("core2");

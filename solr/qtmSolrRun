@@ -1,7 +1,7 @@
-#!/bin/bash
-if [ $# -eq 0 ] ; then
-        echo "no arguments specified"
-        exit 1
-else
-        solr/bin/solr $1 -p 8983 -s solr/core/data
-fi
+#!/bin/bash -e
+
+CMD=${1:-"start"}
+PORT=${2:-"8983"}
+CORE=${3:-"solr/core/data"}
+
+solr/bin/solr $CMD -p $PORT -s $CORE

@@ -519,7 +519,7 @@ public class PmcMetaReader {
 			if (!xmlfile.exists() || xmlfile.length() == 0) {
 				xmlfile.createNewFile();
 				String pmcWebserviceUrl = Configs.getPropertyQTM(
-						"pmcWebservicesEndpoint") + pmcId + "/fullTextXML";
+						"epmcWebService") + pmcId + "/fullTextXML";
 				URL website = new URL(pmcWebserviceUrl);
 				ReadableByteChannel rbc = Channels
 						.newChannel(website.openStream());
