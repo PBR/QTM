@@ -56,3 +56,5 @@ OPTIONS
   -v, --version			Print software version.
   -h, --help			Print this help message.
 ```
+
+Note: The example I/O files are provided in the [data](https://github.com/PBR/QTM/tree/master/data) directory. In case you don't have Internet access or the Europe PMC API does not work, please copy the articles (`.xml`) from this directory to the root of this repository.
