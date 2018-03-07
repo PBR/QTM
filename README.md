@@ -1,6 +1,6 @@
 # QTL TableMiner++ (QTM)
 
-[![Build Status](https://travis-ci.org/candYgene/QTM.svg?branch=master)](https://travis-ci.org/candYgene/QTM)
+[![Build Status](https://travis-ci.org/candYgene/QTM.svg?branch=master)](https://travis-ci.org/candYgene/QTM) [![DOI](https://zenodo.org/badge/85691450.svg)](https://zenodo.org/badge/latestdoi/85691450)
 
 ## Description
 A significant amount of experimental information about [_Quantitative Trait Locus_](https://en.wikipedia.org/wiki/Quantitative_trait_locus) (QTL) studies are described in (heterogenous) tables of scientific articles. Briefly, a QTL is a genomic region that correlates with a trait of interest (phenotype). _QTM_ is a command-line tool to retrieve and semantically annotate results obtained from QTL mapping experiments. It takes full-text articles from the [Europe PMC](https://europepmc.org/) repository as input and outputs the extracted QTLs into a relational database (SQLite) and text file (CSV).
