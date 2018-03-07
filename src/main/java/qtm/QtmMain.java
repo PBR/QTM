@@ -14,9 +14,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.commons.io.FilenameUtils;
-
 import readers.PmcMetaReader;
 import resultDb.QtlDb;
 import utils.Configs;
@@ -39,7 +39,14 @@ public class QtmMain {
 
 		if (Arrays.asList(args).contains("-v")
 				| Arrays.asList(args).contains("--version")) {
-			System.out.println("1.0 ");
+      try{
+			MavenXpp3Reader reader = new MavenXpp3Reader();
+		  Model model = reader.read(new FileReader("pom.xml"));
+			System.out.println(model.getVersion());
+		 }
+		catch(Exception e){
+        e.printStackTrace();
+		}
 			return;
 		}
 
@@ -52,10 +59,10 @@ public class QtmMain {
 						+ ".db";
 			}
 		}
-		
+
 		// (re)start Solr server
 		controlSolr("restart");
-		
+
 		String inputFile = args[0];
 		ArrayList<String> pmcIds = new ArrayList<String>();
 		BufferedReader reader = null;
@@ -196,7 +203,7 @@ public class QtmMain {
 
 	public static void controlSolr(String cmd) {
 		System.out.println("Solr server has been " + cmd + "ed.");
-		System.out.println("--------------------------------------------");		
+		System.out.println("--------------------------------------------");
 		try {
 			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd,
 												  Configs.getPropertyQTM("solrPort"),
@@ -209,7 +216,7 @@ public class QtmMain {
 		}
 		System.out.println("\n");
 	}
-	
+
 	public static void printHelp() {
 		System.out.println("\nDESCRIPTION");
 		System.out.println("===========");
