@@ -111,7 +111,7 @@ public class QtlDb {
 				try {
 
 					String insertArticleTable = "INSERT INTO ARTICLE VALUES"
-							+ "(?,?)";
+							+ "(?,?,?)";
 
 					PreparedStatement articlestmt = conn
 							.prepareStatement(insertArticleTable);
@@ -121,6 +121,12 @@ public class QtlDb {
 						articlestmt.setString(2, pmc_tittle);
 					} catch (NullPointerException e) {
 						articlestmt.setNull(2, java.sql.Types.VARCHAR);
+					}
+
+					try {
+						articlestmt.setString(3, article.getDoi());
+					} catch (NullPointerException e) {
+						articlestmt.setNull(3, java.sql.Types.VARCHAR);
 					}
 
 					articlestmt.executeUpdate();
