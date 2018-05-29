@@ -446,12 +446,15 @@ public class QtlDb {
 
 							if (matcher1.find() || matcher2.find()
 									|| matcher3.find() || matcher4.find()) {
-								markers_associated += cellValue + "; ";
-								markers_associated = markers_associated.replace("\n", "").replace("\r", "");
+								markers_associated += cellValue + ";";
+								markers_associated = markers_associated.replace("\n", "").replace("\r", "").replaceAll("\\s+","");
+
 								try {
 									markerOntologyAnnotation = solr.tagger.recognize.Evaluate
 											.processString(markers_associated,
 													core4, match, type);
+									markerOntologyAnnotation = markerOntologyAnnotation.replace("\n", "").replace("\r", "").replaceAll("\\s+","");
+
 
 								} catch (Exception e) {
 									markerOntologyAnnotation = "";
@@ -499,8 +502,8 @@ public class QtlDb {
 									|| matcher3.find() || matcher4.find()) {
 
 								// System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
-								gene_associated += cellValue + "; ";
-								gene_associated = gene_associated.replace("\n", "").replace("\r", "");
+								gene_associated += cellValue + ";";
+								gene_associated = gene_associated.replace("\n", "").replace("\r", "").replaceAll("\\s+","");
 
 								// System.out.println("gene
 								// is"+gene_associated);
@@ -509,6 +512,7 @@ public class QtlDb {
 									geneOntologyAnnotation = solr.tagger.recognize.Evaluate
 											.processString(gene_associated,
 													core5, match, type);
+									geneOntologyAnnotation = geneOntologyAnnotation.replace("\n", "").replace("\r", "").replaceAll("\\s+","");
 
 								} catch (Exception e) {
 									geneOntologyAnnotation = "";

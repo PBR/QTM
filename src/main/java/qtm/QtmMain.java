@@ -52,10 +52,10 @@ public class QtmMain {
 						+ ".db";
 			}
 		}
-		
+
 		// (re)start Solr server
 		controlSolr("restart");
-		
+
 		String inputFile = args[0];
 		ArrayList<String> pmcIds = new ArrayList<String>();
 		BufferedReader reader = null;
@@ -142,7 +142,7 @@ public class QtmMain {
 			System.out.println("Writing results into '" + csvFile + "'");
 			System.out.println("-----------------------------------------");
 			String[] cmdline = {"bash", "-c", "sqlite3 -header -csv " + QtlDb.dbFile +
-                         " \"SELECT * FROM V_QTL\" >" + csvFile};
+                         " \"SELECT * FROM V_QTL\">" + csvFile};
 			System.out.println(String.join(" ", cmdline));
 			Process p = Runtime.getRuntime().exec(cmdline);
 			p.waitFor();
@@ -196,7 +196,7 @@ public class QtmMain {
 
 	public static void controlSolr(String cmd) {
 		System.out.println("Solr server has been " + cmd + "ed.");
-		System.out.println("--------------------------------------------");		
+		System.out.println("--------------------------------------------");
 		try {
 			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd,
 												  Configs.getPropertyQTM("solrPort"),
@@ -209,7 +209,7 @@ public class QtmMain {
 		}
 		System.out.println("\n");
 	}
-	
+
 	public static void printHelp() {
 		System.out.println("\nDESCRIPTION");
 		System.out.println("===========");
