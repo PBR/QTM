@@ -563,13 +563,13 @@ public class QtlDb {
 						String genes_icd = "";
 
 						for (JSONObject g : genes) {
-							genes_icd += g.get("icd") + "; ";
+							genes_icd += g.get("icd") + ";";
 						}
 
 						String markers_icd = "";
 
 						for (JSONObject m : markers) {
-							markers_icd += m.get("icd") + "; ";
+							markers_icd += m.get("icd") + ";";
 						}
 
 						if (markers_associated == "")
