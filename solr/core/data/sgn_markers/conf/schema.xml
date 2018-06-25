@@ -82,19 +82,20 @@
     </fieldType>
 
     <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
-        <analyzer type="index">
-      	<tokenizer class="solr.PatternTokenizerFactory" pattern="[-]*"/>
-	<!-- <filter class="solr.LengthFilterFactory" min="2" /> -->
+   <analyzer type="index">
+        <tokenizer class="solr.PatternTokenizerFactory" pattern="-|_"/> 
+        <!-- <filter class="solr.LengthFilterFactory" min="2" /> -->
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_wageningen.txt" />
         <filter class="solr.LowerCaseFilterFactory"/>
 	<filter class="solr.EnglishPossessiveFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
         <filter class="solr.PorterStemFilterFactory"/>
       </analyzer>
+
       <analyzer type="query">
-        <tokenizer class="solr.PatternTokenizerFactory" pattern="[-]*"/>
+              	<tokenizer class="solr.StandardTokenizerFactory"/>        
 	<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
-        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt" />
+	<filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_wageningen.txt" />
         <filter class="solr.LowerCaseFilterFactory"/>
 	<filter class="solr.EnglishPossessiveFilterFactory"/>
         <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
@@ -104,9 +105,8 @@
 
     <fieldType name="text_wageningen" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
-      	<tokenizer class="solr.PatternTokenizerFactory" pattern="[-]*"/>
-
-        <!-- <filter class="solr.LengthFilterFactory" min="2" /> -->
+        <tokenizer class="solr.PatternTokenizerFactory" pattern="-|_"/> 
+       <!-- <filter class="solr.LengthFilterFactory" min="2" /> -->
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_wageningen.txt" />
         <filter class="solr.LowerCaseFilterFactory"/>
 	<filter class="solr.EnglishPossessiveFilterFactory"/>
@@ -114,8 +114,8 @@
         <filter class="solr.PorterStemFilterFactory"/>
       </analyzer>
       <analyzer type="query">
-        <tokenizer class="solr.PatternTokenizerFactory" pattern="[-]*"/>
-	<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+	<tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
 	<filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_wageningen.txt" />
         <filter class="solr.LowerCaseFilterFactory"/>
 	<filter class="solr.EnglishPossessiveFilterFactory"/>
