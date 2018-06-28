@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import solr.tagger.utils.TagResponse;
 import utils.Configs;
 
 public class Table {
@@ -604,14 +605,16 @@ public class Table {
 					Integer j = myListIterator.next();
 					tc[j].setColumns_type("QTL property");
 					for (int k = 0; k < tc[j].getcelz().length; k++) {
-						String QTLannotation = solr.tagger.recognize.Evaluate
+
+						TagResponse QTLannotation = solr.tagger.recognize.Evaluate
 								.processString(
 										tc[j].getcelz()[k].getcell_value()
 												.toLowerCase(),
 										Configs.getPropertyQTM("core1"),
 										Configs.getPropertyQTM("match"),
 										Configs.getPropertyQTM("type"));
-						if (QTLannotation != "") {
+
+						if (QTLannotation.getItems().size() != 0) {
 							numofannotatedTerms++;
 						}
 					}

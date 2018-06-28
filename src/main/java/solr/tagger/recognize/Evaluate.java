@@ -11,14 +11,11 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -32,8 +29,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.util.ClientUtils;
 
 import com.google.gson.JsonArray;
@@ -50,16 +45,12 @@ import solr.tagger.utils.TagResponse;
  */
 public class Evaluate {
 
-	static Logger logger = org.apache.log4j.LogManager.getRootLogger();
-
 	static CloseableHttpClient client = HttpClients.createDefault();
-	static SimpleDateFormat dateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd-HHmmss");
+
 	static HashMap<String, String> headers = new HashMap<String, String>();
-	static FileNameExtensionFilter filter = new FileNameExtensionFilter(
-			"text only", "txt");
 
 	public static void main(String[] args) throws URISyntaxException {
+
 		Options options = new Options()
 				.addOption("solr", true, "SOLR repository")
 				.addOption("core", true, "SOLR core")
@@ -76,10 +67,10 @@ public class Evaluate {
 		try {
 			// parse the command line arguments
 			CommandLine line = parser.parse(options, args, false);
+
 			headers.put("Content-Type", "text/plain ; charset=utf-8");
 
 			if (line.getArgList().size() > 0) {
-				throw new ParseException("unknown arguments");
 			}
 
 			String solr = line.hasOption("solr")
@@ -87,13 +78,13 @@ public class Evaluate {
 					: "http://localhost:8983/solr";
 			String core = line.hasOption("core")
 					? line.getOptionValue("core")
-					: "sgnMarkers";
+					: "trait_properties";
 			String match = line.hasOption("match")
 					? line.getOptionValue("match")
-					: "LONGEST_DOMINANT_RIGHT";
+					: "ALL";
 			String input = line.hasOption("input")
 					? line.getOptionValue("input")
-					: null;
+					: "Abbreviation";
 			String outputfolder = line.hasOption("outputfolder")
 					? line.getOptionValue("outputfolder")
 					: "data/Resultdata";
@@ -103,11 +94,11 @@ public class Evaluate {
 
 			String output = line.hasOption("output")
 					? line.getOptionValue("output")
-					: "TixdbSolarOutput";
+					: "QTMDb";
 
 			if (solr != null && core != null && type != null && match != null
 					&& output != null) {
-				// logger.info("output file = " + output);
+
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
 						new FileOutputStream(output), "UTF-8"));
 				out.write(StringUtils.join(
@@ -116,12 +107,19 @@ public class Evaluate {
 						"|"));
 				out.newLine();
 
-				processArray(out, input, core, match, type);
+//				TagResponse tag = processString(input, core, match, type);
+//
+//				String tagUri = "";
+//				if (tag.getItems().size() == 1)
+//					tagUri = tag.getItems().get(0).getIcd10();
+//				else {
+//					for (TagItem item : tag.getItems()) {
+//						tagUri += item.getIcd10() + ";";
+//					}
+//				}
+//				System.out.println(tagUri);
 
-				// String in="solcap_snp_sl_100001";
-
-				// processString(in, core, match, type);
-
+				processArray("sgn_markers","ALL", type);
 				out.close();
 			} else {
 				new HelpFormatter().printHelp(Evaluate.class.getCanonicalName(),
@@ -130,32 +128,22 @@ public class Evaluate {
 
 		} catch (ParseException e) {
 			System.err.println("Parsing failed.  Reason: " + e.getMessage());
-			// logger.error("Parsing failed. Reason: " + e.getMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	/*
-	 * this method generates a new output file name based on the various
-	 * parameters
-	 */
-	public static void processArray(BufferedWriter out, String input,
-			String core, String match, String type)
+
+
+
+
+
+	public static void processArray(String core, String match, String type)
 			throws UnsupportedEncodingException, FileNotFoundException,
 			IOException {
-		// String []
-		// line={"Solyc03g112630.2.1","Solyc03g112670.2.1","Solyc05g052410.1.1"};
 		String[] line = {"solcap_snp_sl_100001", "J1", "TG194-TG523",
-				"At4g10050", "cLEX-4-G10", "TG194-J1", "T0408", "TG194-J1",
-				"TG194-TG523"};
-		// String [] line={"Late blight", "Maturity", "Yield", "Fruit Shape",
-		// "Fruit Quality"};
-		// String [] line={"chromosome","abbreviation","Mean","H2","Variation",
-		// "Regression results P-value","Regression results R2" };
-		// String [] line={"Trait","Genotype","Chr.", "Effect under HL
-		// a","Detection year under HL","Effect under LL"};
-		int offset = 0;
+				"cLEX4G10", "cles","clex" };
+
 		for (int i = 0; i < line.length; i++) {
 			// input="This invention relates to methods for identifying maize
 			// plants having increased culturability and/or transformability.
@@ -176,86 +164,62 @@ public class Evaluate {
 						getStringContent(request, line[i], headers));
 
 				for (TagItem item : response.getItems()) {
-					Integer start = item.getStart();
-					Integer end = item.getEnd();
-					out.write(StringUtils.join(new String[]{item.getIcd10(),
-							item.getMatchText(), item.getPrefTerm(),
-							item.getTerm(), start.toString(), end.toString(),
-							item.getUuid()}, "|"));
-					out.newLine();
+					System.out.println(item.getMatchText()+"\t"+item.getPrefTerm()+"\t"+item.getIcd10());
 				}
-
-				System.out.println(response.toString());
-
+				System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static String processString(String input, String core, String match,
-			String type) throws UnsupportedEncodingException,
+
+
+
+
+
+
+
+
+
+	public static TagResponse processString(String input, String core,
+			String match, String type) throws UnsupportedEncodingException,
 			FileNotFoundException, IOException {
-		logger.setLevel(Level.OFF);
-		String output = "";
+
+		//System.out.println("Input is: \t "+input);
+		TagResponse response = new TagResponse();
+
 		try {
-			// String request = "http://localhost:8983/solr/" + core +
-			// "/tag?fl=uuid,code,prefterm,term&overlaps=" +
-			// URLEncoder.encode(match, "UTF-8") +
-			// "&matchText=true&tagsLimit=5000&wt=json";
 			String request = "http://localhost:8983/solr/" + core
 					+ "/tag?fl=uuid,code,prefterm,term&overlaps="
-					+ URLEncoder.encode(match)
+					+ URLEncoder.encode(match, "UTF-8")
 					+ "&matchText=true&tagsLimit=5000&wt=json";
 
 			String content = getStringContent(request, input, headers);
 
-			System.out.println("***" + content);
-
-			TagResponse response = parse(content);
-
-			for (TagItem item : response.getItems()) {
-				Integer start = item.getStart();
-				Integer end = item.getEnd();
-				output = StringUtils.join(new String[]{item.getIcd10(),
-						item.getMatchText(), item.getPrefTerm(), item.getTerm(),
-						start.toString(), end.toString(), item.getUuid()}, "|");
-				output += "\n";
-			}
+			response = parse(content);
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			output = "";
-			return output;
-		}
+			//e.printStackTrace();
 
-		return output;
+		}
+		return response;
 	}
 
-	public static String processString2(String input, String core, String match,
-			String type) throws UnsupportedEncodingException,
-			FileNotFoundException, IOException {
-		String res = "";
-		try {
-			String request = "http://localhost:8983/solr/" + core
-					+ "/tag?fl=uuid,code,prefterm,term&overlaps="
-					+ URLEncoder.encode(match)
-					+ "&matchText=true&tagsLimit=5000&wt=json";
-			res = getStringContent(request, input, headers);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-		return (res);
-	}
 
 	public static String getStringContent(String uri, String postData,
 			HashMap<String, String> headers) throws Exception {
+
 		HttpPost request = new HttpPost(uri);
+
+		// System.out.println("postdata is: \t"+postData);
 
 		request.setEntity(new StringEntity(
 				ClientUtils.escapeQueryChars(postData), "UTF-8"));
+
+		// System.out.println("Request is:" + request + "\n");
 
 		for (Entry<String, String> s : headers.entrySet()) {
 			request.setHeader(s.getKey(), s.getValue());
@@ -263,14 +227,12 @@ public class Evaluate {
 
 		HttpResponse response = client.execute(request);
 
+		// System.out.println("Response is:" + response + "\n");
+
 		InputStream ips = response.getEntity().getContent();
 		BufferedReader buf = new BufferedReader(
 				new InputStreamReader(ips, "UTF-8"));
 
-		// if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-		// throw new Exception(response.getStatusLine().getReasonPhrase());
-		//
-		// }
 		StringBuilder sb = new StringBuilder();
 		String s;
 		while (true) {
@@ -286,12 +248,17 @@ public class Evaluate {
 	}
 
 	public static TagResponse parse(String jsonLine) {
-		System.out.println(jsonLine);
+
+		//System.out.println("Json Response is:" + jsonLine.toString() + "\n");
+
 		Map<String, List<Position>> positions = new HashMap<String, List<Position>>();
 		TagResponse result = new TagResponse();
-		JsonElement jelement = new JsonParser().parse(jsonLine);
+
+		JsonElement jelement;
+		jelement = new JsonParser().parse(jsonLine);
 		JsonObject jobject = jelement.getAsJsonObject();
 		JsonArray tags = jobject.getAsJsonArray("tags");
+
 		for (JsonElement tagElt : tags) {
 			JsonArray tag = tagElt.getAsJsonArray();
 			Integer aStartOffset = null, aEndOffset = null;

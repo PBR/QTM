@@ -6,7 +6,14 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 public class TagResponse {
+
 	private List<TagItem> items = new ArrayList<TagItem>();
+
+	public TagResponse() {
+		// TODO Auto-generated constructor stub
+
+	}
+
 
 	public List<TagItem> getItems() {
 		return items;
@@ -19,6 +26,9 @@ public class TagResponse {
 	public void add(TagItem item) {
 		this.items.add(item);
 	}
+
+
+
 
 	@Override
 	public String toString() {
