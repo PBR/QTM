@@ -218,7 +218,9 @@ public class QtlDb {
 								colStmt.setInt(1, tab_id);
 
 								try {
-									colStmt.setString(2, col.getHeader());
+									if(colHeader == "" | colHeader == " ")
+										colHeader=null;
+									colStmt.setString(2, colHeader);
 								} catch (NullPointerException e) {
 									colStmt.setNull(2, java.sql.Types.VARCHAR);
 								}
@@ -241,8 +243,11 @@ public class QtlDb {
 									}
 								}
 
+
 								try {
-									colStmt.setString(4, colAnnoUri);
+									if(colAnnoUri=="")
+										colAnnoUri=null;
+										colStmt.setString(4, colAnnoUri);
 								} catch (NullPointerException e) {
 									colStmt.setNull(4, java.sql.Types.VARCHAR);
 								}
@@ -485,6 +490,8 @@ public class QtlDb {
 								}
 							}
 
+
+
 							String markerAnnoUri = "";
 
 							if (markerAnno.getItems().size() == 1)
@@ -523,18 +530,24 @@ public class QtlDb {
 							}
 
 							try {
+								if(traitOntoName =="")
+									traitOntoName=null;
 								preparedStatement.setString(4, traitOntoName);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(4,
 										java.sql.Types.VARCHAR);
 							}
 							try {
+								if(traitAnnoUri=="")
+									traitAnnoUri=null;
 								preparedStatement.setString(5, traitAnnoUri);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(5,
 										java.sql.Types.VARCHAR);
 							}
 							try {
+								if(ChromosomeNumber=="")
+									ChromosomeNumber=null;
 								preparedStatement.setString(6,
 										ChromosomeNumber);
 							} catch (NullPointerException e) {
@@ -543,6 +556,8 @@ public class QtlDb {
 							}
 
 							try {
+								if(markers_associated == "")
+									markers_associated=null;
 								preparedStatement.setString(7,
 										markers_associated);
 							} catch (NullPointerException e) {
@@ -551,18 +566,24 @@ public class QtlDb {
 							}
 
 							try {
+								if(markerAnnoUri == "")
+									markerAnnoUri=null;
 								preparedStatement.setString(8, markerAnnoUri);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(8,
 										java.sql.Types.VARCHAR);
 							}
 							try {
+								if(gene_associated == "")
+									gene_associated=null;
 								preparedStatement.setString(9, gene_associated);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(9,
 										java.sql.Types.VARCHAR);
 							}
 							try {
+								if(geneAnnoUri == "")
+									geneAnnoUri=null;
 								preparedStatement.setString(10, geneAnnoUri);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(10,

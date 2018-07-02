@@ -51,6 +51,6 @@ CREATE TABLE QTL (
 );
 
 CREATE VIEW V_QTL AS
-  SELECT trait_in_article, trait_in_onto, trait_uri, chromosome, marker, marker_uri, gene, gene_uri, Article.pmc_id, tab_lb, row_id, doi FROM QTL 
+  SELECT QTL.tab_id, trait_in_article, trait_in_onto, trait_uri, chromosome, marker, marker_uri, gene, gene_uri, Article.pmc_id, tab_lb, row_id, doi FROM QTL 
   INNER JOIN TRAIT_TABLE ON QTL.tab_id = TRAIT_TABLE.tab_id
   INNER JOIN ARTICLE ON TRAIT_TABLE.pmc_id = ARTICLE.pmc_id;
