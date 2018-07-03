@@ -1,14 +1,14 @@
 CREATE TABLE ARTICLE (
-  pmc_id  INTEGER NOT NULL,
-  title   TEXT,
-  doi   TEXT,
+  pmc_id INTEGER NOT NULL,
+  title  TEXT,
+  doi    TEXT,
   PRIMARY KEY(pmc_id)
 );
 
 CREATE TABLE TRAIT_TABLE (
-  tab_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+  tab_id INTEGER PRIMARY KEY AUTOINCREMENT,
   tab_lb TEXT,
-  pmc_id  INTEGER NOT NULL,
+  pmc_id INTEGER NOT NULL,
   FOREIGN KEY(pmc_id) REFERENCES ARTICLE(pmc_id)
 );
 
@@ -51,6 +51,20 @@ CREATE TABLE QTL (
 );
 
 CREATE VIEW V_QTL AS
-  SELECT QTL.tab_id, trait_in_article, trait_in_onto, trait_uri, chromosome, marker, marker_uri, gene, gene_uri, Article.pmc_id, tab_lb, row_id, doi FROM QTL 
-  INNER JOIN TRAIT_TABLE ON QTL.tab_id = TRAIT_TABLE.tab_id
-  INNER JOIN ARTICLE ON TRAIT_TABLE.pmc_id = ARTICLE.pmc_id;
+SELECT
+  pmc_id,
+  tab_lb,
+  row_id,
+  tab_id,
+  trait_in_article,
+  trait_in_onto,
+  trait_uri,
+  chromosome,
+  marker,
+  marker_uri,
+  gene,
+  gene_uri,
+  doi
+FROM QTL
+INNER JOIN TRAIT_TABLE USING (tab_id)
+INNER JOIN ARTICLE USING (pmc_id);
