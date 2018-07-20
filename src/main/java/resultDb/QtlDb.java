@@ -165,7 +165,8 @@ public class QtlDb {
 
 							System.out.println(
 									"Inserting entries into TRAIT_TABLE for: \t"
-											+"Table Number: " + t.getTabnum() + " of "+  article.getPmc());
+											+ "Table Number: " + t.getTabnum()
+											+ " of " + article.getPmc());
 
 							String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_lb, pmc_id) VALUES"
 									+ "(?,?); ";
@@ -218,8 +219,8 @@ public class QtlDb {
 								colStmt.setInt(1, tab_id);
 
 								try {
-									if(colHeader == "" | colHeader == " ")
-										colHeader=null;
+									if (colHeader == "" | colHeader == " ")
+										colHeader = null;
 									colStmt.setString(2, colHeader);
 								} catch (NullPointerException e) {
 									colStmt.setNull(2, java.sql.Types.VARCHAR);
@@ -243,11 +244,10 @@ public class QtlDb {
 									}
 								}
 
-
 								try {
-									if(colAnnoUri=="")
-										colAnnoUri=null;
-										colStmt.setString(4, colAnnoUri);
+									if (colAnnoUri == "")
+										colAnnoUri = null;
+									colStmt.setString(4, colAnnoUri);
 								} catch (NullPointerException e) {
 									colStmt.setNull(4, java.sql.Types.VARCHAR);
 								}
@@ -481,37 +481,46 @@ public class QtlDb {
 										.getIcd10();
 								traitOntoName = traitAnno.getItems().get(0)
 										.getPrefTerm();
-							} else {
-								for (TagItem item : traitAnno.getItems()) {
-										traitAnnoUri += item.getIcd10() + ";";
-										if(!traitOntoName.contains(item.getPrefTerm()))
-											traitOntoName += item.getPrefTerm() + ";";
-
+							} else if (traitAnno.getItems().size() > 1) {
+								for (TagItem item_trait : traitAnno
+										.getItems()) {
+									traitAnnoUri += item_trait.getIcd10() + ";";
+									if (!traitOntoName
+											.contains(item_trait.getPrefTerm()))
+										traitOntoName += item_trait
+												.getPrefTerm() + ";";
 								}
+								traitOntoName = traitOntoName.substring(0,
+										traitOntoName.length() - 1);
+								traitAnnoUri = traitAnnoUri.substring(0,
+										traitAnnoUri.length() - 1);
 							}
-
-
 
 							String markerAnnoUri = "";
 
 							if (markerAnno.getItems().size() == 1)
 								markerAnnoUri = markerAnno.getItems().get(0)
 										.getIcd10();
-							else {
+							else if (markerAnno.getItems().size() > 1) {
 								for (TagItem item : markerAnno.getItems()) {
 									markerAnnoUri += item.getIcd10() + ";";
 								}
+								markerAnnoUri = markerAnnoUri.substring(0,
+										markerAnnoUri.length() - 1);
 							}
 
 							String geneAnnoUri = "";
 							if (geneAnno.getItems().size() == 1)
 								geneAnnoUri = geneAnno.getItems().get(0)
 										.getIcd10();
-							else {
+							else if (geneAnno.getItems().size() > 1) {
 								for (TagItem item : geneAnno.getItems()) {
 									geneAnnoUri += item.getIcd10() + ";";
 								}
+								geneAnnoUri = geneAnnoUri.substring(0,
+										geneAnnoUri.length() - 1);
 							}
+
 							String insertTableSQL = "INSERT INTO QTL"
 									+ "(tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,chromosome,marker,marker_uri, gene,gene_uri) VALUES"
 									+ "(?,?,?,?,?,?,?,?,?,?)";
@@ -530,24 +539,24 @@ public class QtlDb {
 							}
 
 							try {
-								if(traitOntoName =="")
-									traitOntoName=null;
+								if (traitOntoName == "")
+									traitOntoName = null;
 								preparedStatement.setString(4, traitOntoName);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(4,
 										java.sql.Types.VARCHAR);
 							}
 							try {
-								if(traitAnnoUri=="")
-									traitAnnoUri=null;
+								if (traitAnnoUri == "")
+									traitAnnoUri = null;
 								preparedStatement.setString(5, traitAnnoUri);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(5,
 										java.sql.Types.VARCHAR);
 							}
 							try {
-								if(ChromosomeNumber=="")
-									ChromosomeNumber=null;
+								if (ChromosomeNumber == "")
+									ChromosomeNumber = null;
 								preparedStatement.setString(6,
 										ChromosomeNumber);
 							} catch (NullPointerException e) {
@@ -556,8 +565,8 @@ public class QtlDb {
 							}
 
 							try {
-								if(markers_associated == "")
-									markers_associated=null;
+								if (markers_associated == "")
+									markers_associated = null;
 								preparedStatement.setString(7,
 										markers_associated);
 							} catch (NullPointerException e) {
@@ -566,24 +575,24 @@ public class QtlDb {
 							}
 
 							try {
-								if(markerAnnoUri == "")
-									markerAnnoUri=null;
+								if (markerAnnoUri == "")
+									markerAnnoUri = null;
 								preparedStatement.setString(8, markerAnnoUri);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(8,
 										java.sql.Types.VARCHAR);
 							}
 							try {
-								if(gene_associated == "")
-									gene_associated=null;
+								if (gene_associated == "")
+									gene_associated = null;
 								preparedStatement.setString(9, gene_associated);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(9,
 										java.sql.Types.VARCHAR);
 							}
 							try {
-								if(geneAnnoUri == "")
-									geneAnnoUri=null;
+								if (geneAnnoUri == "")
+									geneAnnoUri = null;
 								preparedStatement.setString(10, geneAnnoUri);
 							} catch (NullPointerException e) {
 								preparedStatement.setNull(10,
@@ -593,8 +602,10 @@ public class QtlDb {
 							try {
 								preparedStatement.executeUpdate();
 							} catch (SQLException e) {
-								//e.getStackTrace();
-								//System.out.println("QTL detected is not Unique. Already exiting: "+ T.getTraitName()+ T.getTraitID());
+								// e.getStackTrace();
+								// System.out.println("QTL detected is not
+								// Unique. Already exiting: "+ T.getTraitName()+
+								// T.getTraitID());
 								// throw e;
 							}
 
@@ -604,9 +615,9 @@ public class QtlDb {
 
 				}
 
-			stmt1.close();
-			stmt2.close();
-			stmt3.close();
+				stmt1.close();
+				stmt2.close();
+				stmt3.close();
 			}
 		} catch (Exception e) {
 			System.out.println("Error in QTLDB.insertQTLdata entry function ");
