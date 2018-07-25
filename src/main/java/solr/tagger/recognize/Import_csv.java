@@ -1,9 +1,9 @@
 package solr.tagger.recognize;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,14 +19,10 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 
-import solr.tagger.utils.Permutations;
-
 /**
  * @author gurnoor
  */
-public class Import {
-
-	// static Logger logger = LogManager.getRootLogger();
+public class Import_csv {
 
 	public static void main(String[] args) {
 
@@ -34,6 +30,7 @@ public class Import {
 				.addOption("solr", true, "SOLR repository")
 				.addOption("file", true, "file to import")
 				.addOption("core", true, "core")
+				.addOption("clear", false, "false")
 				.addOption("permutations", false, "permutations");
 		CommandLineParser parser = new DefaultParser();
 
@@ -52,20 +49,20 @@ public class Import {
 					: null;
 			String core = line.hasOption("core")
 					? line.getOptionValue("core")
-					: "filteredDictCorpus";
+					: "trait_descriptors";
 			Boolean permutations = line.hasOption("permutations")
 					? Boolean.parseBoolean(line.getOptionValue("permutations"))
 					: false;
+			Boolean clear = line.hasOption("clear");
 
 			if (solr != null && file != null && core != null) {
-				processDictionary(solr, core, file, permutations);
+				processDictionary(solr, core, file, permutations, clear);
 			} else {
 				new HelpFormatter().printHelp(Process.class.getCanonicalName(),
 						options);
 			}
 		} catch (ParseException e) {
 			System.err.println("Parsing failed.  Reason: " + e.getMessage());
-			// logger.error("Parsing failed. Reason: " + e.getMessage());
 		} catch (SolrServerException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -74,62 +71,77 @@ public class Import {
 	}
 
 	private static void processDictionary(String server, String core,
-			String filename, Boolean permutations)
+			String filename, Boolean permutations, Boolean clear)
 			throws SolrServerException, IOException {
 		SolrClient solr = new HttpSolrClient.Builder(server + "/" + core)
 				.build();
-		solr.deleteByQuery("*:*");
-		solr.commit();
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(
-				new FileInputStream(filename), "UTF8"));) {
-			String line = null;
-			int cnt = 0;
-			List<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
+		if (clear) {
+			solr.deleteByQuery("*:*");
+			solr.commit();
+		}
 
+		int count = 0;
+		List<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
+
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+
+		try {
+			br = new BufferedReader(new FileReader(filename));
 			while ((line = br.readLine()) != null) {
-				String[] pieces = line.split("\\|");
-				if (pieces.length == 3) {
-					String[] terms = pieces[1].split(";");
-					for (String original_term : terms) {
-						cnt++;
-						if (cnt % 1000 == 0) {
-							System.out.println(cnt);
-							System.out.flush();
-							solr.add(docs);
-							docs.clear();
-						}
-						if (permutations) {
-							for (String term : Permutations
-									.get(original_term)) {
-								SolrInputDocument doc = new SolrInputDocument();
-								doc.addField("uuid",
-										UUID.randomUUID().toString());
-								doc.addField("icd10", pieces[0]);
-								doc.addField("term", term);
-								doc.addField("origin", "dictionary");
-								doc.addField("prefterm", terms[0]);
-								// solr.add(doc);
-								docs.add(doc);
-							}
-						} else {
-							SolrInputDocument doc = new SolrInputDocument();
-							doc.addField("uuid", UUID.randomUUID().toString());
-							doc.addField("icd10", pieces[0]);
-							doc.addField("term", original_term);
-							doc.addField("origin", "dictionary");
-							doc.addField("prefterm", terms[0]);
-							// solr.add(doc);
-							docs.add(doc);
-						}
 
-					}
+				count++;
+				if (count % 10 == 0) {
+					System.out.println(count);
+					System.out.flush();
+					solr.add(docs);
+					docs.clear();
+				}
+
+				String[] line_pieces = line.split(cvsSplitBy);
+
+				String uri_Id = line_pieces[0];
+				String termName = line_pieces[1];
+				// String[] mNames = makerName.split(";");
+
+				if (permutations) {
+					SolrInputDocument doc = new SolrInputDocument();
+					doc.addField("uuid", UUID.randomUUID().toString());
+					doc.addField("code", uri_Id);
+					doc.addField("term", termName);
+					doc.addField("origin", filename);
+					doc.addField("prefterm", termName);
+					docs.add(doc);
+				} else {
+					SolrInputDocument doc = new SolrInputDocument();
+					doc.addField("uuid", UUID.randomUUID().toString());
+					doc.addField("code", uri_Id);
+					doc.addField("term", termName);
+					doc.addField("origin", filename);
+					doc.addField("prefterm", termName);
+					docs.add(doc);
+				}
+
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			solr.add(docs);
+			solr.commit();
+			solr.close();
+
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
-			solr.add(docs);
-			docs.clear();
-			br.close();
 		}
-		solr.commit();
-		solr.close();
+
 	}
 }
