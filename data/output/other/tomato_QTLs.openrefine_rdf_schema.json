@@ -6,28 +6,28 @@
       "baseUri": "http://solgenomics.net/",
       "prefixes": [
         {
-          "name": "obo",
-          "uri": "http://purl.obolibrary.org/obo/"
-        },
-        {
           "name": "rdfs",
           "uri": "http://www.w3.org/2000/01/rdf-schema#"
         },
         {
-          "name": "bibo",
-          "uri": "http://purl.org/ontology/bibo/"
+          "name": "obo",
+          "uri": "http://purl.obolibrary.org/obo/"
         },
         {
           "name": "dcmitype",
           "uri": "http://purl.org/dc/dcmitype/"
         },
         {
-          "name": "xsd",
-          "uri": "http://www.w3.org/2001/XMLSchema#"
+          "name": "bibo",
+          "uri": "http://purl.org/ontology/bibo/"
         },
         {
           "name": "pmc",
           "uri": "http://identifiers.org/pmc/"
+        },
+        {
+          "name": "xsd",
+          "uri": "http://www.w3.org/2001/XMLSchema#"
         },
         {
           "name": "rdf",
@@ -118,7 +118,7 @@
         },
         {
           "nodeType": "cell-as-resource",
-          "expression": "'http://identifiers.org/pmc/' + value",
+          "expression": "'http://identifiers.org/pmc/PMC' + value",
           "isRowNumberCell": false,
           "columnName": "pmc_id",
           "rdfTypes": [
@@ -133,7 +133,7 @@
               "curie": "bibo:uri",
               "target": {
                 "nodeType": "cell-as-resource",
-                "expression": "'http://identifiers.org/pmc/' + value",
+                "expression": "'http://identifiers.org/pmc/PMC' + value",
                 "isRowNumberCell": false,
                 "columnName": "pmc_id",
                 "rdfTypes": [],
@@ -304,7 +304,7 @@
               "curie": "dcterms:modified",
               "target": {
                 "nodeType": "literal",
-                "value": "2018-07-31",
+                "value": "2018-08-01",
                 "valueType": "http://www.w3.org/2001/XMLSchema#date"
               }
             }
