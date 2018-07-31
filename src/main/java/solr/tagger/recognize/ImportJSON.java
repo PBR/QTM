@@ -23,6 +23,7 @@ import com.google.gson.JsonParser;
 
 import solr.tagger.utils.Permutations;
 
+
 public class ImportJSON {
 
 
@@ -55,7 +56,6 @@ public class ImportJSON {
 	    }
 	} catch (ParseException e) {
 	    System.err.println("Parsing failed.  Reason: " + e.getMessage());
-
 	} catch (SolrServerException e) {
 	    e.printStackTrace();
 	} catch (IOException e) {
