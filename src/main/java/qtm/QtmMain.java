@@ -92,6 +92,7 @@ public class QtmMain {
 			if (QtlDb.isPmcIdAlredyInDb(pmcIds.get(i)) == false) {
 
 				xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
+				System.out.println(xmlFiles[i].toString());
 				articles[i] = new Article("");
 				PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
 

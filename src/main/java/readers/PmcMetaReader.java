@@ -55,7 +55,9 @@ public class PmcMetaReader {
 	public PmcMetaReader(File F1) {
 		super();
 		this.f1 = F1;
+		System.out.println(F1.getPath());
 		this.fileName = F1.getPath();
+		System.out.println(fileName);
 	}
 
 	public PmcMetaReader(String fName) {
@@ -515,14 +517,21 @@ public class PmcMetaReader {
 			throws IOException, MalformedURLException {
 
 		File xmlfile = new File(pmcId + ".xml");
+		System.out.println("File Name is"+xmlfile.getName());
+
+		System.out.println("File path is"+xmlfile.getPath() );
+
 		try {
 			if (!xmlfile.exists() || xmlfile.length() == 0) {
 				xmlfile.createNewFile();
 				String pmcWebserviceUrl = Configs.getPropertyQTM(
 						"epmcWebService") + pmcId + "/fullTextXML";
+
 				URL website = new URL(pmcWebserviceUrl);
+				System.out.println("xml file is "+website.toString());
 				ReadableByteChannel rbc = Channels
 						.newChannel(website.openStream());
+				System.out.println(rbc.toString());
 				FileOutputStream fos = new FileOutputStream(xmlfile);
 				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				fos.close();
