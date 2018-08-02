@@ -447,8 +447,8 @@ public class QtlDb {
 								// System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
 								gene_associated += cellValue;
 								gene_associated = gene_associated
-										.replace("\n", "").replace("\r", "")
-										.replaceAll("\\s+", "");
+										.replace("\n", " ").replace("\r", " ")
+										.replaceAll("\\s+", " ");
 
 								// System.out.println("gene
 								// is"+gene_associated);
