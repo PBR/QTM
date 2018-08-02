@@ -527,14 +527,11 @@ public class PmcMetaReader {
 				URL url = new URL(pmcWebserviceUrl);
 				FileUtils.copyURLToFile(url, xmlfile);
 
-
 			}
 			return xmlfile;
 		} catch (Exception e) {
 
 			e.printStackTrace();
-
-
 	}
 		return xmlfile;
 	}}
