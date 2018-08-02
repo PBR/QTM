@@ -19,8 +19,6 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,6 +27,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -517,34 +516,25 @@ public class PmcMetaReader {
 			throws IOException, MalformedURLException {
 
 		File xmlfile = new File(pmcId + ".xml");
-		System.out.println("File Name is"+xmlfile.getName());
 
-		System.out.println("File path is"+xmlfile.getPath() );
-
-		try {
+		try{
 			if (!xmlfile.exists() || xmlfile.length() == 0) {
 				xmlfile.createNewFile();
+
 				String pmcWebserviceUrl = Configs.getPropertyQTM(
 						"epmcWebService") + pmcId + "/fullTextXML";
 
-				URL website = new URL(pmcWebserviceUrl);
-				System.out.println("xml file is "+website.toString());
-				ReadableByteChannel rbc = Channels
-						.newChannel(website.openStream());
-				System.out.println(rbc.toString());
-				FileOutputStream fos = new FileOutputStream(xmlfile);
-				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-				fos.close();
+				URL url = new URL(pmcWebserviceUrl);
+				FileUtils.copyURLToFile(url, xmlfile);
+
+
 			}
 			return xmlfile;
 		} catch (Exception e) {
-			if (xmlfile.exists()) {
-				Process p = Runtime.getRuntime().exec("rm " + pmcId + ".xml");
-			}
-			System.out.println("xml file for " + pmcId + " not found");
-			return null;
 
-		}
+			e.printStackTrace();
+
+
 	}
-
-}
+		return xmlfile;
+	}}
