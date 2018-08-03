@@ -13,14 +13,21 @@ import solr.tagger.utils.TagResponse;
 import utils.Configs;
 
 public class Table {
-
-	private int tab_num;
+	
+	private int tabNum;
+	
 	private String xml;
+	
 	private String documentFileName;
+	
 	public String pragmaticClass;
+	
 	public boolean isEmptyOnlyHeaders = true;
+	
 	private boolean isTraitTable = false;
+	
 	private String[] tableHeadersColumns;
+	
 	private Columns[] tableCol;
 
 	public enum StructureType {
@@ -28,21 +35,17 @@ public class Table {
 	};
 
 	private String sectionOfTable;
-	/** The num_of_rows. */
+
 	private int num_of_rows;
 
 	public int tableInTable;
 
-	/** The num_of_columns. */
 	private int num_of_columns;
 
-	/** The table_title. */
 	private String table_label;
 
-	/** The table_caption. */
 	private String table_caption;
 
-	/** The table_footer. */
 	private String table_footer;
 
 	private boolean hasHeader = true;
@@ -54,8 +57,9 @@ public class Table {
 	private boolean isRowSpanning = false;
 
 	private boolean isColSpanning = false;
-	private int structureClass = 0; // 0 - no class,1- simplest, 2 - simple, 3 -
-									// medium, 4 - complex
+
+	private int structureClass = 0; // 0 - no class, 1- simplest, 2 - simple,
+																	// 3 - medium, 4 - complex
 	private StructureType tableStructureType;
 
 	// Constructors
@@ -66,12 +70,12 @@ public class Table {
 	 *            the title
 	 */
 	public Table(String label) {
-		table_label = label;
-		hasHeader = true;
-		hasBody = true;
-		isNoXMLTable = false;
-		isRowSpanning = false;
-		isColSpanning = false;
+		this.table_label = label;
+		this.hasHeader = true;
+		this.hasBody = true;
+		this.isNoXMLTable = false;
+		this.isRowSpanning = false;
+		this.isColSpanning = false;
 	}
 
 	/**
@@ -148,12 +152,12 @@ public class Table {
 
 	// Getters and setters
 
-	public int getTabnum() {
-		return tab_num;
+	public int getTabNum() {
+		return tabNum;
 	}
 
-	public void setTableid(int tab_num) {
-		this.tab_num = tab_num;
+	public void setTableNum(int tabNum) {
+		this.tabNum = tabNum;
 	}
 
 	public String[] getTableHeadersColumns() {

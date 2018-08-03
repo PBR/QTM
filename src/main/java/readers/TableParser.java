@@ -75,7 +75,7 @@ public class TableParser {
 
 				tables[tableindex] = new Table(label);
 
-				tables[tableindex].setDocumentFileName(article.getPmc());
+				tables[tableindex].setDocumentFileName(article.getPmcId());
 
 				// table in xml
 				tables[tableindex].setXml(Utilities
@@ -89,18 +89,8 @@ public class TableParser {
 								.useDelimiter("[^0-9]+");
 				int tid = tlable.nextInt();
 
-				// System.out.println("sssssssssssssssssssssssssssssss is "+s);
-				if (tableTags.size() > 1) {
-
-					// System.out.println("sssssssssssssssssssssssssssssss is
-					// "+s);
-					// System.out.println("s is "+s%10);
-
-					tables[tableindex].setTableid(tid);
-				} else {
-					tables[tableindex].setTableid(tid);
-				}
-
+				tables[tableindex].setTableNum(tid);
+				
 				String caption = readTableCaption(tablesxml.item(i))
 						.replaceAll("\n", "").replace("\r", "");
 				System.out.println("Caption: \t" + caption);
@@ -125,7 +115,7 @@ public class TableParser {
 					tables[tableindex].setNum_of_rows(0);
 					tables[tableindex].setNum_of_columns(0);
 					System.out.println(tables[tableindex].getisTraitTable()
-							+ " " + tables[tableindex].getTabnum()
+							+ " " + tables[tableindex].getTabNum()
 							+ " is not a trait table");
 					tableindex++;
 					break;
@@ -765,14 +755,14 @@ public class TableParser {
 				if (table.getTable_caption().toLowerCase()
 						.indexOf(wordlist[j]) != -1) {
 					table.setisTraitTable(true);
-					System.out.println(table.getTabnum() + " is a QTL table\n");
+					System.out.println(table.getTabNum() + " is a QTL table\n");
 					return table;
 				}
 				for (String h : HeaderList) {
 					if (h.indexOf(wordlist[j]) != -1) {
 						table.setisTraitTable(true);
 						System.out.println(
-								table.getTabnum() + " is a QTL table\n");
+								table.getTabNum() + " is a QTL table\n");
 						return table;
 					} else {
 						continue;
@@ -780,11 +770,10 @@ public class TableParser {
 				}
 			}
 
-			System.out.println(table.getTabnum() + " is NOT a QTL table\n");
+		System.out.println(table.getTabNum() + " is NOT a QTL table\n");
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return table;
-
 	}
 }

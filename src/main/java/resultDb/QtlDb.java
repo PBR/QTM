@@ -90,9 +90,6 @@ public class QtlDb {
 	}
 
 	public static void insertArticleEntry(Article article) {
-
-		// System.out.println("Article length is" + articles.length);
-		// System.out.println("Article pmcid is" + articles[i].getPmc());
 		try {
 			if (connectionDB() & isArticleEntryAlredyIn(article) == false) {
 
@@ -103,7 +100,7 @@ public class QtlDb {
 				getRowidStmt = conn.createStatement();
 
 				// Article Table entry
-				Scanner id = new Scanner(article.getPmc())
+				Scanner id = new Scanner(article.getPmcId())
 						.useDelimiter("[^0-9]+");
 				int pmc_id = id.nextInt();
 				String pmc_tittle = article.getTitle();
@@ -165,8 +162,8 @@ public class QtlDb {
 
 							System.out.println(
 									"Inserting entries into TRAIT_TABLE for: \t"
-											+ "Table Number: " + t.getTabnum()
-											+ " of " + article.getPmc());
+											+ "Table Number: " + t.getTabNum()
+											+ " of " + article.getPmcId());
 
 							String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_lb, pmc_id) VALUES"
 									+ "(?,?); ";
@@ -174,7 +171,7 @@ public class QtlDb {
 							PreparedStatement traitTableStmt = conn
 									.prepareStatement(insertTraitTable);
 
-							traitTableStmt.setInt(1, t.getTabnum());
+							traitTableStmt.setInt(1, t.getTabNum());
 							traitTableStmt.setInt(2, pmc_id);
 
 							traitTableStmt.executeUpdate();
@@ -299,7 +296,7 @@ public class QtlDb {
 				}
 
 			} else {
-				System.out.println(article.getPmc() + " already exists");
+				System.out.println(article.getPmcId() + " already exists");
 			}
 
 			// System.out.println("entry inserted into DB successfully");
@@ -395,7 +392,7 @@ public class QtlDb {
 						} else if (colType.equals("QTL property")) {
 
 							String regex1 = "marker";
-							String regex2 = "snp";
+							String regex2 = "snp"; // there are also be other types
 
 							Pattern pattern1 = Pattern.compile(regex1,
 									Pattern.CASE_INSENSITIVE);
@@ -411,9 +408,7 @@ public class QtlDb {
 							if (matcher1.find() || matcher2.find()
 									|| matcher3.find() || matcher4.find()) {
 								markers_associated += cellValue;
-								markers_associated = markers_associated
-										.replace("\n", "").replace("\r", "")
-										.replaceAll("\\s+", "");
+								markers_associated = markers_associated.replaceAll("\\s+", "");
 
 								try {
 									markerAnno = solr.tagger.recognize.Evaluate
@@ -429,7 +424,7 @@ public class QtlDb {
 							}
 							// Filterout Gene
 							regex1 = "gen[eo]";
-							regex2 = "solyc";
+							regex2 = "solyc"; // hard-coded?
 							pattern1 = Pattern.compile(regex1,
 									Pattern.CASE_INSENSITIVE);
 							pattern2 = Pattern.compile(regex2,
@@ -442,16 +437,9 @@ public class QtlDb {
 							matcher4 = pattern2.matcher(colHeader);
 
 							if (matcher1.find() || matcher2.find()
-									|| matcher3.find() || matcher4.find()) {
-
-								// System.out.println(matcher1.find()+"\t"+matcher2.find()+"\t"+matcher3.find());
+								|| matcher3.find() || matcher4.find()) {
 								gene_associated += cellValue;
-								gene_associated = gene_associated
-										.replace("\n", " ").replace("\r", " ")
-										.replaceAll("\\s+", " ");
-
-								// System.out.println("gene
-								// is"+gene_associated);
+								gene_associated = gene_associated.replaceAll("\\s+", " ");
 
 								try {
 									geneAnno = solr.tagger.recognize.Evaluate
@@ -669,7 +657,7 @@ public class QtlDb {
 			while (rs.next()) {
 				int pmcId = rs.getInt("pmc_id");
 
-				Scanner id = new Scanner(a.getPmc()).useDelimiter("[^0-9]+");
+				Scanner id = new Scanner(a.getPmcId()).useDelimiter("[^0-9]+");
 				int pid = id.nextInt();
 
 				if (pmcId == pid) {
