@@ -25,8 +25,7 @@ public class Utilities {
 	/**
 	 * Checks if is string numeric.
 	 *
-	 * @param str
-	 *            the str
+	 * @param str the str
 	 * @return true, if is numeric
 	 */
 	public static boolean isNumeric(String str) {
@@ -43,16 +42,14 @@ public class Utilities {
 	/**
 	 * Creates the xml string from sub node.
 	 *
-	 * @param xml
-	 *            the xml
+	 * @param xml the xml
 	 * @return the string
 	 */
 	public static String createXMLStringFromSubNode(Node xml) {
 		String result = "";
 		try {
 			StringWriter sw = new StringWriter();
-			Transformer serializer = TransformerFactory.newInstance()
-					.newTransformer();
+			Transformer serializer = TransformerFactory.newInstance().newTransformer();
 			serializer.transform(new DOMSource(xml), new StreamResult(sw));
 			result = sw.toString();
 		} catch (Exception ex) {
@@ -64,20 +61,16 @@ public class Utilities {
 	/**
 	 * Creates the xml string from sub node.
 	 *
-	 * @param xml
-	 *            the xml
+	 * @param xml the xml
 	 * @return the string
 	 */
-	public static String createXMLStringFromSubNodeWithoutDeclaration(
-			Node xml) {
+	public static String createXMLStringFromSubNodeWithoutDeclaration(Node xml) {
 		xml = xml.getFirstChild();
 		String result = "";
 		try {
 			StringWriter sw = new StringWriter();
-			Transformer serializer = TransformerFactory.newInstance()
-					.newTransformer();
-			serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
-					"yes");
+			Transformer serializer = TransformerFactory.newInstance().newTransformer();
+			serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			serializer.transform(new DOMSource(xml), new StreamResult(sw));
 			result = sw.toString();
 		} catch (Exception ex) {
@@ -104,8 +97,7 @@ public class Utilities {
 		if (s.length() == 0)
 			return true;
 		char ch = s.charAt(0);
-		if ((ch) == 8195 || ch == 160 || ch == ' '
-				|| ch == 8194 || ch == 8201)
+		if ((ch) == 8195 || ch == 160 || ch == ' ' || ch == 8194 || ch == 8201)
 			return true;
 		else
 			return false;
@@ -146,15 +138,13 @@ public class Utilities {
 				isFirst = true;
 				numericCount = i - numericStart + 1;
 			}
-			if (i >= 1 && Utilities.isNumeric(s.charAt(i - 1) + "")
-					&& !Utilities.isNumeric(s.charAt(i) + "")) {
+			if (i >= 1 && Utilities.isNumeric(s.charAt(i - 1) + "") && !Utilities.isNumeric(s.charAt(i) + "")) {
 				break;
 			}
 		}
 		int num = 0;
 		if (numericCount > 0)
-			num = Integer.parseInt(
-					s.substring(numericStart, numericStart + numericCount));
+			num = Integer.parseInt(s.substring(numericStart, numericStart + numericCount));
 		return num;
 
 	}

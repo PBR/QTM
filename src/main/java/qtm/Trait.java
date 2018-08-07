@@ -64,8 +64,7 @@ public class Trait {
 		this.TraitName = traitName;
 	}
 
-	public Trait(String traitName, JSONObject traitProperties,
-			JSONObject traitValues) {
+	public Trait(String traitName, JSONObject traitProperties, JSONObject traitValues) {
 		super();
 		this.TraitName = traitName;
 		this.traitProperties = traitProperties;

@@ -53,6 +53,7 @@ public class TagItem {
 	public String getPrefTerm() {
 		return prefterm;
 	}
+
 	public void setPrefTerm(String prefterm) {
 		this.prefterm = prefterm;
 	}

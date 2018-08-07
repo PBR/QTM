@@ -13,21 +13,21 @@ import solr.tagger.utils.TagResponse;
 import utils.Configs;
 
 public class Table {
-	
+
 	private int tabNum;
-	
+
 	private String xml;
-	
+
 	private String documentFileName;
-	
+
 	public String pragmaticClass;
-	
+
 	public boolean isEmptyOnlyHeaders = true;
-	
+
 	private boolean isTraitTable = false;
-	
+
 	private String[] tableHeadersColumns;
-	
+
 	private Columns[] tableCol;
 
 	public enum StructureType {
@@ -59,15 +59,14 @@ public class Table {
 	private boolean isColSpanning = false;
 
 	private int structureClass = 0; // 0 - no class, 1- simplest, 2 - simple,
-																	// 3 - medium, 4 - complex
+									// 3 - medium, 4 - complex
 	private StructureType tableStructureType;
 
 	// Constructors
 	/**
 	 * Instantiates a new table.
 	 *
-	 * @param label
-	 *            the title
+	 * @param label the title
 	 */
 	public Table(String label) {
 		this.table_label = label;
@@ -81,12 +80,9 @@ public class Table {
 	/**
 	 * Instantiates a new table.
 	 *
-	 * @param label
-	 *            the title
-	 * @param Caption
-	 *            the caption
-	 * @param Footer
-	 *            the footer
+	 * @param label   the title
+	 * @param Caption the caption
+	 * @param Footer  the footer
 	 */
 	public Table(String label, String Caption, String Footer) {
 		table_label = label;
@@ -98,19 +94,13 @@ public class Table {
 	/**
 	 * Instantiates a new table.
 	 *
-	 * @param label
-	 *            the title
-	 * @param Caption
-	 *            the caption
-	 * @param Footer
-	 *            the footer
-	 * @param Columns
-	 *            the columns
-	 * @param Rows
-	 *            the rows
+	 * @param label   the title
+	 * @param Caption the caption
+	 * @param Footer  the footer
+	 * @param Columns the columns
+	 * @param Rows    the rows
 	 */
-	public Table(String label, String Caption, String Footer, int Columns,
-			int Rows) {
+	public Table(String label, String Caption, String Footer, int Columns, int Rows) {
 		table_label = label;
 		table_caption = Caption;
 		table_footer = Footer;
@@ -125,23 +115,18 @@ public class Table {
 		// String word3="Quantitavie Trait loci";
 
 		if (this.table_caption.toLowerCase().indexOf(word1.toLowerCase()) != -1
-				|| this.table_caption.toLowerCase()
-						.indexOf(word2.toLowerCase()) != -1)
+				|| this.table_caption.toLowerCase().indexOf(word2.toLowerCase()) != -1)
 			return true;
 		if (this.table_footer.toLowerCase().indexOf(word1.toLowerCase()) != -1
-				|| this.table_footer.toLowerCase()
-						.indexOf(word2.toLowerCase()) != -1)
+				|| this.table_footer.toLowerCase().indexOf(word2.toLowerCase()) != -1)
 			return true;
 		Columns tc[] = this.getTableCol();
 		String word3 = "phenotype";
 		for (Columns col : tc) {
 			if (col.getColumns_type().indexOf("QTL value") == -1) {
-				if (col.getHeader().toLowerCase()
-						.indexOf(word1.toLowerCase()) != -1
-						|| col.getHeader().toLowerCase()
-								.indexOf(word2.toLowerCase()) != -1
-						|| col.getHeader().toLowerCase()
-								.indexOf(word3.toLowerCase()) != -1) {
+				if (col.getHeader().toLowerCase().indexOf(word1.toLowerCase()) != -1
+						|| col.getHeader().toLowerCase().indexOf(word2.toLowerCase()) != -1
+						|| col.getHeader().toLowerCase().indexOf(word3.toLowerCase()) != -1) {
 					return true;
 				}
 			}
@@ -196,8 +181,7 @@ public class Table {
 	/**
 	 * Sets the num_of_rows.
 	 *
-	 * @param num_of_rows
-	 *            the new num_of_rows
+	 * @param num_of_rows the new num_of_rows
 	 */
 	public void setNum_of_rows(int num_of_rows) {
 		this.num_of_rows = num_of_rows;
@@ -215,8 +199,7 @@ public class Table {
 	/**
 	 * Sets the num_of_columns.
 	 *
-	 * @param num_of_columns
-	 *            the new num_of_columns
+	 * @param num_of_columns the new num_of_columns
 	 */
 	public void setNum_of_columns(int num_of_columns) {
 		this.num_of_columns = num_of_columns;
@@ -234,8 +217,7 @@ public class Table {
 	/**
 	 * Sets the table_title.
 	 *
-	 * @param table_title
-	 *            the new table_title
+	 * @param table_title the new table_title
 	 */
 	public void setTable_label(String table_label) {
 		this.table_label = table_label;
@@ -253,8 +235,7 @@ public class Table {
 	/**
 	 * Sets the table_caption.
 	 *
-	 * @param table_caption
-	 *            the new table_caption
+	 * @param table_caption the new table_caption
 	 */
 	public void setTable_caption(String table_caption) {
 		this.table_caption = table_caption;
@@ -272,8 +253,7 @@ public class Table {
 	/**
 	 * Sets the table_footer.
 	 *
-	 * @param table_footer
-	 *            the new table_footer
+	 * @param table_footer the new table_footer
 	 */
 	public void setTable_footer(String table_footer) {
 		this.table_footer = table_footer;
@@ -299,8 +279,7 @@ public class Table {
 	/**
 	 * Sets the table_cells.
 	 *
-	 * @param cells
-	 *            the new table_cells
+	 * @param cells the new table_cells
 	 */
 
 	// public void setTableHeadercells(Hc[][] cells) {
@@ -387,8 +366,7 @@ public class Table {
 	}
 
 	/**
-	 * @param tableStructureType
-	 *            the tableStructureType to set
+	 * @param tableStructureType the tableStructureType to set
 	 */
 	public void setTableStructureType(StructureType tStructureType) {
 		tableStructureType = tStructureType;
@@ -402,8 +380,7 @@ public class Table {
 	}
 
 	/**
-	 * @param sectionOfTable
-	 *            the sectionOfTable to set
+	 * @param sectionOfTable the sectionOfTable to set
 	 */
 	public void setSectionOfTable(String secOfTable) {
 		sectionOfTable = secOfTable;
@@ -457,16 +434,15 @@ public class Table {
 	public void printTable2() throws Exception {
 
 		for (Columns c : this.getTableCol()) {
-			System.out.print(
-					c.getHeader() + "(" + c.getColumns_type() + ")" + "\t\t");
+			System.out.print(c.getHeader() + "(" + c.getColumns_type() + ")" + "\t\t");
 		}
 		System.out.print("\n");
 		int i = 0;
 		while (i < this.num_of_rows) {
 			for (Columns c : this.getTableCol()) {
 				try {
-					System.out.print(c.getcelz()[i].getcell_value() + "("
-							+ c.getcelz()[i].getCell_type() + ")" + "\t\t");
+					System.out
+							.print(c.getcelz()[i].getcell_value() + "(" + c.getcelz()[i].getCell_type() + ")" + "\t\t");
 				} catch (Exception e) {
 					System.out.print("Null(Null" + "\t\t");
 				}
@@ -503,10 +479,8 @@ public class Table {
 					// tc[l].getRowcell()[k].getcell_value());
 					if (tc[l].getcelz()[k].getCell_type() == "Numeric") {
 						ColTypes.put("Numeric", ColTypes.get("Numeric") + 1);
-					} else if (tc[l].getcelz()[k]
-							.getCell_type() == "Partially Numeric") {
-						ColTypes.put("Partially Numeric",
-								ColTypes.get("Partially Numeric") + 1);
+					} else if (tc[l].getcelz()[k].getCell_type() == "Partially Numeric") {
+						ColTypes.put("Partially Numeric", ColTypes.get("Partially Numeric") + 1);
 					} else if (tc[l].getcelz()[k].getCell_type() == "Text") {
 
 						ColTypes.put("Text", ColTypes.get("Text") + 1);
@@ -527,11 +501,9 @@ public class Table {
 
 			float totalNumeric = (float) ColTypes.get("Numeric")
 					/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
-			float totalPartiallyNumeric = (float) ColTypes
-					.get("Partially Numeric")
+			float totalPartiallyNumeric = (float) ColTypes.get("Partially Numeric")
 					/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
-			float totalText = (float) ColTypes.get("Text")
-					/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
+			float totalText = (float) ColTypes.get("Text") / (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
 
 			if (totalNumeric >= 0.60)
 				tc[l].setColumns_type("QTL value");
@@ -557,26 +529,20 @@ public class Table {
 				if (tc[l].getColumns_type().equals("QTL property")) {
 
 					for (int k = 0; k < tc[l].getcelz().length; k++) {
-						if (tc[l].getcelz()[k].getcell_value().toLowerCase()
-								.indexOf(word1) != -1
-								|| tc[l].getcelz()[k].getcell_value()
-										.toLowerCase().indexOf(word2) != -1
-								|| tc[l].getcelz()[k].getcell_value()
-										.toLowerCase().indexOf(word3) != -1) {
+						if (tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word1) != -1
+								|| tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word2) != -1
+								|| tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word3) != -1) {
 							countwords++;
 						}
 					}
 
 					if (tc[l].getHeader().toLowerCase().indexOf(word1) != -1
-							|| tc[l].getHeader().toLowerCase().toLowerCase()
-									.indexOf(word2) != -1
-							|| tc[l].getHeader().toLowerCase().toLowerCase()
-									.indexOf(word3) != -1)
+							|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word2) != -1
+							|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word3) != -1)
 						countwords++;
 				}
 			} catch (NullPointerException e) {
-				System.out.printf(
-						"*cannot classify heading on " + l + "column\n");
+				System.out.printf("*cannot classify heading on " + l + "column\n");
 			}
 
 			if (countwords > 0)
@@ -610,13 +576,9 @@ public class Table {
 					tc[j].setColumns_type("QTL property");
 					for (int k = 0; k < tc[j].getcelz().length; k++) {
 
-						TagResponse QTLannotation = solr.tagger.recognize.Evaluate
-								.processString(
-										tc[j].getcelz()[k].getcell_value()
-												.toLowerCase(),
-										Configs.getPropertyQTM("core1"),
-										Configs.getPropertyQTM("match"),
-										Configs.getPropertyQTM("type"));
+						TagResponse QTLannotation = solr.tagger.recognize.Evaluate.processString(
+								tc[j].getcelz()[k].getcell_value().toLowerCase(), Configs.getPropertyQTM("core1"),
+								Configs.getPropertyQTM("match"), Configs.getPropertyQTM("type"));
 
 						if (QTLannotation.getItems().size() != 0) {
 							numofannotatedTerms++;

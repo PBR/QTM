@@ -41,33 +41,29 @@ import utils.Configs;
 import utils.Utilities;
 
 public class PmcMetaReader {
-
 	private File file;
-
 	private String fileName;
-
-	private String pmcId;	
-	
+	private String pmcId;
 	private Abbreviator abbreviator;
 
-	public PmcMetaReader(File file) {
-		this.file = file;
-		this.fileName = file.getPath();
+	public PmcMetaReader(File f) {
+		file = f;
+		fileName = file.getPath();
+	}
+
+	public void setPmcId(String s) {
+		pmcId = s;
 	}
 
 	public String getPmcId() {
 		return pmcId;
 	}
 
-	public void setPmcId(String pmcId) {
-		this.pmcId = pmcId;
-	}
-
 	/**
 	 * This method is the main method for reading PMC XML files. It uses
 	 * {@link #ParseMetaData} and {@link #ParseTables} methods. It returns
-	 * {@link Article} object that contains structured data from article,
-	 * including tables.
+	 * {@link Article} object that contains structured data from article, including
+	 * tables.
 	 *
 	 * @return Article
 	 */
@@ -138,30 +134,24 @@ public class PmcMetaReader {
 	/**
 	 * Gets the list of authors.
 	 *
-	 * @param parse
-	 *            the parse
+	 * @param parse the parse
 	 * @return the string[]
 	 */
-
 
 	/**
 	 * Reads metadata from article such as title, authors, publication type etc
 	 *
-	 * @param art
-	 *            - Article where to put data
-	 * @param parse
-	 *            - Document of XML
-	 * @param xmlString
-	 *            - XML code
+	 * @param art       - Article where to put data
+	 * @param parse     - Document of XML
+	 * @param xmlString - XML code
 	 * @return Article - populated art
 	 */
 	public Article parseMetaData(Article art, Document doc, String xml) {
 		String title = "";
-		
-		if (doc.getElementsByTagName("article-title") != null && doc
-				.getElementsByTagName("article-title").item(0) != null) {
-			title = doc.getElementsByTagName("article-title").item(0)
-				.getTextContent();
+
+		if (doc.getElementsByTagName("article-title") != null
+				&& doc.getElementsByTagName("article-title").item(0) != null) {
+			title = doc.getElementsByTagName("article-title").item(0).getTextContent();
 			title = title.replaceAll("\\s+", "");
 			System.out.println("Title:\t" + title);
 		}
@@ -169,18 +159,14 @@ public class PmcMetaReader {
 		NodeList articleId = doc.getElementsByTagName("article-id");
 		for (int j = 0; j < articleId.getLength(); j++) {
 			if (articleId.item(j).getAttributes() != null
-					&& articleId.item(j).getAttributes()
-						.getNamedItem("pub-id-type") != null
-					&& articleId.item(j).getAttributes()
-						.getNamedItem("pub-id-type").getNodeValue().equals("pmcid")) {
+					&& articleId.item(j).getAttributes().getNamedItem("pub-id-type") != null
+					&& articleId.item(j).getAttributes().getNamedItem("pub-id-type").getNodeValue().equals("pmcid")) {
 				String pmcId = "PMC" + articleId.item(j).getTextContent();
 				art.setPmcId(pmcId);
 			}
 			if (articleId.item(j).getAttributes() != null
-				&& articleId.item(j).getAttributes()
-					.getNamedItem("pub-id-type") != null
-				&& articleId.item(j).getAttributes()
-					.getNamedItem("pub-id-type").getNodeValue().equals("doi")) {
+					&& articleId.item(j).getAttributes().getNamedItem("pub-id-type") != null
+					&& articleId.item(j).getAttributes().getNamedItem("pub-id-type").getNodeValue().equals("doi")) {
 				art.setDoi(articleId.item(j).getTextContent());
 			}
 		}
@@ -192,12 +178,9 @@ public class PmcMetaReader {
 	/**
 	 * Reads Full-text from article
 	 *
-	 * @param art
-	 *            - Article where to put data
-	 * @param parse
-	 *            - Document of XML
-	 * @param xmlString
-	 *            - XML code
+	 * @param art       - Article where to put data
+	 * @param parse     - Document of XML
+	 * @param xmlString - XML code
 	 * @return Article - populated art
 	 */
 
@@ -205,25 +188,22 @@ public class PmcMetaReader {
 		String text = "";
 
 		if (doc.getElementsByTagName("article-title").item(0) != null) {
-			text += "[TITLE]" + doc.getElementsByTagName("article-title")
-				.item(0).getTextContent() + "\n";
+			text += "[TITLE]" + doc.getElementsByTagName("article-title").item(0).getTextContent() + "\n";
 		}
 
 		if (doc.getElementsByTagName("abstract").item(0) != null) {
-			text += "[Abstract]" + doc.getElementsByTagName("abstract")
-				.item(0).getTextContent() + "\n";
+			text += "[Abstract]" + doc.getElementsByTagName("abstract").item(0).getTextContent() + "\n";
 		}
 
 		if (doc.getElementsByTagName("body").item(0) != null) {
-			text += "[MainText]" + doc.getElementsByTagName("body")
-				.item(0).getTextContent() + "\n";
+			text += "[MainText]" + doc.getElementsByTagName("body").item(0).getTextContent() + "\n";
 		}
 
 		art.setPlainText(text);
 		try {
 			String txtFiles = Configs.getPropertyQTM("txtFiles");
-			Writer writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(txtFiles + art.getPmcId() + ".txt"), "utf-8"));
+			Writer writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(txtFiles + art.getPmcId() + ".txt"), "utf-8"));
 			writer.write(text);
 			writer.close();
 		} catch (Exception e) {
@@ -235,31 +215,25 @@ public class PmcMetaReader {
 	/**
 	 * Gets the children by tag name.
 	 *
-	 * @param parent
-	 *            the parent
-	 * @param name
-	 *            the name
+	 * @param parent the parent
+	 * @param name   the name
 	 * @return the children by tag name
 	 */
 	public static List<Node> getChildrenByTagName(Node parent, String name) {
 		List<Node> nodeList = new ArrayList<Node>();
-		for (Node child = parent.getFirstChild(); child != null; child = child
-				.getNextSibling()) {
-			if (child.getNodeType() == Node.ELEMENT_NODE
-				&& name.equals(child.getNodeName())) {
+		for (Node child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (child.getNodeType() == Node.ELEMENT_NODE && name.equals(child.getNodeName())) {
 				nodeList.add(child);
 			}
 		}
 		return nodeList;
 	}
 
-	public static File pmcDowloadXml(String pmcId)
-		throws IOException, MalformedURLException {
+	public static File pmcDowloadXml(String pmcId) throws IOException, MalformedURLException {
 		File xmlFile = new File(pmcId + ".xml");
-		try{
+		try {
 			if (!xmlFile.exists() || xmlFile.length() == 0) {
-				URL url = new URL(Configs.getPropertyQTM("webAPI") + pmcId
-					+ "/fullTextXML");
+				URL url = new URL(Configs.getPropertyQTM("webAPI") + pmcId + "/fullTextXML");
 				xmlFile.createNewFile();
 				FileUtils.copyURLToFile(url, xmlFile);
 			}
@@ -269,4 +243,5 @@ public class PmcMetaReader {
 		}
 		return xmlFile;
 	}
+
 }

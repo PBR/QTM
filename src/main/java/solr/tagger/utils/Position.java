@@ -6,8 +6,7 @@ public class Position {
 	private Integer end = null;
 	private String matchText = null;
 
-	public Position(String aMatchText, Integer aStartOffset,
-			Integer aEndOffset) {
+	public Position(String aMatchText, Integer aStartOffset, Integer aEndOffset) {
 		this.setMatchText(aMatchText);
 		this.start = aStartOffset;
 		this.end = aEndOffset;

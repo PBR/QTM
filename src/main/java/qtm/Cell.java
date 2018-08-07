@@ -29,10 +29,8 @@ public class Cell {
 	/**
 	 * Instantiates a new cell.
 	 *
-	 * @param i
-	 *            the i
-	 * @param j
-	 *            the j
+	 * @param i the i
+	 * @param j the j
 	 */
 	public Cell(int i) {
 		row_number = i;
@@ -80,8 +78,7 @@ public class Cell {
 	/**
 	 * Sets the row_number.
 	 *
-	 * @param row_number
-	 *            the new row_number
+	 * @param row_number the new row_number
 	 */
 	public void setRow_number(int row_number) {
 		this.row_number = row_number;
@@ -136,8 +133,7 @@ public class Cell {
 	/**
 	 * Sets the cell_content.
 	 *
-	 * @param cell_content
-	 *            the new cell_content
+	 * @param cell_content the new cell_content
 	 */
 	public void setCell_type(String cell_type) {
 		this.cell_type = cell_type;

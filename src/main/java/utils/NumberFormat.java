@@ -23,18 +23,23 @@ public class NumberFormat {
 	public String getNumber() {
 		return number;
 	}
+
 	public void setNumber(String number) {
 		this.number = number;
 	}
+
 	public String getFormat() {
 		return format;
 	}
+
 	public void setFormat(String format) {
 		this.format = format;
 	}
+
 	public float getValue() {
 		return value;
 	}
+
 	public void setValue(float value) {
 		this.value = value;
 	}

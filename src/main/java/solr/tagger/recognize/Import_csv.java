@@ -26,12 +26,9 @@ public class Import_csv {
 
 	public static void main(String[] args) {
 
-		Options options = new Options()
-				.addOption("solr", true, "SOLR repository")
-				.addOption("file", true, "file to import")
-				.addOption("core", true, "core")
-				.addOption("clear", false, "false")
-				.addOption("permutations", false, "permutations");
+		Options options = new Options().addOption("solr", true, "SOLR repository")
+				.addOption("file", true, "file to import").addOption("core", true, "core")
+				.addOption("clear", false, "false").addOption("permutations", false, "permutations");
 		CommandLineParser parser = new DefaultParser();
 
 		try {
@@ -41,15 +38,9 @@ public class Import_csv {
 			if (line.getArgList().size() > 0) {
 				throw new ParseException("unknown arguments");
 			}
-			String solr = line.hasOption("solr")
-					? line.getOptionValue("solr")
-					: "http://localhost:8983/solr";
-			String file = line.hasOption("file")
-					? line.getOptionValue("file")
-					: null;
-			String core = line.hasOption("core")
-					? line.getOptionValue("core")
-					: "trait_descriptors";
+			String solr = line.hasOption("solr") ? line.getOptionValue("solr") : "http://localhost:8983/solr";
+			String file = line.hasOption("file") ? line.getOptionValue("file") : null;
+			String core = line.hasOption("core") ? line.getOptionValue("core") : "trait_descriptors";
 			Boolean permutations = line.hasOption("permutations")
 					? Boolean.parseBoolean(line.getOptionValue("permutations"))
 					: false;
@@ -58,8 +49,7 @@ public class Import_csv {
 			if (solr != null && file != null && core != null) {
 				processDictionary(solr, core, file, permutations, clear);
 			} else {
-				new HelpFormatter().printHelp(Process.class.getCanonicalName(),
-						options);
+				new HelpFormatter().printHelp(Process.class.getCanonicalName(), options);
 			}
 		} catch (ParseException e) {
 			System.err.println("Parsing failed.  Reason: " + e.getMessage());
@@ -70,11 +60,9 @@ public class Import_csv {
 		}
 	}
 
-	private static void processDictionary(String server, String core,
-			String filename, Boolean permutations, Boolean clear)
-			throws SolrServerException, IOException {
-		SolrClient solr = new HttpSolrClient.Builder(server + "/" + core)
-				.build();
+	private static void processDictionary(String server, String core, String filename, Boolean permutations,
+			Boolean clear) throws SolrServerException, IOException {
+		SolrClient solr = new HttpSolrClient.Builder(server + "/" + core).build();
 		if (clear) {
 			solr.deleteByQuery("*:*");
 			solr.commit();
