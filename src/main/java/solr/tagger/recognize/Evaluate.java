@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -107,19 +108,19 @@ public class Evaluate {
 						"|"));
 				out.newLine();
 
-//				TagResponse tag = processString(input, core, match, type);
-//
-//				String tagUri = "";
-//				if (tag.getItems().size() == 1)
-//					tagUri = tag.getItems().get(0).getIcd10();
-//				else {
-//					for (TagItem item : tag.getItems()) {
-//						tagUri += item.getIcd10() + ";";
-//					}
-//				}
-//				System.out.println(tagUri);
+				TagResponse tag = processString("solcap_snp_c1_2221", "sgn_potato_markers", match, type);
 
-				processArray("sgn_markers","ALL", type);
+				String tagUri = "";
+				if (tag.getItems().size() == 1)
+					tagUri = tag.getItems().get(0).getIcd10();
+				else {
+					for (TagItem item : tag.getItems()) {
+						tagUri += item.getIcd10() + ";";
+					}
+				}
+				System.out.println(tagUri);
+
+//				processArray("sgn_potato_markers","LONGEST_DOMINANT_RIGHT", type);
 				out.close();
 			} else {
 				new HelpFormatter().printHelp(Evaluate.class.getCanonicalName(),
@@ -128,7 +129,10 @@ public class Evaluate {
 
 		} catch (ParseException e) {
 			System.err.println("Parsing failed.  Reason: " + e.getMessage());
+			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -141,8 +145,9 @@ public class Evaluate {
 	public static void processArray(String core, String match, String type)
 			throws UnsupportedEncodingException, FileNotFoundException,
 			IOException {
-		String[] line = {"solcap_snp_sl_100001", "J1", "TG194-TG523",
-				"cLEX4G10", "cles","clex" };
+		String[] line = {"stsnp_c1_2221","stsnp_c1_12614","stsnp_c1_7206","stsnp_c1_12166","solcap_snp_c2_54011" };
+
+		//String[] line = {"2221","12614"};
 
 		for (int i = 0; i < line.length; i++) {
 			// input="This invention relates to methods for identifying maize
@@ -160,8 +165,14 @@ public class Evaluate {
 
 				// System.out.println(request);
 
+				URI uri=new URI("http"
+						,"localhost:8983",
+						"/solr/" + core + "/tag",
+						"fl=uuid,code,prefterm,term&overlaps="+ URLEncoder.encode(match, "UTF-8")+"&matchText=true&tagsLimit=5000&wt=json",
+						null);
+
 				TagResponse response = parse(
-						getStringContent(request, line[i], headers));
+						getStringContent(uri, line[i], headers));
 
 				for (TagItem item : response.getItems()) {
 					System.out.println(item.getMatchText()+"\t"+item.getPrefTerm()+"\t"+item.getIcd10());
@@ -195,6 +206,8 @@ public class Evaluate {
 					+ URLEncoder.encode(match, "UTF-8")
 					+ "&matchText=true&tagsLimit=5000&wt=json";
 
+
+
 			String content = getStringContent(request, input, headers);
 
 			response = parse(content);
@@ -206,6 +219,72 @@ public class Evaluate {
 		return response;
 	}
 
+	public static TagResponse processString2(String input, String core,
+			String match, String type) throws UnsupportedEncodingException,
+			FileNotFoundException, IOException {
+
+		//System.out.println("Input is: \t "+input);
+		TagResponse response = new TagResponse();
+
+		try {
+
+			URI uri=new URI("http"
+					,"localhost:8983",
+					"/solr/" + core + "/tag",
+					"fl=uuid,code,prefterm,term&overlaps="+ URLEncoder.encode(match, "UTF-8")+"&matchText=true&tagsLimit=5000&wt=json",
+					null);
+
+			String content = getStringContent(uri, input, headers);
+
+			response = parse(content);
+
+		} catch (Exception e) {
+			//e.printStackTrace();
+
+		}
+		return response;
+	}
+
+
+	public static String getStringContent(URI uri, String postData,
+			HashMap<String, String> headers) throws Exception {
+
+		HttpPost request = new HttpPost(uri);
+
+		//System.out.println("postdata is: \t"+postData);
+		//System.out.println("request is: \t"+request.toString());
+
+
+		request.setEntity(new StringEntity(
+				ClientUtils.escapeQueryChars(postData), "UTF-8"));
+
+		//System.out.println("Request is: \t" + request + "\n");
+
+		for (Entry<String, String> s : headers.entrySet()) {
+			request.setHeader(s.getKey(), s.getValue());
+		}
+
+		HttpResponse response = client.execute(request);
+
+		 //System.out.println("Response is:" + response + "\n");
+
+		InputStream ips = response.getEntity().getContent();
+		BufferedReader buf = new BufferedReader(
+				new InputStreamReader(ips, "UTF-8"));
+
+		StringBuilder sb = new StringBuilder();
+		String s;
+		while (true) {
+			s = buf.readLine();
+			if (s == null || s.length() == 0)
+				break;
+			sb.append(s);
+		}
+		buf.close();
+		ips.close();
+		return sb.toString();
+
+	}
 
 
 
@@ -214,7 +293,7 @@ public class Evaluate {
 
 		HttpPost request = new HttpPost(uri);
 
-		// System.out.println("postdata is: \t"+postData);
+		//System.out.println("postdata is: \t"+postData);
 
 		request.setEntity(new StringEntity(
 				ClientUtils.escapeQueryChars(postData), "UTF-8"));

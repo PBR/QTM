@@ -532,6 +532,7 @@ public class PmcMetaReader {
 		} catch (Exception e) {
 
 			e.printStackTrace();
-	}
+
+		}
 		return xmlfile;
 	}}

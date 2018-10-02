@@ -42,6 +42,8 @@ public class QtlDb {
 	private static String core3 = Configs.getPropertyQTM("core3");
 	private static String core4 = Configs.getPropertyQTM("core4");
 	private static String core5 = Configs.getPropertyQTM("core5");
+	private static String core6 = Configs.getPropertyQTM("core6");
+	private static String core7 = Configs.getPropertyQTM("core7");
 
 	private static String match = Configs.getPropertyQTM("match");
 	private static String type = Configs.getPropertyQTM("type");
@@ -418,7 +420,7 @@ public class QtlDb {
 								try {
 									markerAnno = solr.tagger.recognize.Evaluate
 											.processString(markers_associated,
-													core4, match, type);
+													core6, match, type);
 
 								} catch (Exception e) {
 									e.getStackTrace();
@@ -448,7 +450,10 @@ public class QtlDb {
 								gene_associated += cellValue;
 								gene_associated = gene_associated
 										.replace("\n", " ").replace("\r", " ")
-										.replaceAll("\\s+", " ");
+										.replaceAll("\\s+", " "
+												+ ""
+												+ ""
+												+ "");
 
 								// System.out.println("gene
 								// is"+gene_associated);
@@ -456,7 +461,7 @@ public class QtlDb {
 								try {
 									geneAnno = solr.tagger.recognize.Evaluate
 											.processString(gene_associated,
-													core5, match, type);
+													core7, match, type);
 
 								} catch (Exception e) {
 									e.getStackTrace();
