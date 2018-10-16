@@ -44,6 +44,7 @@ public class QtlDb {
 	private static String core5 = Configs.getPropertyQTM("core5");
 	private static String core6 = Configs.getPropertyQTM("core6");
 	private static String core7 = Configs.getPropertyQTM("core7");
+	private static String core8 = Configs.getPropertyQTM("core8");
 
 	private static String match = Configs.getPropertyQTM("match");
 	private static String type = Configs.getPropertyQTM("type");
@@ -421,6 +422,11 @@ public class QtlDb {
 									markerAnno = solr.tagger.recognize.Evaluate
 											.processString(markers_associated,
 													core6, match, type);
+
+									if (markerAnno.toString()=="")
+										markerAnno = solr.tagger.recognize.Evaluate
+										.processString(markers_associated,
+												core8, match, type);
 
 								} catch (Exception e) {
 									e.getStackTrace();
