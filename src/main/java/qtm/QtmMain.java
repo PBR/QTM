@@ -31,10 +31,14 @@ public class QtmMain {
 
 		long startTime = System.currentTimeMillis();// to calculate run-time
 
-		if (args.length == 0 | Arrays.asList(args).contains("-h")
-				| Arrays.asList(args).contains("--help")) {
+		if (args.length < 2 | Arrays.asList(args).contains("-h")
+				| Arrays.asList(args).contains("--help") |  !Arrays.asList(args).contains("--config")    )  {
 			printHelp();
 			return;
+		}
+
+		if (Arrays.asList(args).contains("--config") ) {
+			Configs.configFileName= args[Arrays.asList(args).indexOf("--config") + 1];
 		}
 
 		if (Arrays.asList(args).contains("-v")
@@ -43,13 +47,19 @@ public class QtmMain {
 			return;
 		}
 
-		if (Arrays.asList(args).contains("-o")) {
-			String outFile = args[Arrays.asList(args).indexOf("-o") + 1];
+
+		if (Arrays.asList(args).contains("-o") | Arrays.asList(args).contains("--output") ) {
+			String outFile ="";
+			if (Arrays.asList(args).contains("-o"))
+			 outFile = args[Arrays.asList(args).indexOf("-o") + 1];
+
+			if (Arrays.asList(args).contains("--output"))
+				outFile = args[Arrays.asList(args).indexOf("--output") + 1];
+
 			if (outFile.endsWith(".db")) {
-				QtlDb.dbFile = args[Arrays.asList(args).indexOf("-o") + 1];
+				QtlDb.dbFile = outFile;
 			} else {
-				QtlDb.dbFile = args[Arrays.asList(args).indexOf("-o") + 1]
-						+ ".db";
+				QtlDb.dbFile = outFile+ ".db";
 			}
 		}
 
@@ -225,6 +235,9 @@ public class QtmMain {
 		System.out.println(
 				"  FILE\t\t\t\tList of full-text articles from Europe PMC.\n"
 						+ "\t\t\t\tEnter one PMCID per line.\n");
+		System.out.println(
+				"  --config\t\t\tProperty file, containing list of species-specific genes and markers for annotations\n"
+						+ "\t\t\t\tBy default, config file is set for tomato specie\n");
 		System.out.println("OPTIONS");
 		System.out.println("=======");
 		System.out.println("  -o, --output FILE_PREFIX\tOutput files in SQLite/"

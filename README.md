@@ -30,10 +30,10 @@ solr/install_solr.sh
 
 ## Example use
 
-- input: `articles.txt` with PMCIDs (one per line)
+- input: `articles.txt` with PMCIDs (one per line) and configration file
 - output: `qtl.csv` and `qtl.db` (see the database model or Entity-Relationship diagram [here](doc/ER_diagram.png))
 
-`./QTM articles.txt`
+`./QTM articles.txt --configration config/config_Tomato.properties`
 
 `./QTM -h`
 
@@ -48,6 +48,7 @@ ARGUMENTS
 =========
   FILE				List of full-text articles from Europe PMC.
 				Enter one PMCID per line.
+  --config			Property file, containing list of species-specific genes and markers for annotations
 
 OPTIONS
 =======

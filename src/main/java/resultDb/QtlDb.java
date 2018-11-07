@@ -61,6 +61,7 @@ public class QtlDb {
 			try {
 
 				Class.forName("org.sqlite.JDBC");
+
 				String sDBUrl = dbDriver + ":" + dbFile;
 				conn = DriverManager.getConnection(sDBUrl);
 

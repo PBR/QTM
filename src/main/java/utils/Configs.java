@@ -8,11 +8,12 @@ import java.util.Properties;
 public class Configs {
 
 	public static Properties prop = new Properties();
+	public static String configFileName;
 
 	public static void setPropertyQTM(String title, String value) {
 		try {
 			FileInputStream in = new FileInputStream(
-					"config/configQtm.properties");
+					configFileName);
 			Properties props = new Properties();
 			props.load(in);
 			in.close();
@@ -34,7 +35,7 @@ public class Configs {
 		String value = "";
 
 		try {
-			prop.load(new FileInputStream("config/configQtm.properties"));
+			prop.load(new FileInputStream(configFileName));
 			value = prop.getProperty(title);
 		} catch (IOException e) {
 
