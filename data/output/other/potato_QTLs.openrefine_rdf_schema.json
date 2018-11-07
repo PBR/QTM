@@ -6,28 +6,28 @@
       "baseUri": "http://localhost:8890/",
       "prefixes": [
         {
-          "name": "obo",
-          "uri": "http://purl.obolibrary.org/obo/"
-        },
-        {
           "name": "rdfs",
           "uri": "http://www.w3.org/2000/01/rdf-schema#"
         },
         {
-          "name": "bibo",
-          "uri": "http://purl.org/ontology/bibo/"
+          "name": "obo",
+          "uri": "http://purl.obolibrary.org/obo/"
         },
         {
           "name": "dcmitype",
           "uri": "http://purl.org/dc/dcmitype/"
         },
         {
-          "name": "xsd",
-          "uri": "http://www.w3.org/2001/XMLSchema#"
+          "name": "bibo",
+          "uri": "http://purl.org/ontology/bibo/"
         },
         {
           "name": "pmc",
           "uri": "http://identifiers.org/pmc/"
+        },
+        {
+          "name": "xsd",
+          "uri": "http://www.w3.org/2001/XMLSchema#"
         },
         {
           "name": "rdf",
@@ -41,7 +41,7 @@
       "rootNodes": [
         {
           "nodeType": "cell-as-resource",
-          "expression": "'/genome/Solanum_lycopersicum/qtl/' + cells.pmc_id.value + '_' + cells.tab_lb.value + '_' + cells.row_id.value",
+          "expression": "'/genome/Solanum_tuberosum/qtl/' + cells.pmc_id.value + '_' + cells.tab_lb.value + '_' + cells.row_id.value",
           "isRowNumberCell": true,
           "rdfTypes": [
             {
@@ -85,7 +85,7 @@
               "curie": "obo:RO_0002610",
               "target": {
                 "nodeType": "cell-as-resource",
-                "expression": "filter(value.split(';'), v, contains(v, 'lyco'))",
+                "expression": "filter(value.split(';'), v, contains(v, 'tuber'))",
                 "isRowNumberCell": false,
                 "columnName": "marker_uri",
                 "rdfTypes": [
@@ -156,7 +156,7 @@
         },
         {
           "nodeType": "resource",
-          "value": "/genome/Solanum_lycopersicum/qtl/",
+          "value": "/genome/Solanum_tuberosum/qtl/",
           "rdfTypes": [
             {
               "uri": "http://purl.org/dc/dcmitype/Dataset",
@@ -199,6 +199,15 @@
               }
             },
             {
+              "uri": "http://purl.org/dc/terms/modified",
+              "curie": "dcterms:modified",
+              "target": {
+                "nodeType": "literal",
+                "value": "2018-11-06",
+                "valueType": "http://www.w3.org/2001/XMLSchema#date"
+              }
+            },
+            {
               "uri": "http://purl.org/dc/terms/license",
               "curie": "dcterms:license",
               "target": {
@@ -229,7 +238,7 @@
               "curie": "dcterms:hasPart",
               "target": {
                 "nodeType": "cell-as-resource",
-                "expression": "'/genome/Solanum_lycopersicum/qtl/' + cells.pmc_id.value + '_' + cells.tab_lb.value + '_' + cells.row_id.value",
+                "expression": "'/genome/Solanum_tuberosum/qtl/' + cells.pmc_id.value + '_' + cells.tab_lb.value + '_' + cells.row_id.value",
                 "isRowNumberCell": true,
                 "rdfTypes": [],
                 "links": []
@@ -294,7 +303,7 @@
               "curie": "obo:so#genome_of",
               "target": {
                 "nodeType": "resource",
-                "value": "http://purl.obolibrary.org/obo/NCBITaxon_4081",
+                "value": "http://purl.obolibrary.org/obo/NCBITaxon_4113",
                 "rdfTypes": [],
                 "links": []
               }
@@ -304,7 +313,7 @@
               "curie": "dcterms:modified",
               "target": {
                 "nodeType": "literal",
-                "value": "2018-11-06",
+                "value": "2018-08-01",
                 "valueType": "http://www.w3.org/2001/XMLSchema#date"
               }
             }
