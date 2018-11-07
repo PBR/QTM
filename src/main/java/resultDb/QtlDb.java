@@ -11,6 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +49,8 @@ public class QtlDb {
 	private static String core7 = Configs.getPropertyQTM("core7");
 	private static String core8 = Configs.getPropertyQTM("core8");
 	private static String core9 = Configs.getPropertyQTM("core9");
+
+
 
 	private static String match = Configs.getPropertyQTM("match");
 	private static String type = Configs.getPropertyQTM("type");
@@ -317,13 +322,14 @@ public class QtlDb {
 	public static void insertQTLEntry() {
 		try {
 			if (connectionDB()) {
-				Statement stmt1 = null;
-				Statement stmt2 = null;
-				Statement stmt3 = null;
-				stmt1 = conn.createStatement();
-				stmt2 = conn.createStatement();
-				stmt3 = conn.createStatement();
-				// System.out.println("I am here");
+				Statement stmtSelectTrait = null;
+				stmtSelectTrait = conn.createStatement();
+
+				List<String> cores_genes=new ArrayList<String>();
+				List<String> cores_markers=new ArrayList<String>();
+
+				cores_genes= (Arrays.asList(Configs.getPropertyQTM("cores_genes").split(";")));
+				cores_markers= (Arrays.asList(Configs.getPropertyQTM("cores_markers").split(";")));
 
 				// List<Trait> traits = articles[i].getTrait();
 
@@ -331,7 +337,7 @@ public class QtlDb {
 						+ " WHERE Cel.value IS NOT null AND "
 						+ " Col.type='QTL descriptor'";
 
-				ResultSet rs1 = stmt1.executeQuery(sql1);
+				ResultSet rs1 = stmtSelectTrait.executeQuery(sql1);
 				while (rs1.next()) {
 					String possibleTrait = rs1.getString("value");
 					int colId = rs1.getInt("col_id");
@@ -348,17 +354,25 @@ public class QtlDb {
 					TagResponse traitAnno = solr.tagger.recognize.Evaluate
 							.processString(getOnlyStrings(T.getTraitName()),
 									core1, match, type);
+
+					Statement stmtSelectPropertiesandValues = null;
+					stmtSelectPropertiesandValues = conn.createStatement();
+
 					String ChromosomeNumber = "";
-					String gene_associated = "";
-					TagResponse geneAnno = new TagResponse();
+					String genes_associated = "";
+
 					String markers_associated = "";
-					TagResponse markerAnno = new TagResponse();
+
+
 
 					String sql2 = "SELECT Cel.Value, Col.header,Col.type FROM CELL_ENTRY AS Cel INNER JOIN COLUMN_ENTRY AS Col ON Cel.col_id=Col.col_id"
 							+ " WHERE row_id =" + rowId + " AND"
 							+ " Col.tab_id='" + tableId + "' AND"
 							+ " Col.Type!='QTL descriptor' ;";
-					ResultSet rs2 = stmt2.executeQuery(sql2);
+					ResultSet rs2 = stmtSelectPropertiesandValues.executeQuery(sql2);
+
+					String genesUri = "";
+					String markersUri = "";
 
 					while (rs2.next()) {
 						String cellValue = "";
@@ -398,106 +412,74 @@ public class QtlDb {
 
 						} else if (colType.equals("QTL property")) {
 
-							// check markers
-							try{
+							// Ontology based annotation of markers.
 
-							markerAnno = solr.tagger.recognize.Evaluate
-									.processString(cellValue, core6, match,
-											type);
-							if (markerAnno.toString() == "")
-								markerAnno = solr.tagger.recognize.Evaluate
-										.processString(markers_associated,
-												core8, match, type);
+							try {
 
+								for (String core : cores_markers) {
+									TagResponse markerAnno = new TagResponse();
+									markerAnno = solr.tagger.recognize.Evaluate
+											.processString(cellValue, core,
+													match, type);
 
-							}
-							catch (Exception e) {
+									if (!"".equals(markerAnno.toString())) {
+										markers_associated += cellValue;
+										if (markerAnno.getItems().size() == 1)
+											markersUri += markerAnno.getItems()
+													.get(0).getIcd10() + ";";
+										else if (markerAnno.getItems()
+												.size() > 1) {
+											for (TagItem item : markerAnno
+													.getItems()) {
+												markersUri += item.getIcd10()
+														+ ";";
+											}
+										}
+									}
+								}
+
+							} catch (Exception e) {
 								e.getStackTrace();
 								System.out.println(
 										"Error in Marker annotations in apache solr");
 							}
 
-							if (markerAnno.toString() != "") {
-								markers_associated += cellValue;
-							}
+							try {
 
-							else if (markerAnno.toString() == "") {
+								for (String core : cores_genes) {
+									TagResponse geneAnno = new TagResponse();
+									geneAnno = solr.tagger.recognize.Evaluate
+											.processString(cellValue, core,
+													match, type);
 
-								String regex1 = "marker";
-								String regex2 = "snp";
-
-								Pattern pattern1 = Pattern.compile(regex1,
-										Pattern.CASE_INSENSITIVE);
-								Pattern pattern2 = Pattern.compile(regex2,
-										Pattern.CASE_INSENSITIVE);
-
-								Matcher matcher1 = pattern1.matcher(cellValue);
-								Matcher matcher2 = pattern1.matcher(colHeader);
-
-								Matcher matcher3 = pattern2.matcher(cellValue);
-								Matcher matcher4 = pattern2.matcher(colHeader);
-
-								if (matcher1.find() || matcher2.find()
-										|| matcher3.find() || matcher4.find()) {
-									markers_associated += cellValue;
-
+									if (!"".equals(geneAnno.toString())) {
+										genes_associated += cellValue;
+										if (geneAnno.getItems().size() == 1)
+											genesUri += geneAnno.getItems()
+													.get(0).getIcd10() + ";";
+										else if (geneAnno.getItems()
+												.size() > 1) {
+											for (TagItem item : geneAnno
+													.getItems()) {
+												genesUri += item.getIcd10()
+														+ ";";
+											}
+										}
+									}
 								}
+
+							} catch (Exception e) {
+								e.getStackTrace();
+								System.out.println(
+										"Error in Gene annotations in apache solr");
 							}
 
-
-							// CheckGene
-
-							try{
-
-
-							geneAnno = solr.tagger.recognize.Evaluate
-									.processString(cellValue, core7, match,
-											type);
-							if (geneAnno.toString() == "")
-								geneAnno = solr.tagger.recognize.Evaluate
-										.processString(markers_associated,
-												core9, match, type);
-
-						}
-						catch (Exception e) {
-							e.getStackTrace();
-							System.out.println(
-									"Error in Marker annotations in apache solr");
-						}
-
-							if (geneAnno.toString() != "") {
-								gene_associated += cellValue;
-							}
-
-							else if (geneAnno.toString() == "" & gene_associated == "") {
-
-							String regex1 = "[gG]en[eo]";
-							String regex2 = "solyc";
-							Pattern pattern1 = Pattern.compile(regex1,
-									Pattern.CASE_INSENSITIVE);
-							Pattern pattern2 = Pattern.compile(regex2,
-									Pattern.CASE_INSENSITIVE);
-
-							Matcher matcher1 = pattern1.matcher(cellValue);
-							Matcher matcher2 = pattern1.matcher(colHeader);
-
-							Matcher matcher3 = pattern2.matcher(cellValue);
-							Matcher matcher4 = pattern2.matcher(colHeader);
-
-							if (matcher1.find() || matcher2.find()
-									|| matcher3.find() || matcher4.find()) {
-								gene_associated += cellValue;
-								gene_associated = gene_associated
-										.replace("\n", "").replace("\r", "");
-							}
-
-							}
-							
 						}
 					}
-					// System.out.println(T.getTraitName());
+					stmtSelectPropertiesandValues.close();
 
-					if (markers_associated != "" || gene_associated != "") {
+					if (!"".equals(markers_associated)
+							|| !"".equals(genes_associated)) {
 
 						String traitAnnoUri = "";
 						String traitOntoName = "";
@@ -521,116 +503,97 @@ public class QtlDb {
 									traitAnnoUri.length() - 1);
 						}
 
-						String markerAnnoUri = "";
-
-						if (markerAnno.getItems().size() == 1)
-							markerAnnoUri = markerAnno.getItems().get(0)
-									.getIcd10();
-						else if (markerAnno.getItems().size() > 1) {
-							for (TagItem item : markerAnno.getItems()) {
-								markerAnnoUri += item.getIcd10() + ";";
-							}
-							markerAnnoUri = markerAnnoUri.substring(0,
-									markerAnnoUri.length() - 1);
-						}
-
-						String geneAnnoUri = "";
-						if (geneAnno.getItems().size() == 1)
-							geneAnnoUri = geneAnno.getItems().get(0).getIcd10();
-						else if (geneAnno.getItems().size() > 1) {
-							for (TagItem item : geneAnno.getItems()) {
-								geneAnnoUri += item.getIcd10() + ";";
-							}
-							geneAnnoUri = geneAnnoUri.substring(0,
-									geneAnnoUri.length() - 1);
-						}
-
 						String insertTableSQL = "INSERT INTO QTL"
 								+ "(tab_id,row_id, trait_in_article,trait_in_onto,trait_uri,chromosome,marker,marker_uri, gene,gene_uri) VALUES"
 								+ "(?,?,?,?,?,?,?,?,?,?)";
-						PreparedStatement preparedStatement = conn
+						PreparedStatement stmtInsertQTL = conn
 								.prepareStatement(insertTableSQL);
 
-						preparedStatement.setDouble(1, tableId);
-						preparedStatement.setInt(2, rowId);
+						stmtInsertQTL.setDouble(1, tableId);
+						stmtInsertQTL.setInt(2, rowId);
 
 						try {
-							preparedStatement.setString(3, T.getTraitName());
+							stmtInsertQTL.setString(3, T.getTraitName());
 						} catch (NullPointerException e) {
-							preparedStatement.setNull(3,
+							stmtInsertQTL.setNull(3,
 									java.sql.Types.VARCHAR);
 						}
 
 						try {
-							preparedStatement.setString(4, traitOntoName);
+							stmtInsertQTL.setString(4, traitOntoName);
 						} catch (NullPointerException e) {
-							preparedStatement.setNull(4,
+							stmtInsertQTL.setNull(4,
 									java.sql.Types.VARCHAR);
 						}
 						try {
-							preparedStatement.setString(5, traitAnnoUri);
+							stmtInsertQTL.setString(5, traitAnnoUri);
 						} catch (NullPointerException e) {
-							preparedStatement.setNull(5,
+							stmtInsertQTL.setNull(5,
 									java.sql.Types.VARCHAR);
 						}
 						try {
-							preparedStatement.setString(6, ChromosomeNumber);
+							stmtInsertQTL.setString(6, ChromosomeNumber);
 						} catch (NullPointerException e) {
-							preparedStatement.setNull(6,
+							stmtInsertQTL.setNull(6,
 									java.sql.Types.VARCHAR);
 						}
 
 						try {
 							if (markers_associated == "")
 								markers_associated = null;
-							preparedStatement.setString(7, markers_associated);
+							stmtInsertQTL.setString(7, markers_associated);
 						} catch (NullPointerException e) {
-							preparedStatement.setNull(7,
+							stmtInsertQTL.setNull(7,
 									java.sql.Types.VARCHAR);
 						}
 
 						try {
-							if (markerAnnoUri == "")
-								markerAnnoUri = null;
-							preparedStatement.setString(8, markerAnnoUri);
+							if (markersUri == "")
+								markersUri = null;
+							else
+							markersUri = markersUri.substring(0,
+									markersUri.length() - 1);
+							stmtInsertQTL.setString(8, markersUri);
 						} catch (NullPointerException e) {
-							preparedStatement.setNull(8,
+							stmtInsertQTL.setNull(8,
 									java.sql.Types.VARCHAR);
 						}
 						try {
-							if (gene_associated == "")
-								gene_associated = null;
-							preparedStatement.setString(9, gene_associated);
+							if (genes_associated == "")
+								genes_associated = null;
+							stmtInsertQTL.setString(9, genes_associated);
 						} catch (NullPointerException e) {
-							preparedStatement.setNull(9,
+							stmtInsertQTL.setNull(9,
 									java.sql.Types.VARCHAR);
 						}
 						try {
-							if (geneAnnoUri == "")
-								geneAnnoUri = null;
-							preparedStatement.setString(10, geneAnnoUri);
+							if ("".equals(genesUri))
+								genesUri = null;
+							else
+								genesUri = genesUri.substring(0,
+									genesUri.length() - 1);
+
+							stmtInsertQTL.setString(10, genesUri);
 						} catch (NullPointerException e) {
-							preparedStatement.setNull(10,
+							stmtInsertQTL.setNull(10,
 									java.sql.Types.VARCHAR);
 						}
 
 						try {
-							preparedStatement.executeUpdate();
+							stmtInsertQTL.executeUpdate();
 						} catch (SQLException e) {
 							e.getStackTrace();
-							// System.out.println("QTL detected is not
-							// Unique. Already exiting: "+ T.getTraitName()+
-							// T.getTraitID());
-							// throw e;
+
 						}
+						stmtInsertQTL.close();
 
 					}
 
 				}
 
-				stmt1.close();
-				stmt2.close();
-				stmt3.close();
+				stmtSelectTrait.close();
+
+
 			}
 		} catch (Exception e) {
 			System.out.println("Error in QTLDB.insertQTLdata entry function ");
