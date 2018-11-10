@@ -40,15 +40,9 @@ public class QtlDb {
 	public static String dbDriver = Configs.getPropertyQTM("dbDriver");
 	public static String dbFile = Configs.getPropertyQTM("dbFile");
 	private static String solrRun = Configs.getPropertyQTM("solrRun");
-	private static String core1 = Configs.getPropertyQTM("core1");
-	private static String core2 = Configs.getPropertyQTM("core2");
-	private static String core3 = Configs.getPropertyQTM("core3");
-	private static String core4 = Configs.getPropertyQTM("core4");
-	private static String core5 = Configs.getPropertyQTM("core5");
-	private static String core6 = Configs.getPropertyQTM("core6");
-	private static String core7 = Configs.getPropertyQTM("core7");
-	private static String core8 = Configs.getPropertyQTM("core8");
-	private static String core9 = Configs.getPropertyQTM("core9");
+	private static String coreTraitDescriptors = Configs.getPropertyQTM("coreTraitDescriptors");
+	private static String coreTraitValues = Configs.getPropertyQTM("coreTraitValues");
+	private static String coreTraitProperties = Configs.getPropertyQTM("coreTraitProperties");
 
 
 
@@ -204,13 +198,13 @@ public class QtlDb {
 								try {
 									if (col.getColumns_type() == "QTL value") {
 										colAnno = solr.tagger.recognize.Evaluate
-												.processString(colHeader, core2,
+												.processString(colHeader, coreTraitValues,
 														match, type);
 
 									} else if (col
 											.getColumns_type() == "QTL property") {
 										colAnno = solr.tagger.recognize.Evaluate
-												.processString(colHeader, core3,
+												.processString(colHeader, coreTraitProperties,
 														match, type);
 									}
 								} catch (Exception e) {
@@ -354,7 +348,7 @@ public class QtlDb {
 
 					TagResponse traitAnno = solr.tagger.recognize.Evaluate
 							.processString(getOnlyStrings(T.getTraitName()),
-									core1, match, type);
+									coreTraitDescriptors, match, type);
 
 					Statement stmtSelectPropertiesandValues = null;
 					stmtSelectPropertiesandValues = conn.createStatement();

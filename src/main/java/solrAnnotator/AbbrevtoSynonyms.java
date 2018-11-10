@@ -26,19 +26,19 @@ public class AbbrevtoSynonyms {
 	public static void abbrevToSolrSynonyms(Article articles[])
 			throws FileNotFoundException, UnsupportedEncodingException,
 			IOException {
-		String core1SynonmsFile = Configs.getPropertyQTM("solrCorePath") + "/"
-				+ Configs.getPropertyQTM("core1") + "/conf/synonyms.txt";
+		String coreTraitDescSynonmsFile = Configs.getPropertyQTM("solrCorePath") + "/"
+				+ Configs.getPropertyQTM("coreTraitDescriptors") + "/conf/synonyms.txt";
 
 		HashMap<String, String> oldAbbrev = new HashMap<String, String>();
 		Properties properties = new Properties();
 
-		properties.load(new FileInputStream(core1SynonmsFile));
+		properties.load(new FileInputStream(coreTraitDescSynonmsFile));
 
 		for (String key : properties.stringPropertyNames()) {
 			oldAbbrev.put(key.toString(), properties.get(key).toString());
 		}
 
-		FileWriter fw = new FileWriter(core1SynonmsFile, true);
+		FileWriter fw = new FileWriter(coreTraitDescSynonmsFile, true);
 		BufferedWriter bw = new BufferedWriter(fw);
 		PrintWriter writer = new PrintWriter(bw);
 
@@ -68,17 +68,17 @@ public class AbbrevtoSynonyms {
 		}
 		writer.close();
 
-		String statoConfDir = Configs.getPropertyQTM("solrCorePath")
-				+ Configs.getPropertyQTM("core2") + "/conf/";
-		String propTermsConfDir = Configs.getPropertyQTM("solrCorePath")
-				+ Configs.getPropertyQTM("core3") + "/conf/";
+		String coreTraitValuesDir = Configs.getPropertyQTM("solrCorePath")
+				+ Configs.getPropertyQTM("coreTraitValues") + "/conf/";
+		String coreTraitPropertiesDir = Configs.getPropertyQTM("solrCorePath")
+				+ Configs.getPropertyQTM("coreTraitProperties") + "/conf/";
 
 		try {
 			Process p1 = Runtime.getRuntime()
-					.exec("cp " + core1SynonmsFile + " " + statoConfDir);
+					.exec("cp " + coreTraitDescSynonmsFile + " " + coreTraitValuesDir);
 			p1.waitFor();
 			Process p2 = Runtime.getRuntime()
-					.exec("cp " + core1SynonmsFile + " " + propTermsConfDir);
+					.exec("cp " + coreTraitDescSynonmsFile + " " + coreTraitPropertiesDir);
 			p2.waitFor();
 
 		} catch (Exception e) {

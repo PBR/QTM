@@ -40,16 +40,12 @@ import com.google.gson.JsonParser;
 import solr.tagger.utils.Position;
 import solr.tagger.utils.TagItem;
 import solr.tagger.utils.TagResponse;
-import utils.Configs;
 
 /**
  * @author gurnoor
  */
 public class Evaluate {
 
-	private static String core9 = Configs.getPropertyQTM("core9");
-	private static String match = Configs.getPropertyQTM("match");
-	private static String type = Configs.getPropertyQTM("type");
 
 	static CloseableHttpClient client = HttpClients.createDefault();
 
@@ -85,18 +81,18 @@ public class Evaluate {
 			String core = line.hasOption("core")
 					? line.getOptionValue("core")
 					: "trait_properties";
-//			String match = line.hasOption("match")
-//					? line.getOptionValue("match")
-//					: "ALL";
+			String match = line.hasOption("match")
+					? line.getOptionValue("match")
+					: "ALL";
 			String input = line.hasOption("input")
 					? line.getOptionValue("input")
 					: "Abbreviation";
 			String outputfolder = line.hasOption("outputfolder")
 					? line.getOptionValue("outputfolder")
 					: "data/Resultdata";
-//			String type = line.hasOption("type")
-//					? line.getOptionValue("type")
-//					: "dictionary";
+			String type = line.hasOption("type")
+					? line.getOptionValue("type")
+					: "dictionary";
 
 			String output = line.hasOption("output")
 					? line.getOptionValue("output")
@@ -114,8 +110,8 @@ public class Evaluate {
 				out.newLine();
 
 
-				String check= "DMG400001190";
-				TagResponse tag = processString(check, core9, match, type);
+				String check= "sol";
+				TagResponse tag = processString(check, "sgn_potato_markers", "LONGEST_DOMINANT_RIGHT", "dictionary");
 
 				String tagUri = "";
 				if (tag.getItems().size() == 1)

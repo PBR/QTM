@@ -484,7 +484,7 @@ public class Table {
 
 		HashMap<String, Integer> ColTypes = new HashMap<String, Integer>();
 
-		// System.out.println("HEreeeeeeeeeeeee"+tc[0].getRowcell()[61].getcell_value());
+		// System.out.println(tc[0].getRowcell()[61].getcell_value());
 		for (int l = 0; l < tc.length; l++) {
 			ColTypes.clear();
 			ColTypes.put("Partially Numeric", 0);
@@ -610,7 +610,7 @@ public class Table {
 								.processString(
 										tc[j].getcelz()[k].getcell_value()
 												.toLowerCase(),
-										Configs.getPropertyQTM("core1"),
+										Configs.getPropertyQTM("coreTraitDescriptors"),
 										Configs.getPropertyQTM("match"),
 										Configs.getPropertyQTM("type"));
 
