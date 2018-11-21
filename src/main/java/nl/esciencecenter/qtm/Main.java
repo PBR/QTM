@@ -12,11 +12,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
 
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 import nl.esciencecenter.readers.PmcMetaReader;
 import nl.esciencecenter.resultDb.QtlDb;
 import nl.esciencecenter.utils.Configs;
@@ -24,54 +28,55 @@ import nl.esciencecenter.utils.Configs;
 public class Main {
 
 	public static boolean doXMLInput = false;
-	public static Configs confi = new Configs();
 	private static final long megabyte = 1024L * 1024L;
 
 	public static void main(String[] args) throws IOException {
+		ArgumentParser parser = ArgumentParsers.newFor("QTM").build()
+				.defaultHelp(true)
+				.description("Extract QTL data from full-text articles.")
+				.version(Main.class.getPackage().getImplementationVersion());
 
+		parser.addArgument("-v", "--version").action(Arguments.version())
+				.help("show version and exists");
+		parser.addArgument("-o", "--output").setDefault("qtl").help("filename prefix for output in SQLite and CSV formats {.db,.csv}");
+		parser.addArgument("FILE").help("input file of articles (one PMCID per line)");
+		parser.addArgument("-c", "--config").help("conifgration/property file");
+
+
+		try {
+			Namespace res = parser.parseArgs(args);
+			String inputArticles = res.get("FILE");
+			String configFile = res.get("config");
+			String outputFile = res.get("output");
+
+			run(inputArticles, configFile, outputFile);
+		} catch (ArgumentParserException e) {
+			parser.handleError(e);
+		}
+
+	}
+
+	public static void run(String inputArticlesFile, String configFile,
+			String outputFile) throws IOException {
 		long startTime = System.currentTimeMillis();// to calculate run-time
 
-		if (args.length < 2 | Arrays.asList(args).contains("-h")
-				| Arrays.asList(args).contains("--help") |  !Arrays.asList(args).contains("--config")    )  {
-			printHelp();
-			return;
-		}
+		Configs.configFileName=configFile;
 
-		if (Arrays.asList(args).contains("--config") ) {
-			Configs.configFileName= args[Arrays.asList(args).indexOf("--config") + 1];
-		}
-
-		if (Arrays.asList(args).contains("-v")
-				| Arrays.asList(args).contains("--version")) {
-			System.out.println("1.0 ");
-			return;
+		if (outputFile.endsWith(".db")) {
+			QtlDb.dbFile = outputFile;
+		} else {
+			QtlDb.dbFile = outputFile + ".db";
 		}
 
 
-		if (Arrays.asList(args).contains("-o") | Arrays.asList(args).contains("--output") ) {
-			String outFile ="";
-			if (Arrays.asList(args).contains("-o"))
-			 outFile = args[Arrays.asList(args).indexOf("-o") + 1];
+	// (re)start Solr server
+	controlSolr("restart");
 
-			if (Arrays.asList(args).contains("--output"))
-				outFile = args[Arrays.asList(args).indexOf("--output") + 1];
-
-			if (outFile.endsWith(".db")) {
-				QtlDb.dbFile = outFile;
-			} else {
-				QtlDb.dbFile = outFile+ ".db";
-			}
-		}
-
-		// (re)start Solr server
-		controlSolr("restart");
-
-		String inputFile = args[0];
 		ArrayList<String> pmcIds = new ArrayList<String>();
 		BufferedReader reader = null;
 
 		try {
-			reader = new BufferedReader(new FileReader(inputFile));
+			reader = new BufferedReader(new FileReader(inputArticlesFile));
 			String pmcIdline = null;
 			while ((pmcIdline = reader.readLine()) != null) {
 				pmcIdline = pmcIdline.trim();
@@ -79,7 +84,7 @@ public class Main {
 					pmcIds.add(pmcIdline);
 			}
 		} catch (FileNotFoundException e) {
-			System.out.println("Input file '" + inputFile + "' not found.");
+			System.out.println("Input file '" + inputArticlesFile + "' not found.");
 			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -209,9 +214,9 @@ public class Main {
 		System.out.println("--------------------------------------------");
 		try {
 			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd,
-												  Configs.getPropertyQTM("solrPort"),
-												  Configs.getPropertyQTM("solrCorePath")};
-			//System.out.println(String.join(" ", cmdline));
+					Configs.getPropertyQTM("solrPort"),
+					Configs.getPropertyQTM("solrCorePath")};
+			// System.out.println(String.join(" ", cmdline));
 			Process p = Runtime.getRuntime().exec(cmdline);
 			p.waitFor();
 		} catch (Exception e) {
@@ -220,29 +225,4 @@ public class Main {
 		System.out.println("\n");
 	}
 
-	public static void printHelp() {
-		System.out.println("\nDESCRIPTION");
-		System.out.println("===========");
-		System.out.println("QTL TableMiner++ is a command-line tool to retrieve"
-				+ " and semantically annotate\nresults of QTL mapping studies"
-				+ " described in tables of scientific articles.\n");
-		System.out.println("USAGE");
-		System.out.println("=====");
-		System.out.println("  QTM [-v|-h]");
-		System.out.println("  QTM [-o FILE_PREFIX] FILE\n");
-		System.out.println("ARGUMENTS");
-		System.out.println("=========");
-		System.out.println(
-				"  FILE\t\t\t\tList of full-text articles from Europe PMC.\n"
-						+ "\t\t\t\tEnter one PMCID per line.\n");
-		System.out.println(
-				"  --config\t\t\tProperty file, containing list of species-specific genes and markers for annotations\n"
-						+ "\t\t\t\tBy default, config file is set for tomato specie\n");
-		System.out.println("OPTIONS");
-		System.out.println("=======");
-		System.out.println("  -o, --output FILE_PREFIX\tOutput files in SQLite/"
-				+ "CSV formats.\n\t\t\t\t(default: qtl.{db,csv})");
-		System.out.println("  -v, --version\t\t\tPrint software version.");
-		System.out.println("  -h, --help\t\t\tPrint this help message.\n");
-	}
 }
