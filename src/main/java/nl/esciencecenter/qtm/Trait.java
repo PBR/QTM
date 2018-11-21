@@ -3,7 +3,7 @@
  * The Class Trait.
  */
 
-package qtm;
+package nl.esciencecenter.qtm;
 
 import org.json.simple.JSONObject;
 

@@ -35,8 +35,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import abbreviation.Abbreviator;
-import qtm.Article;
-import qtm.Table;
+import nl.esciencecenter.qtm.Article;
+import nl.esciencecenter.qtm.Table;
 import utils.Author;
 import utils.Configs;
 import utils.Utilities;

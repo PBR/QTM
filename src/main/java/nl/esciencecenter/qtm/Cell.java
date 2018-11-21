@@ -4,7 +4,7 @@
  * about cell
  */
 
-package qtm;
+package nl.esciencecenter.qtm;
 
 import org.json.simple.JSONObject;
 

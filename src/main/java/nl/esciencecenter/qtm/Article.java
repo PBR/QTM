@@ -3,7 +3,7 @@
  * Artilce class
  */
 
-package qtm;
+package nl.esciencecenter.qtm;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -15,7 +15,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Node;
 
-import qtm.QtmMain;
+import nl.esciencecenter.qtm.Main;
 
 /**
  * The Class Utilities.
@@ -88,7 +88,7 @@ public class Utilities {
 
 	public static String getString(Node xml) {
 		String result = "";
-		if (QtmMain.doXMLInput) {
+		if (Main.doXMLInput) {
 			result = createXMLStringFromSubNodeWithoutDeclaration(xml);
 		} else {
 			result = xml.getTextContent();

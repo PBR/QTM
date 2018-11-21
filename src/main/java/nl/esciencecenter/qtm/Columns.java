@@ -3,7 +3,7 @@
  * The Class Column. One Column of the table. Contains all necessary information
  * about column
  */
-package qtm;
+package nl.esciencecenter.qtm;
 
 public class Columns {
 

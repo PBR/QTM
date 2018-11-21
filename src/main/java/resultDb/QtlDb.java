@@ -20,11 +20,11 @@ import java.util.regex.Pattern;
 
 import org.json.simple.JSONObject;
 
-import qtm.Article;
-import qtm.Cell;
-import qtm.Columns;
-import qtm.Table;
-import qtm.Trait;
+import nl.esciencecenter.qtm.Article;
+import nl.esciencecenter.qtm.Cell;
+import nl.esciencecenter.qtm.Columns;
+import nl.esciencecenter.qtm.Table;
+import nl.esciencecenter.qtm.Trait;
 import solr.tagger.utils.TagItem;
 import solr.tagger.utils.TagResponse;
 import utils.Configs;

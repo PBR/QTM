@@ -12,12 +12,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import qtm.Article;
-//import qtm.C;
-import qtm.Cell;
-import qtm.Columns;
-//import qtm.Hc;
-import qtm.Table;
+import nl.esciencecenter.qtm.Article;
+import nl.esciencecenter.qtm.Cell;
+import nl.esciencecenter.qtm.Columns;
+import nl.esciencecenter.qtm.Table;
 //import stats.Statistics;
 import utils.Utilities;
 

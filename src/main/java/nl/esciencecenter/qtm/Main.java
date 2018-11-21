@@ -3,7 +3,7 @@
  * The main file of the QTLTableminer++
  */
 
-package qtm;
+package nl.esciencecenter.qtm;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,7 +21,7 @@ import readers.PmcMetaReader;
 import resultDb.QtlDb;
 import utils.Configs;
 
-public class QtmMain {
+public class Main {
 
 	public static boolean doXMLInput = false;
 	public static Configs confi = new Configs();

@@ -2,7 +2,7 @@
  * @author gurnoor
  * The Class Table. Contain various information about table, including the Columns that further contains cells
  */
-package qtm;
+package nl.esciencecenter.qtm;
 
 import java.util.ArrayList;
 import java.util.HashMap;

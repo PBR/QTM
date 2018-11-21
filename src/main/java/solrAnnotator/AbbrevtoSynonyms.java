@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import qtm.Article;
+import nl.esciencecenter.qtm.Article;
 import utils.Configs;
 
 /**
