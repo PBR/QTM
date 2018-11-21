@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import utils.Author;
+import nl.esciencecenter.utils.Author;
 public class Article {
 	private String title;
 	private String venue;

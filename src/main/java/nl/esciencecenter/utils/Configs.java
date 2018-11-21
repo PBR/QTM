@@ -1,4 +1,4 @@
-package utils;
+package nl.esciencecenter.utils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

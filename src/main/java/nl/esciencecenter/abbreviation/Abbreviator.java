@@ -3,7 +3,7 @@
  * S & H algorithm
  */
 
-package abbreviation;
+package nl.esciencecenter.abbreviation;
 
 import java.io.BufferedReader;
 import java.io.StringReader;

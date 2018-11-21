@@ -1,4 +1,4 @@
-package solr.tagger.recognize;
+package nl.esciencecenter.solr.tagger.recognize;
 
 import java.io.BufferedWriter;
 import java.io.File;

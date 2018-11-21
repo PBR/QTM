@@ -1,4 +1,4 @@
-package solr.tagger.utils;
+package nl.esciencecenter.solr.tagger.utils;
 
 import java.util.Arrays;
 import java.util.Set;

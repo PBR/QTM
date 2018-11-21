@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package resultDb;
+package nl.esciencecenter.resultDb;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,9 +25,9 @@ import nl.esciencecenter.qtm.Cell;
 import nl.esciencecenter.qtm.Columns;
 import nl.esciencecenter.qtm.Table;
 import nl.esciencecenter.qtm.Trait;
-import solr.tagger.utils.TagItem;
-import solr.tagger.utils.TagResponse;
-import utils.Configs;
+import nl.esciencecenter.solr.tagger.utils.TagItem;
+import nl.esciencecenter.solr.tagger.utils.TagResponse;
+import nl.esciencecenter.utils.Configs;
 
 /**
  *
@@ -197,13 +197,13 @@ public class QtlDb {
 										.replaceAll("[^\\w]", "");
 								try {
 									if (col.getColumns_type() == "QTL value") {
-										colAnno = solr.tagger.recognize.Evaluate
+										colAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
 												.processString(colHeader, coreTraitValues,
 														match, type);
 
 									} else if (col
 											.getColumns_type() == "QTL property") {
-										colAnno = solr.tagger.recognize.Evaluate
+										colAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
 												.processString(colHeader, coreTraitProperties,
 														match, type);
 									}
@@ -346,7 +346,7 @@ public class QtlDb {
 
 					Trait T = new Trait(possibleTrait);
 
-					TagResponse traitAnno = solr.tagger.recognize.Evaluate
+					TagResponse traitAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
 							.processString(getOnlyStrings(T.getTraitName()),
 									coreTraitDescriptors, match, type);
 
@@ -413,7 +413,7 @@ public class QtlDb {
 
 								for (String core : cores_markers) {
 									TagResponse markerAnno = new TagResponse();
-									markerAnno = solr.tagger.recognize.Evaluate
+									markerAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
 											.processString(cellValue, core,
 													match, type);
 
@@ -443,7 +443,7 @@ public class QtlDb {
 
 								for (String core : cores_genes) {
 									TagResponse geneAnno = new TagResponse();
-									geneAnno = solr.tagger.recognize.Evaluate
+									geneAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
 											.processString(cellValue, core,
 													match, type);
 

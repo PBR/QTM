@@ -6,7 +6,7 @@
  * PMC database and creates array of Articles {@link Article} as output
  */
 
-package readers;
+package nl.esciencecenter.readers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,12 +34,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import abbreviation.Abbreviator;
+import nl.esciencecenter.abbreviation.Abbreviator;
 import nl.esciencecenter.qtm.Article;
 import nl.esciencecenter.qtm.Table;
-import utils.Author;
-import utils.Configs;
-import utils.Utilities;
+import nl.esciencecenter.utils.Author;
+import nl.esciencecenter.utils.Configs;
+import nl.esciencecenter.utils.Utilities;
 
 public class PmcMetaReader {
 

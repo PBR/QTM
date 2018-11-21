@@ -2,7 +2,7 @@
  * @author gurnoor
  * Table Parser Class
  */
-package readers;
+package nl.esciencecenter.readers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,7 @@ import nl.esciencecenter.qtm.Article;
 import nl.esciencecenter.qtm.Cell;
 import nl.esciencecenter.qtm.Columns;
 import nl.esciencecenter.qtm.Table;
-//import stats.Statistics;
-import utils.Utilities;
+import nl.esciencecenter.utils.Utilities;
 
 public class TableParser {
 

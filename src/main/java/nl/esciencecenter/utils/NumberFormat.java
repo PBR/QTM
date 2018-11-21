@@ -3,7 +3,7 @@
  * @author gurnoor
  */
 
-package utils;
+package nl.esciencecenter.utils;
 
 public class NumberFormat {
 	private String number;

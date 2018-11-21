@@ -1,4 +1,4 @@
-package solrAnnotator;
+package nl.esciencecenter.solr.abbreviator;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import nl.esciencecenter.qtm.Article;
-import utils.Configs;
+import nl.esciencecenter.utils.Configs;
 
 /**
  *

@@ -1,4 +1,4 @@
-package solr.tagger.recognize;
+package nl.esciencecenter.solr.tagger.recognize;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -37,9 +37,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import solr.tagger.utils.Position;
-import solr.tagger.utils.TagItem;
-import solr.tagger.utils.TagResponse;
+import nl.esciencecenter.solr.tagger.utils.Position;
+import nl.esciencecenter.solr.tagger.utils.TagItem;
+import nl.esciencecenter.solr.tagger.utils.TagResponse;
 
 /**
  * @author gurnoor

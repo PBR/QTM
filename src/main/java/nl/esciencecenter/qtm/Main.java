@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
 
-import readers.PmcMetaReader;
-import resultDb.QtlDb;
-import utils.Configs;
+import nl.esciencecenter.readers.PmcMetaReader;
+import nl.esciencecenter.resultDb.QtlDb;
+import nl.esciencecenter.utils.Configs;
 
 public class Main {
 
@@ -124,7 +124,7 @@ public class Main {
 
 		// STEP2 Add abbreviations to Solr synonyms files in all 4 cores and
 		// restart
-		solrAnnotator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
+		nl.esciencecenter.solr.abbreviator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 		controlSolr("restart");
 
 		// STEP3 Inserting enteries into the database
