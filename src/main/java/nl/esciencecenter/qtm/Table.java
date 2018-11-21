@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import solr.tagger.utils.TagResponse;
-import utils.Configs;
+import nl.esciencecenter.solr.tagger.utils.TagResponse;
+import nl.esciencecenter.utils.Configs;
 
 public class Table {
 
@@ -606,7 +606,7 @@ public class Table {
 					tc[j].setColumns_type("QTL property");
 					for (int k = 0; k < tc[j].getcelz().length; k++) {
 
-						TagResponse QTLannotation = solr.tagger.recognize.Evaluate
+						TagResponse QTLannotation = nl.esciencecenter.solr.tagger.recognize.Evaluate
 								.processString(
 										tc[j].getcelz()[k].getcell_value()
 												.toLowerCase(),

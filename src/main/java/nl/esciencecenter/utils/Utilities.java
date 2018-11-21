@@ -3,7 +3,7 @@
  * @author gurnoor
  */
 
-package utils;
+package nl.esciencecenter.utils;
 
 import java.io.StringWriter;
 

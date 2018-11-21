@@ -1,4 +1,4 @@
-package solr.tagger.recognize;
+package nl.esciencecenter.solr.tagger.recognize;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import org.apache.solr.common.SolrInputDocument;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import solr.tagger.utils.Permutations;
+import nl.esciencecenter.solr.tagger.utils.Permutations;
 
 
 public class ImportJSON {
