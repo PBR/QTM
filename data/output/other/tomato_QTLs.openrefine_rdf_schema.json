@@ -312,5 +312,18 @@
         }
       ]
     }
+  },
+  {
+    "op": "core/text-transform",
+    "description": "Text transform on cells in column marker_uri using expression grel:value.replace(\"solgenomics.net\",\"localhost:8890\")",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "marker_uri",
+    "expression": "grel:value.replace(\"solgenomics.net\",\"localhost:8890\")",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10
   }
 ]
