@@ -87,7 +87,7 @@ public class QtlDb {
 	}
 
 	public static String getOnlyStrings(String s) {
-		Pattern pattern = Pattern.compile("[^a-z A-Z]");
+		Pattern pattern = Pattern.compile("[^a-z A-Z 0-9]");
 		Matcher matcher = pattern.matcher(s);
 		String number = matcher.replaceAll("");
 		return number;
