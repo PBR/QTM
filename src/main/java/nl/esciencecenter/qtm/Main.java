@@ -33,27 +33,26 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		ArgumentParser parser = ArgumentParsers.newFor("QTM").build()
 				.defaultHelp(true)
-				.description("Extract QTL data from full-text articles.")
+				.description("Software to extract QTL data from full-text articles.")
 				.version(Main.class.getPackage().getImplementationVersion());
 
 		parser.addArgument("-v", "--version").action(Arguments.version())
-				.help("show version and exists");
+				.help("show version and exit");
 		parser.addArgument("-o", "--output").setDefault("qtl").help("filename prefix for output in SQLite and CSV formats {.db,.csv}");
-		parser.addArgument("FILE").help("input file of articles (one PMCID per line)");
-		parser.addArgument("-c", "--config").help("conifgration/property file").setDefault("config/config_tomato.properties");
-
+		parser.addArgument("FILE").help("input list of articles (PMCIDs)");
+		parser.addArgument("-c", "--config").help("config file").setDefault("config.properties");
 
 		try {
 			Namespace res = parser.parseArgs(args);
 			String inputArticles = res.get("FILE");
 			String configFile = res.get("config");
 			String outputFile = res.get("output");
-
+	
 			run(inputArticles, configFile, outputFile);
 		} catch (ArgumentParserException e) {
 			parser.handleError(e);
 		}
-
+	
 	}
 
 	public static void run(String inputArticlesFile, String configFile,

@@ -30,30 +30,28 @@ solr/install_solr.sh
 
 ## Example use
 
-- input: `articles.txt` with PMCIDs (one per line) and configration file
+- input: `articles.txt` with PMCIDs (one per line) and a config file
 - output: `qtl.csv` and `qtl.db` (see the database model or Entity-Relationship diagram [here](doc/ER_diagram.png))
 
-`./QTM articles.txt --configration config/config_Tomato.properties`
+`./QTM articles.txt`
 
 `./QTM -h`
 
 ```
-...
-USAGE
-=====
-  QTM [-v|-h]
-  QTM [-o FILE_PREFIX] FILE
+usage: QTM [-h] [-v] [-o OUTPUT] [-c CONFIG] FILE
 
-ARGUMENTS
-=========
-  FILE				List of full-text articles from Europe PMC.
-				Enter one PMCID per line.
-  --config			Property file, containing list of species-specific genes and markers for annotations
+Software to extract QTL data from full-text articles.
 
-OPTIONS
-=======
-  -o, --output FILE_PREFIX	Output files in SQLite/CSV formats.
-				(default: qtl.{db,csv})
-  -v, --version			Print software version.
-  -h, --help			Print this help message.
+positional arguments:
+  FILE                   input list of articles (PMCIDs)
+
+named arguments:
+  -h, --help             show this help message and exit
+  -v, --version          show version and exit
+  -o OUTPUT, --output OUTPUT
+                         filename prefix  for  output  in  SQLite  and  CSV  formats {.db,.csv}
+                         (default: qtl)
+  -c CONFIG, --config CONFIG
+                         config file (default: config.properties)
+
 ```
