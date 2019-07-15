@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
+import org.apache.log4j.Logger;
 import org.apache.commons.io.FilenameUtils;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -28,6 +28,7 @@ import nl.esciencecenter.utils.Configs;
 public class Main {
 
 	public static boolean doXMLInput = false;
+	public static final Logger logger = Logger.getLogger(Main.class.getName());
 	private static final long megabyte = 1024L * 1024L;
 
 	public static void main(String[] args) throws IOException {
@@ -41,7 +42,8 @@ public class Main {
 		parser.addArgument("-o", "--output").setDefault("qtl").help("filename prefix for output in SQLite and CSV formats {.db,.csv}");
 		parser.addArgument("FILE").help("input list of articles (PMCIDs)");
 		parser.addArgument("-c", "--config").help("config file").setDefault("config.properties");
-
+	 	
+	
 		try {
 			Namespace res = parser.parseArgs(args);
 			String inputArticles = res.get("FILE");
@@ -83,17 +85,18 @@ public class Main {
 					pmcIds.add(pmcIdline);
 			}
 		} catch (FileNotFoundException e) {
-			System.out.println("Input file '" + inputArticlesFile + "' not found.");
+			logger.error("Input file '" + inputArticlesFile + "' not found.");
 			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		reader.close();
-		System.out.println("===============");
-		System.out.println("QTLTableMiner++");
-		System.out.println("===============\n");
+		
+		logger.info("===============");
+		logger.info("QTLTableMiner++");
+		logger.info("===============");
 
-		System.out.println("Input List: \t" + pmcIds.toString() + "\n");
+		logger.info("Input List: " + pmcIds.toString());
 
 		// intialisation
 		QtlDb.createTables();
@@ -110,21 +113,16 @@ public class Main {
 				PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
 
 				// Parsing meta-data, cell entries and finding the abbreviations
-				System.out.println("Processing article:\n");
-				System.out.println("\t" + pmcIds.get(i));
-				System.out.println(
-						"---------------------------------------------");
+				logger.info("- Processing article " + pmcIds.get(i));
 				articles[i] = pmcMetaReader.read();
 			} else {
-				System.out.println(
-						"EuroPMC article arlready exits " + pmcIds.get(i));
+				logger.info("- Article "+pmcIds.get(i)+" already exists");
 				if (pmcIds.size() == i + 1)
 					return;
 				else
 					continue;
 			}
-		}
-		System.out.println("\n");
+		}		
 
 		// STEP2 Add abbreviations to Solr synonyms files in all 4 cores and
 		// restart
@@ -132,8 +130,7 @@ public class Main {
 		controlSolr("restart");
 
 		// STEP3 Inserting enteries into the database
-		System.out.println("Insert entry to the database.");
-		System.out.println("-------------------------------------------------");
+		logger.info("Inserting entries to the database");
 		for (int i = 0; i < articles.length; i++) {
 			try {
 				if (articles[i] != null)
@@ -146,40 +143,34 @@ public class Main {
 			}
 		}
 
-		System.out.println("Searching QTL in tables");
-		System.out.println("-------------------------------------------------");
+		logger.info("Searching QTL in tables");
 		QtlDb.insertQTLEntry();
 
 		String csvFile = "";
 		try {
 			csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
-			System.out.println("Writing results into '" + csvFile + "'");
-			System.out.println("-----------------------------------------");
+			logger.info("Writing results into " + csvFile + "");
 			String[] cmdline = {"bash", "-c", "sqlite3 -header -csv " + QtlDb.dbFile +
                          " \"SELECT * FROM V_QTL\" 	>" + csvFile};
-			System.out.println(String.join(" ", cmdline));
+			logger.debug(String.join(" ", cmdline));
 			Process p = Runtime.getRuntime().exec(cmdline);
 			p.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("\n");
-		System.out.println("=================================================");
-		System.out.println("RESULTS are available in the following files:");
-		System.out.println("=================================================");
-		System.out.println(
-				"Total number of processed articles:\t" + articles.length);
-		System.out.println(
-				"Total number of trait tables:\t" + QtlDb.numberofTraitTable());
-		System.out.println(
-				"Total number of QTL statements:\t" + QtlDb.numberofQTL());
-		System.out.println("SQLite file: \t" + QtlDb.dbFile);
-		System.out.println("CSV file: \t" + csvFile);
+		logger.info("=======");
+		logger.info("RESULTS");
+		logger.info("=======");
+		logger.info("Total number of processed articles: " + articles.length);
+		logger.info("Total number of trait tables: " + QtlDb.numberofTraitTable());
+		logger.info("Total number of QTL statements: " + QtlDb.numberofQTL());
+		logger.info("SQLite file: " + QtlDb.dbFile);
+		logger.info("CSV file: " + csvFile);
 
 		try {
 			QtlDb.conn.close();
 		} catch (SQLException e) {
-			System.out.println("SQL Exception is clossing the conection");
+			logger.warn("SQL Exception is closing the connection");
 			e.printStackTrace();
 		}
 
@@ -197,8 +188,8 @@ public class Main {
 						- TimeUnit.MINUTES.toSeconds(
 								TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
 
-		System.out.println("Memory used (KB): \t" + memory);
-		System.out.println("Total runtime (HH:MM:SS): \t" + eTime);
+		logger.info("Memory used (KB): " + memory);
+		logger.info("Total runtime (HH:MM:SS): " + eTime);
 
 		// finally stop Solr server
 		controlSolr("stop");
@@ -209,19 +200,17 @@ public class Main {
 	}
 
 	public static void controlSolr(String cmd) {
-		System.out.println("Solr server has been " + cmd + "ed.");
-		System.out.println("--------------------------------------------");
+		logger.info("Solr server has been " + cmd + "ed.");
 		try {
 			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd,
 					Configs.getPropertyQTM("solrPort"),
 					Configs.getPropertyQTM("solrCorePath")};
-			// System.out.println(String.join(" ", cmdline));
+			logger.debug(String.join(" ", cmdline));
 			Process p = Runtime.getRuntime().exec(cmdline);
 			p.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		System.out.println("\n");
+		}		
 	}
 
 }

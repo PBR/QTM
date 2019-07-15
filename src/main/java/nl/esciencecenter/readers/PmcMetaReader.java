@@ -36,6 +36,7 @@ import org.xml.sax.InputSource;
 
 import nl.esciencecenter.abbreviation.Abbreviator;
 import nl.esciencecenter.qtm.Article;
+import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.qtm.Table;
 import nl.esciencecenter.utils.Author;
 import nl.esciencecenter.utils.Configs;
@@ -54,9 +55,9 @@ public class PmcMetaReader {
 	public PmcMetaReader(File F1) {
 		super();
 		this.f1 = F1;
-		System.out.println(F1.getPath());
+		Main.logger.debug(F1.getPath());
 		this.fileName = F1.getPath();
-		System.out.println(fileName);
+		Main.logger.debug(fileName);
 	}
 
 	public PmcMetaReader(String fName) {
@@ -109,7 +110,7 @@ public class PmcMetaReader {
 					continue;
 				xmlString += line + '\n';
 			}
-			// System.out.println(xmlString);
+			// Main.logger.trace(xmlString);
 
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
@@ -125,7 +126,7 @@ public class PmcMetaReader {
 
 			// Ful-Text
 			art = parsePlainText(art, parse, xmlString);
-			// System.out.println(art.getPlain_text());
+			// Main.logger.trace(art.getPlain_text());
 
 			// abbreviations
 			this.abbreviator = new Abbreviator();
@@ -136,36 +137,33 @@ public class PmcMetaReader {
 
 			art.setAbbreviations(abbreviationsFound);
 
-			System.out.println("\nList of abbreviations in " + art.getPmc());
+			Main.logger.debug("\nList of abbreviations in " + art.getPmc());
 			for (String key : art.getAbbreviations().keySet()) {
-				System.out.println(
+				Main.logger.debug(
 						key + "\t->\t" + art.getAbbreviations().get(key));
 
 			}
 			// Tables
-			System.out.println("\n");
-
-			System.out
-					.println("Parsing tables in " + art.getPmc() + "now \n\n");
+			Main.logger.debug("\n");
+			Main.logger.debug("Parsing tables in " + art.getPmc() + "now");
 
 			art = TableParser.parseTables(art, parse);
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("Problem in processing xml file");
+			Main.logger.error("Problem in processing xml file");
 		}
 
 		art.setNumQTLtables();
 
-		System.out.println("NUMBER OF QTL TABLES:" + art.getNumQTLtables());
+		Main.logger.debug("NUMBER OF QTL TABLES:" + art.getNumQTLtables());
 
 		if (art.getNumQTLtables() > 0) {
 			for (Table t : art.getTables()) {
 				try {
 
 					if (t.getisTraitTable() == true) {
-						System.out.println(
-								t.getTabnum() + "\t\t" + t.getisTraitTable());
+						Main.logger.debug(t.getTabnum() + "\t\t" + t.getisTraitTable());
 					}
 				} catch (NullPointerException e) {
 
@@ -265,7 +263,7 @@ public class PmcMetaReader {
 		for (int j = 0; j < affis.getLength(); j++) {
 			String affiliation = Utilities.getString(affis.item(j));
 			affilis[j] = affiliation;
-			// System.out.println("Affiliation:" + affiliation);
+			// Main.logger.debug("Affiliation:" + affiliation);
 		}
 
 		return affilis;
@@ -285,7 +283,7 @@ public class PmcMetaReader {
 			if (keywords.item(j).getTextContent().length() > 1) {
 				String keyword = keywords.item(j).getTextContent().substring(1);
 				keywords_str[j] = keyword;
-				// System.out.println("Keyword:" + keyword);
+				// Main.logger.debug("Keyword:" + keyword);
 			}
 		}
 		return keywords_str;
@@ -312,13 +310,13 @@ public class PmcMetaReader {
 					.getTextContent();
 			title = title.replaceAll("\n", "");
 			title = title.replaceAll("\t", "");
-			System.out.println("Titel of the Article: \t" + title);
+			Main.logger.debug("Titel of the Article: " + title);
 		}
 
 		// Authors List
 		LinkedList<Author> auths = getAuthors(parse);
 		for (int j = 0; j < auths.size(); j++) {
-			// System.out.println(auths.get(j));
+			// Main.logger.debug(auths.get(j));
 		}
 
 		// journal-title
@@ -344,7 +342,7 @@ public class PmcMetaReader {
 				String issnp = issn.item(j).getTextContent();
 				art.setPissn(issnp);
 				if (issnp != null) {
-					// System.out.println(issnp);
+					// Main.logger.debug(issnp);
 				}
 			}
 			if (issn.item(j).getAttributes().getNamedItem("pub-type")
@@ -352,7 +350,7 @@ public class PmcMetaReader {
 				String issne = issn.item(j).getTextContent();
 				art.setPissn(issne);
 				if (issne != null) {
-					// System.out.println(issne);
+					// Main.logger.debug(issne);
 				}
 			}
 		}
@@ -369,7 +367,7 @@ public class PmcMetaReader {
 				String pmid = article_id.item(j).getTextContent();
 				art.setPmid(pmid);
 				if (pmid != null) {
-					// System.out.println(pmid);
+					// Main.logger.debug(pmid);
 				}
 			}
 			if (article_id.item(j).getAttributes() != null
@@ -382,7 +380,7 @@ public class PmcMetaReader {
 				art.setPmc(pmc);
 				art.setSpec_id(pmc);
 				if (pmc != null) {
-					System.out.println("PMC id: \t" + pmc);
+					Main.logger.debug("PMC id: " + pmc);
 				}
 			}
 			if (article_id.item(j).getAttributes() != null
@@ -422,14 +420,14 @@ public class PmcMetaReader {
 					.item(0).getTextContent();
 		art.setPublisher_name(publisher_name);
 		if (publisher_name != null)
-			System.out.println("Publisher: \t" + publisher_name);
+			Main.logger.debug("Publisher: " + publisher_name);
 		String publisher_loc = "";
 		if (parse.getElementsByTagName("publisher-loc").item(0) != null)
 			publisher_loc = parse.getElementsByTagName("publisher-loc").item(0)
 					.getTextContent();
 		art.setPublisher_loc(publisher_loc);
 		if (publisher_loc != null)
-			// System.out.println(publisher_loc);
+			// Main.logger.debug(publisher_loc);
 
 			art.setTitle(title);
 		art.setXML(xml);

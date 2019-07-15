@@ -21,6 +21,7 @@ import org.apache.solr.common.SolrInputDocument;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.solr.tagger.utils.Permutations;
 
 
@@ -79,8 +80,7 @@ public class ImportJSON {
 	for ( Entry<String, JsonElement> entry : new JsonParser().parse(new FileReader(filename)).getAsJsonObject().entrySet() ){
 	    count++;
 	    if ( count % 100 == 0 ){
-		System.out.println(count);
-		System.out.flush();
+		Main.logger.debug(count);
 		solr.add(docs);
 		docs.clear();
 	    }

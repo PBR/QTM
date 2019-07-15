@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import nl.esciencecenter.qtm.Article;
+import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.utils.Configs;
 
 /**
@@ -33,7 +34,7 @@ public class AbbrevtoSynonyms {
 
 		// properties.load(new FileInputStream(coreTraitDescSynonmsFile));
 
-		// System.out.println(properties.toString());
+		// Main.logger.debug(properties.toString());
 
 		// for (String key : properties.stringPropertyNames()) {
 		// oldAbbrev.put(key.toString(), properties.get(key).toString());
@@ -71,7 +72,7 @@ public class AbbrevtoSynonyms {
 		}
 		}
 		catch(Exception e){
-			System.out.println("No Abbreviations, detected or copied");
+			Main.logger.error("No Abbreviations, detected or copied");
 		}
 
 		Set<String> totalkeys = allAbbreviation.keySet();
@@ -80,7 +81,7 @@ public class AbbrevtoSynonyms {
 			String shortform = keys.next();
 			writer.println(shortform + " => "
 					+ allAbbreviation.get(shortform));
-			//System.out.println(shortform + " => "
+			//Main.logger.debug(shortform + " => "
 			//		+ allAbbreviation.get(shortform));
 
 		}

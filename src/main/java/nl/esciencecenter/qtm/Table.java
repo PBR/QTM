@@ -425,53 +425,58 @@ public class Table {
 
 	// public void printTable() throws Exception {
 	//
+	// StringBuffer sb = new StringBuffer();	
 	// int hrows = 0;
 	// while (hrows < this.header_cells.length) {
 	// for (int cols = 0; cols < this.num_of_columns; cols++) {
-	// System.out.print(this.header_cells[hrows][cols].getHeadercell_value() +
+	// sb.append(this.header_cells[hrows][cols].getHeadercell_value() +
 	// "("
 	// + this.header_cells[hrows][cols].getHeaderCell_type() + ")" + "\t");
 	// }
-	// System.out.print("\n");
+	// Main.logger.debug(sb.toString());
 	// hrows++;
 	// }
 	//
 	// int rows = 0;
 	// while (rows < this.cells.length) {
 	// for (int cols = 0; cols < this.num_of_columns; cols++) {
-	// System.out.print(this.cells[rows][cols].getcell_value() + "(" +
+	// sb = new StringBuffer();
+	// sb.append(this.cells[rows][cols].getcell_value() + "(" +
 	// this.cells[rows][cols].getCell_type()
 	// + ")" + "\t");
 	// }
-	// System.out.print("\n");
+	// Main.logger.debug(sb.toString());
 	// rows++;
 	// }
 	//
-	// System.out.print("********" + "\n\n\n");
+	// Main.logger.debug("********");
 	// }
 
 	public void printTable2() throws Exception {
 
+		StringBuffer sb = new StringBuffer();
+		
 		for (Columns c : this.getTableCol()) {
-			System.out.print(
+			sb.append(
 					c.getHeader() + "(" + c.getColumns_type() + ")" + "\t\t");
 		}
-		System.out.print("\n");
+		Main.logger.debug(sb.toString());
+		
 		int i = 0;
 		while (i < this.num_of_rows) {
+			sb = new StringBuffer();
 			for (Columns c : this.getTableCol()) {
 				try {
-					System.out.print(c.getcelz()[i].getcell_value() + "("
+					sb.append(c.getcelz()[i].getcell_value() + "("
 							+ c.getcelz()[i].getCell_type() + ")" + "\t\t");
 				} catch (Exception e) {
-					System.out.print("Null(Null" + "\t\t");
+					sb.append("Null(Null" + "\t\t");
 				}
 			}
-			System.out.print("\n");
+			Main.logger.debug(sb.toString());
 			i++;
 		}
-
-		System.out.print("********" + "\n\n\n");
+		Main.logger.debug("********");
 	}
 
 	public Table tableClassification() {
@@ -484,18 +489,18 @@ public class Table {
 
 		HashMap<String, Integer> ColTypes = new HashMap<String, Integer>();
 
-		// System.out.println(tc[0].getRowcell()[61].getcell_value());
+		// Mian.logger.trace(tc[0].getRowcell()[61].getcell_value());
 		for (int l = 0; l < tc.length; l++) {
 			ColTypes.clear();
 			ColTypes.put("Partially Numeric", 0);
 			ColTypes.put("Numeric", 0);
 			ColTypes.put("Text", 0);
 			ColTypes.put("Empty", 0);
-			// System.out.println("Row length is " + tc[l].getRowcell().length);
+			// Main.logger.trace("Row length is " + tc[l].getRowcell().length);
 			try {
 				for (int k = 0; k < tc[l].getcelz().length; k++) {
-					// System.out.println("k is" + k);
-					// System.out.println("l is" +l +"\t "+ k+"\t"+
+					// Main.logger.trace("k is" + k);
+					// Main.logger.trace("l is" +l +"\t "+ k+"\t"+
 					// tc[l].getRowcell()[k].getcell_value());
 					if (tc[l].getcelz()[k].getCell_type() == "Numeric") {
 						ColTypes.put("Numeric", ColTypes.get("Numeric") + 1);
@@ -506,7 +511,7 @@ public class Table {
 					} else if (tc[l].getcelz()[k].getCell_type() == "Text") {
 
 						ColTypes.put("Text", ColTypes.get("Text") + 1);
-						// System.out.println("$$$$ I am here now $$$$" + "\t" +
+						// Main.logger.trace("$$$$ I am here now $$$$" + "\t" +
 						// ColTypes.get("Text"));
 					} else if (tc[l].getcelz()[k].getCell_type() == "Empty") {
 						ColTypes.put("Empty", ColTypes.get("Empty") + 1);
@@ -571,7 +576,7 @@ public class Table {
 						countwords++;
 				}
 			} catch (NullPointerException e) {
-				System.out.printf(
+				Main.logger.warn(
 						"*cannot classify heading on " + l + "column\n");
 			}
 

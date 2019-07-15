@@ -23,6 +23,7 @@ import org.json.simple.JSONObject;
 import nl.esciencecenter.qtm.Article;
 import nl.esciencecenter.qtm.Cell;
 import nl.esciencecenter.qtm.Columns;
+import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.qtm.Table;
 import nl.esciencecenter.qtm.Trait;
 import nl.esciencecenter.solr.tagger.utils.TagItem;
@@ -44,10 +45,8 @@ public class QtlDb {
 	private static String coreTraitValues = Configs.getPropertyQTM("coreTraitValues");
 	private static String coreTraitProperties = Configs.getPropertyQTM("coreTraitProperties");
 
-
-
 	private static String match = Configs.getPropertyQTM("match");
-	private static String type = Configs.getPropertyQTM("type");
+	private static String type = Configs.getPropertyQTM("type");		
 
 	public static boolean connectionDB() {
 		if (conn == null) {
@@ -60,11 +59,9 @@ public class QtlDb {
 				conn = DriverManager.getConnection(sDBUrl);
 
 			} catch (Exception e) {
-				System.out
-						.println("Error in connecting to the output database");
+				Main.logger.error("Error in connecting to the output database");
 				e.printStackTrace();
-				System.err.println(
-						e.getClass().getName() + ": " + e.getMessage());
+				Main.logger.error(e.getClass().getName() + ": " + e.getMessage());
 				System.exit(0);
 			}
 			return true;
@@ -81,7 +78,7 @@ public class QtlDb {
 
 			}
 		} catch (Exception e) {
-			System.out.println("Error in creating database tables");
+			Main.logger.error("Error in creating database tables");
 			e.printStackTrace();
 		}
 	}
@@ -95,8 +92,8 @@ public class QtlDb {
 
 	public static void insertArticleEntry(Article article) {
 
-		// System.out.println("Article length is" + articles.length);
-		// System.out.println("Article pmcid is" + articles[i].getPmc());
+		// Main.logger.debug("Article length is" + articles.length);
+		// Main.logger.debug("Article pmcid is" + articles[i].getPmc());
 		try {
 			if (connectionDB() & isArticleEntryAlredyIn(article) == false) {
 
@@ -137,17 +134,17 @@ public class QtlDb {
 					articlestmt.close();
 				} catch (SQLException e) {
 					// e.printStackTrace();
-					System.out.println(
+					Main.logger.error(
 							"*************************************************");
 
-					System.out.println(
+					Main.logger.error(
 							"Article already exits, Please provide unique entries");
 
-					System.out.println(
+					Main.logger.error(
 							"*************************************************");
 
 				}
-				// System.out.println("Entry done for article number" + "\t"
+				// Main.logger.debug("Entry done for article number" + "\t"
 				// + articleID);
 
 				for (String key : article.getAbbreviations().keySet()) {
@@ -158,7 +155,7 @@ public class QtlDb {
 					abbrevstmt.executeUpdate(insertAbrevTable);
 				}
 				abbrevstmt.close();
-				// System.out.println("Abbreviation entries inserted in the
+				// Main.logger.debug("Abbreviation entries inserted in the
 				// DB");
 				// QTL table entries
 				for (Table t : article.getTables()) {
@@ -167,7 +164,7 @@ public class QtlDb {
 					try {
 						if (t.isaTraitTable()) {
 
-							System.out.println(
+							Main.logger.debug(
 									"Inserting entries into TRAIT_TABLE for: \t"
 											+ "Table Number: " + t.getTabnum()
 											+ " of " + article.getPmc());
@@ -209,7 +206,7 @@ public class QtlDb {
 									}
 								} catch (Exception e) {
 									e.getStackTrace();
-									System.out.println(
+									Main.logger.error(
 											"Error in column Annotation"
 													+ colHeader);
 								}
@@ -243,7 +240,7 @@ public class QtlDb {
 								else {
 									for (TagItem item : colAnno.getItems()) {
 										colAnnoUri += item.getIcd10() + ";";
-										// System.out.println("%%%" +
+										// Main.logger.trace("%%%" +
 										// item.getIcd10());
 									}
 								}
@@ -303,13 +300,13 @@ public class QtlDb {
 				}
 
 			} else {
-				System.out.println(article.getPmc() + " already exists");
+				Main.logger.debug(article.getPmc() + " already exists");
 			}
 
-			// System.out.println("entry inserted into DB successfully");
+			// Main.logger.debug("entry inserted into DB successfully");
 			// System.exit(0);
 		} catch (Exception e) {
-			System.out.println("Error is Insert Article Function");
+			Main.logger.error("Error in Insert Article Function");
 			e.printStackTrace();
 		}
 	}
@@ -339,10 +336,10 @@ public class QtlDb {
 					int tableId = rs1.getInt("tab_id");
 					int rowId = rs1.getInt("row_id");
 
-					// System.out.println("**********");
-					// System.out.println(possibleTrait + "\t" + colId + "\t"
+					// Main.logger.debug("**********");
+					// Main.logger.debug(possibleTrait + "\t" + colId + "\t"
 					// + tableId + "\t" + rowId);
-					// System.out.println("**********");
+					// Main.logger.debug("**********");
 
 					Trait T = new Trait(possibleTrait);
 
@@ -385,11 +382,11 @@ public class QtlDb {
 						} catch (NullPointerException e) {
 						}
 
-						// System.out.println("Entry " + "\t" + cellValue + "\t"
+						// Main.logger.trace("Entry " + "\t" + cellValue + "\t"
 						// + colHeader + "\t" + colType);
 
 						if (colType.equals("QTL value")) {
-							// System.out.println("cell Values is" +
+							// Main.logger.trace("cell Values is" +
 							// cellValue);
 
 							String regex = "chr";
@@ -435,7 +432,7 @@ public class QtlDb {
 
 							} catch (Exception e) {
 								e.getStackTrace();
-								System.out.println(
+								Main.logger.error(
 										"Error in Marker annotations in apache solr");
 							}
 
@@ -465,7 +462,7 @@ public class QtlDb {
 
 							} catch (Exception e) {
 								e.getStackTrace();
-								System.out.println(
+								Main.logger.error(
 										"Error in Gene annotations in apache solr");
 							}
 
@@ -591,7 +588,7 @@ public class QtlDb {
 
 			}
 		} catch (Exception e) {
-			System.out.println("Error in QTLDB.insertQTLdata entry function ");
+			Main.logger.error("Error in QTLDB.insertQTLdata entry function ");
 			e.printStackTrace();
 		}
 
@@ -606,7 +603,6 @@ public class QtlDb {
 			Statement stmt = null;
 			stmt = conn.createStatement();
 
-			// System.out.println("I am here");
 			String sql = "SELECT pmc_id FROM Article";
 			ResultSet rs = stmt.executeQuery(sql);
 
@@ -633,7 +629,6 @@ public class QtlDb {
 			Statement stmt = null;
 			stmt = conn.createStatement();
 
-			// System.out.println("I am here");
 			String sql = "SELECT pmc_id FROM Article";
 			ResultSet rs = stmt.executeQuery(sql);
 
@@ -658,11 +653,10 @@ public class QtlDb {
 	}
 
 	public static JSONObject processSolrOutputtoJson(String output) {
-		System.out.println("\n" + output);
+		Main.logger.debug("\n" + output);
 		JSONObject j = new JSONObject();
 		String[] s = output.split(Pattern.quote("|"));
-		// System.out.println("I am here" + s[1].toString());
-
+		
 		j.put("icd", s[0]);
 		j.put("matchingText", s[1]);
 		j.put("prefTerm", s[2]);

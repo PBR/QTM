@@ -14,6 +14,8 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nl.esciencecenter.qtm.Main;
+
 public class Abbreviator {
 
 	private HashMap mTestDefinitions = new HashMap();
@@ -152,8 +154,8 @@ public class Abbreviator {
 			fin.close();
 		} catch (Exception ioe) {
 			ioe.printStackTrace();
-			System.out.println(currSentence);
-			System.out.println(tmpIndex);
+			Main.logger.error(currSentence);
+			Main.logger.error(tmpIndex);
 		}
 
 		return abbrev;
@@ -220,18 +222,18 @@ public class Abbreviator {
 
 		if (testMode) {
 			if (isTrueDefinition(shortForm, bestLongForm)) {
-				System.out.println(shortForm + delimiter + bestLongForm
+				Main.logger.debug(shortForm + delimiter + bestLongForm
 						+ delimiter + "TP");
 				truePositives++;
 			} else {
 				falsePositives++;
-				System.out.println(shortForm + delimiter + bestLongForm
+				Main.logger.debug(shortForm + delimiter + bestLongForm
 						+ delimiter + "FP");
 			}
 		} else {
 			// Singlepairs.put(bestLongForm,shortForm);
 			Singlepairs.put(shortForm, bestLongForm);
-			// System.out.println(shortForm + delimiter + bestLongForm);
+			// Main.logger.debug(shortForm + delimiter + bestLongForm);
 
 		}
 		return Singlepairs;

@@ -101,7 +101,7 @@ public class Cell {
 			this.setCell_type("Numeric");
 			return this.cell_type;
 		}
-		// System.out.print("###########"+this.getcell_value());
+		// Main.logger.trace("###########"+this.getcell_value());
 
 		int numbers = 0;
 		int chars = 0;

@@ -10,6 +10,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import nl.esciencecenter.qtm.Main;
+
 public class JsonOntologytoJsonDictionary {
 		public static void main(String [] args){
 			try{
@@ -25,7 +27,7 @@ public class JsonOntologytoJsonDictionary {
 			
 				JsonObject newDic=new JsonObject();
 			for ( Entry<String, JsonElement> entry : new JsonParser().parse(new FileReader(OntologyFile)).getAsJsonObject().entrySet() ){
-				//System.out.println("Entry is "+ entry.getKey());
+				//Main.logger.trace("Entry is "+ entry.getKey());
 				JsonObject subEntry=entry.getValue().getAsJsonObject();
 				JsonObject subEntryName=subEntry.getAsJsonObject("name");
 				JsonObject subEntryAbbrev=subEntry.getAsJsonObject("abbreviation");
@@ -33,15 +35,15 @@ public class JsonOntologytoJsonDictionary {
 				JsonObject add=new JsonObject();
 				add.addProperty("name", subEntryName.get("english").getAsString() );
 				add.addProperty("abbreviation", subEntryAbbrev.get("english").getAsString());
-				//System.out.println(subsubEntry.toString());
+				//Main.logger.trace(subsubEntry.toString());
 				//JsonObject subsubsubEntry=subsubEntry.getAsJsonObject("english");
 				
-				//System.out.println(subsubEntry.get("english"));
+				//Main.logger.trace(subsubEntry.get("english"));
 				newDic.add(entry.getKey(),add);
 				bwCsv.write(entry.getKey()+","+ subEntryName.get("english").getAsString()+","+subEntryAbbrev.get("english").getAsString()+"\n");
 				
 			}
-			System.out.println(newDic.toString());
+			Main.logger.debug(newDic.toString());
 			
 			File file = new File("/home/gurnoor/workspace/Wageningen/data/TraitDictionary /CO_330.json");
 			

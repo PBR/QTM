@@ -15,6 +15,7 @@ import org.w3c.dom.NodeList;
 import nl.esciencecenter.qtm.Article;
 import nl.esciencecenter.qtm.Cell;
 import nl.esciencecenter.qtm.Columns;
+import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.qtm.Table;
 import nl.esciencecenter.utils.Utilities;
 
@@ -47,13 +48,13 @@ public class TableParser {
 
 			List<Node> tableTags = getChildrenByTagName(tablesxml.item(i),
 					"table");
-			// System.out.println("---------"+tableTags.size());
+			// Main.logger.trace("---------"+tableTags.size());
 
 			if (tableTags.size() == 0) {
 				tableTags.clear();
 				List<Node> alternative = getChildrenByTagName(tablesxml.item(i),
 						"alternatives");
-				// System.out.println("---------alternative"+alternative.size());
+				// Main.logger.trace("---------alternative"+alternative.size());
 
 				if (alternative.size() > 0) {
 					for (int p = 0; p < alternative.size(); p++) {
@@ -78,20 +79,19 @@ public class TableParser {
 				tables[tableindex].setXml(Utilities
 						.createXMLStringFromSubNode(tablesxml.item(i)));
 
-				System.out.println("Table label: \t"
-						+ tables[tableindex].getTable_label());
+				Main.logger.debug("Table label: " + tables[tableindex].getTable_label());
 
 				Scanner tlable = new Scanner(
 						tables[tableindex].getTable_label())
 								.useDelimiter("[^0-9]+");
 				int tid = tlable.nextInt();
 
-				// System.out.println("sssssssssssssssssssssssssssssss is "+s);
+				// Main.logger.debug("sssssssssssssssssssssssssssssss is "+s);
 				if (tableTags.size() > 1) {
 
-					// System.out.println("sssssssssssssssssssssssssssssss is
+					// Main.logger.debug("sssssssssssssssssssssssssssssss is
 					// "+s);
-					// System.out.println("s is "+s%10);
+					// Main.logger.debug("s is "+s%10);
 
 					tables[tableindex].setTableid(tid);
 				} else {
@@ -100,13 +100,13 @@ public class TableParser {
 
 				String caption = readTableCaption(tablesxml.item(i))
 						.replaceAll("\n", "").replace("\r", "");
-				System.out.println("Caption: \t" + caption);
+				Main.logger.debug("Caption: " + caption);
 				tables[tableindex].setTable_caption(caption);
 
 				String foot = readTableFooter(tablesxml.item(i))
 						.replaceAll("\n", "").replace("\r", "");
 				tables[tableindex].setTable_footer(foot);
-				// System.out.println("Foot: " + foot);
+				// Main.logger.debug("Foot: " + foot);
 
 				List<Node> thead = getChildrenByTagName(tableTags.get(s),
 						"thead");
@@ -116,12 +116,11 @@ public class TableParser {
 				int numofCol = countColumns(tbody, thead);
 
 				if (numofCol == 0) {
-					System.out.println(
-							"Table cannot be processed as number of colums are zero");
+					Main.logger.debug("Table cannot be processed as number of colums are zero");
 					tables[tableindex].setisTraitTable(false);
 					tables[tableindex].setNum_of_rows(0);
 					tables[tableindex].setNum_of_columns(0);
-					System.out.println(tables[tableindex].getisTraitTable()
+					Main.logger.debug(tables[tableindex].getisTraitTable()
 							+ " " + tables[tableindex].getTabnum()
 							+ " is not a trait table");
 					tableindex++;
@@ -149,20 +148,18 @@ public class TableParser {
 
 					tables[tableindex].setNum_of_columns(numofCol);
 
-					System.out.println("Number of Rows in "
+					Main.logger.debug("Number of Rows in "
 							+ tables[tableindex].getTable_label() + " is: "
 							+ tables[tableindex].getNum_of_rows());
-					System.out.println("Number of Columns in "
+					Main.logger.debug("Number of Columns in "
 							+ tables[tableindex].getTable_label() + " is: "
 							+ tables[tableindex].getNum_of_columns());
-					System.out.println("\n");
-
+					
 					// table classification
 					tables[tableindex] = tables[tableindex]
 							.tableClassification();
 					tables[tableindex].printTable2();
-					System.out.println(
-							"____________________________________________________________________________________________________________________________\n");
+					Main.logger.debug("______________________");
 
 					tableindex++;
 				}
@@ -349,9 +346,9 @@ public class TableParser {
 			for (int j = 0; j < thead.size(); j++) {
 				headerRows = getChildrenByTagName(thead.get(j), "tr");
 
-				// System.out.println("Number of Rows in Table Headings are" +
+				// Main.logger.debug("Number of Rows in Table Headings are" +
 				// headerRows.size());
-				// System.out.println("Number of Columns in Table Headings are"
+				// Main.logger.debug("Number of Columns in Table Headings are"
 				// + numberofCol);
 
 				int rowLine = 0;
@@ -369,7 +366,7 @@ public class TableParser {
 						th = getChildrenByTagName(headerRows.get(k), "td");
 					}
 
-					// System.out.println("----------------------------header
+					// Main.logger.debug("----------------------------header
 					// cells Size" + th.size());
 
 					for (int l = 0; l < th.size(); l++) {
@@ -473,12 +470,12 @@ public class TableParser {
 				// table.setTableHeadercells(headerCells);
 
 				// Printing Header Cells
-				// System.out.println("***Header Tables***");
+				// Main.logger.trace("***Header Tables***");
 				// for(int p=0;p<headerRows.size();p++){
-				// for(int q=0;q<numberofCol;q++){
-				// System.out.print(table.header_cells[p][q].getHeadercell_value()+"\t");
-				// }
-				// System.out.println("*******");
+				//     for(int q=0;q<numberofCol;q++){
+				//         Main.logger.trace(table.header_cells[p][q].getHeadercell_value()+"\t");
+				//     }
+				//     Main.logger.trace("*******");
 				// }
 			}
 		} else {
@@ -517,7 +514,7 @@ public class TableParser {
 			for (int j = 0; j < tbody.size(); j++) {
 				Rows = getChildrenByTagName(tbody.get(j), "tr");
 
-				// System.out.println("Number of Rows in Table body are" +
+				// Main.logger.debug("Number of Rows in Table body are" +
 				// Rows.size());
 
 				for (Columns column : tableCol) {
@@ -525,7 +522,7 @@ public class TableParser {
 					column.celz = new Cell[Rows.size()];
 				}
 
-				// System.out.println("Number of Columns in Table body are" +
+				// Main.logger.debug("Number of Columns in Table body are" +
 				// numberofCol);
 
 				// create empty cells
@@ -535,8 +532,8 @@ public class TableParser {
 				// C[][] c = table.getTable_cells();
 				// List<C[]> LOC=table.getTable_cellList();
 
-				// System.out.println("&&"+LOC.size());
-				// System.out.println("//" + Cells[0].length);
+				// Main.logger.trace("&&"+LOC.size());
+				// Main.logger.trace("//" + Cells[0].length);
 
 				int rowLine = 0;
 				int colLine = 0;
@@ -545,11 +542,11 @@ public class TableParser {
 
 					rowLine = k;
 					colLine = 0;
-					// System.out.println("k**"+k+headerRows.get(k).toString());
+					// Main.logger.trace("k**"+k+headerRows.get(k).toString());
 					List<Node> td = null;
 					td = getChildrenByTagName(Rows.get(k), "td");
 
-					// System.out.println("header cells Size"+th.size());
+					// Main.logger.trace("header cells Size"+th.size());
 
 					for (int l = 0; l < td.size(); l++) {
 						int rowspan = 1;
@@ -570,7 +567,7 @@ public class TableParser {
 								&& rowLine < Rows.size()) // ||
 															// tableCol[colLine].celz[rowLine]!=null
 							colLine++;
-						// System.out.println("row line is::: \t\t "+rowLine
+						// Main.logger.trace("row line is::: \t\t "+rowLine
 						// +"\t\t col line is"+colLine+"value is
 						// \t"+td.get(l).getTextContent().replaceAll("\n",
 						// "").replace("\r", ""));
@@ -612,15 +609,15 @@ public class TableParser {
 										+ rowspan; m++) {
 									// c[m][colLine].setcell_values(td.get(l).getTextContent().replaceAll("\n",
 									// "").replace("\r", ""));
-									// System.out.println("@@@@@"+td.get(l).getTextContent());
+									// Main.logger.trace("@@@@@"+td.get(l).getTextContent());
 
-									// System.out.print("m is "+m +"\t::");
+									// Main.logger.trace("m is "+m +"\t::");
 									Cell Entry = new Cell(m,
 											td.get(l).getTextContent()
 													.replaceAll("\n", "")
 													.replace("\r", ""));
 									tableCol[colLine].celz[m] = new Cell(Entry);
-									System.out.println(tableCol[colLine].celz[m]
+									Main.logger.trace(tableCol[colLine].celz[m]
 											.getcell_value());
 
 									if (tableCol[colLine]
@@ -643,12 +640,12 @@ public class TableParser {
 																.replace("\r",
 																		"");
 
-									System.out.println("Row span entry"
+									Main.logger.trace("Row span entry"
 											+ td.get(l).getTextContent());
 								}
 								colLine++;
 							} else if (rowspan == 1 && colspan > 1) {
-								// System.out.println("***rowLine and colLine
+								// Main.logger.trace("***rowLine and colLine
 								// are*****"+rowLine+"&& "+colLine);
 
 								// forloop colspan
@@ -656,7 +653,7 @@ public class TableParser {
 										+ colspan; n++) {
 									// c[rowLine][n].setcell_values(td.get(l).getTextContent().replaceAll("\n",
 									// "").replace("\r", ""));
-									// System.out.println("//////"+td.get(l).getTextContent());
+									// Main.logger.trace("//////"+td.get(l).getTextContent());
 
 									Cell Entry = new Cell(rowLine,
 											td.get(l).getTextContent()
@@ -706,13 +703,13 @@ public class TableParser {
 
 				// table.setTable_cells(c);
 
-				// System.out.println("***body Tables***");
+				// Main.logger.trace("***body Tables***");
 				// for(int p=0;p<Rows.size();p++){
-				// for(int q=0;q<numberofCol;q++){
-				// System.out.print(table.cells[p][q].getcell_value()+"("+table.cells[p][q].getCell_type()+")"+"\t");
-				// //System.out.print(table.cells[p][q].getcell_value()+"\t");
-				// }
-				// System.out.println("*******");
+				//     for(int q=0;q<numberofCol;q++){
+				//         Main.logger.trace(table.cells[p][q].getcell_value()+"("+table.cells[p][q].getCell_type()+")"+"\t");
+				//         //Main.logger.trace(table.cells[p][q].getcell_value()+"\t");
+				//     }
+				//     Main.logger.trace("*******");
 				// }
 
 			}
@@ -755,21 +752,20 @@ public class TableParser {
 			HeaderList.add(col.getHeader().toLowerCase());
 		}
 		try {
-			String[] wordlist = {"trait", "qtl", "quantitavie trait loci",
-					"phenotype"};
+			String[] wordlist = {"trait", "qtl", "quantitavie trait loci", "phenotype"};
 
 			for (int j = 0; j < wordlist.length; j++) {
 				if (table.getTable_caption().toLowerCase()
 						.indexOf(wordlist[j]) != -1) {
 					table.setisTraitTable(true);
-					System.out.println(table.getTabnum() + " is a QTL table\n");
+					Main.logger.debug(table.getTabnum() + " is a QTL table");
 					return table;
 				}
 				for (String h : HeaderList) {
 					if (h.indexOf(wordlist[j]) != -1) {
 						table.setisTraitTable(true);
-						System.out.println(
-								table.getTabnum() + " is a QTL table\n");
+						Main.logger.debug(
+								table.getTabnum() + " is a QTL table");
 						return table;
 					} else {
 						continue;
@@ -777,7 +773,7 @@ public class TableParser {
 				}
 			}
 
-			System.out.println(table.getTabnum() + " is NOT a QTL table\n");
+			Main.logger.debug(table.getTabnum() + " is NOT a QTL table");
 		} catch (Exception e) {
 
 		}

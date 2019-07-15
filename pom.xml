@@ -32,6 +32,15 @@
 		<defaultGoal>clean install</defaultGoal>
 		<directory>${basedir}/target</directory>
 		<finalName>${project.artifactId}-${project.version}</finalName>
+		<resources>
+		  <resource>
+		    <directory>src/main/resources</directory>
+		    <targetPath>${project.build.directory}</targetPath>
+		    <includes>
+		      <include>log4j.properties</include>
+		    </includes>
+		  </resource>
+		</resources>		
 		<plugins>
 		    <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -44,7 +53,7 @@
 							<mainClass>nl.esciencecenter.qtm.Main</mainClass>
 							<classpathPrefix>dependency-jars/</classpathPrefix>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 					</archive>
 				</configuration>

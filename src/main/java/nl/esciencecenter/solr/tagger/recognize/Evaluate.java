@@ -37,6 +37,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.solr.tagger.utils.Position;
 import nl.esciencecenter.solr.tagger.utils.TagItem;
 import nl.esciencecenter.solr.tagger.utils.TagResponse;
@@ -121,7 +122,7 @@ public class Evaluate {
 						tagUri += item.getIcd10() + ";";
 					}
 				}
-				System.out.println(tagUri);
+				Main.logger.debug(tagUri);
 
 //				processArray("sgn_potato_markers","LONGEST_DOMINANT_RIGHT", type);
 				out.close();
@@ -166,7 +167,7 @@ public class Evaluate {
 						+ URLEncoder.encode(match, "UTF-8")
 						+ "&matchText=true&tagsLimit=5000&wt=json";
 
-				// System.out.println(request);
+				// Main.logger.debug(request);
 
 				URI uri=new URI("http"
 						,"localhost:8983",
@@ -178,9 +179,9 @@ public class Evaluate {
 						getStringContent(uri, line[i], headers));
 
 				for (TagItem item : response.getItems()) {
-					System.out.println(item.getMatchText()+"\t"+item.getPrefTerm()+"\t"+item.getIcd10());
+					Main.logger.debug(item.getMatchText()+"\t"+item.getPrefTerm()+"\t"+item.getIcd10());
 				}
-				System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+				Main.logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -200,7 +201,7 @@ public class Evaluate {
 			String match, String type) throws UnsupportedEncodingException,
 			FileNotFoundException, IOException {
 
-		//System.out.println("Input is: \t "+input);
+		//Main.logger.debug("Input is: \t "+input);
 		TagResponse response = new TagResponse();
 
 		try {
@@ -226,7 +227,7 @@ public class Evaluate {
 			String match, String type) throws UnsupportedEncodingException,
 			FileNotFoundException, IOException {
 
-		//System.out.println("Input is: \t "+input);
+		//Main.logger.debug("Input is: \t "+input);
 		TagResponse response = new TagResponse();
 
 		try {
@@ -254,14 +255,14 @@ public class Evaluate {
 
 		HttpPost request = new HttpPost(uri);
 
-		//System.out.println("postdata is: \t"+postData);
-		//System.out.println("request is: \t"+request.toString());
+		//Main.logger.trace("postdata is: \t"+postData);
+		//Main.logger.trace("request is: \t"+request.toString());
 
 
 		request.setEntity(new StringEntity(
 				ClientUtils.escapeQueryChars(postData), "UTF-8"));
 
-		//System.out.println("Request is: \t" + request + "\n");
+		//Main.logger.trace("Request is: \t" + request + "\n");
 
 		for (Entry<String, String> s : headers.entrySet()) {
 			request.setHeader(s.getKey(), s.getValue());
@@ -269,7 +270,7 @@ public class Evaluate {
 
 		HttpResponse response = client.execute(request);
 
-		 //System.out.println("Response is:" + response + "\n");
+		 //Main.logger.trace("Response is:" + response + "\n");
 
 		InputStream ips = response.getEntity().getContent();
 		BufferedReader buf = new BufferedReader(
@@ -296,12 +297,12 @@ public class Evaluate {
 
 		HttpPost request = new HttpPost(uri);
 
-		//System.out.println("postdata is: \t"+postData);
+		//Main.logger.trace("postdata is: \t"+postData);
 
 		request.setEntity(new StringEntity(
 				ClientUtils.escapeQueryChars(postData), "UTF-8"));
 
-		// System.out.println("Request is:" + request + "\n");
+		// Main.logger.trace("Request is:" + request + "\n");
 
 		for (Entry<String, String> s : headers.entrySet()) {
 			request.setHeader(s.getKey(), s.getValue());
@@ -309,7 +310,7 @@ public class Evaluate {
 
 		HttpResponse response = client.execute(request);
 
-		// System.out.println("Response is:" + response + "\n");
+		// Main.logger.trace("Response is:" + response + "\n");
 
 		InputStream ips = response.getEntity().getContent();
 		BufferedReader buf = new BufferedReader(
@@ -331,7 +332,7 @@ public class Evaluate {
 
 	public static TagResponse parse(String jsonLine) {
 
-		//System.out.println("Json Response is:" + jsonLine.toString() + "\n");
+		//Main.logger.trace("Json Response is:" + jsonLine.toString() + "\n");
 
 		Map<String, List<Position>> positions = new HashMap<String, List<Position>>();
 		TagResponse result = new TagResponse();

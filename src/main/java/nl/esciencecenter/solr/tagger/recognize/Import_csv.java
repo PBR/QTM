@@ -19,6 +19,8 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 
+import nl.esciencecenter.qtm.Main;
+
 /**
  * @author gurnoor
  */
@@ -93,8 +95,7 @@ public class Import_csv {
 
 				count++;
 				if (count % 10 == 0) {
-					System.out.println(count);
-					System.out.flush();
+					Main.logger.debug(count);
 					solr.add(docs);
 					docs.clear();
 				}

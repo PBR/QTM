@@ -6,14 +6,16 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
+import nl.esciencecenter.qtm.Main;
+
 public class Permutations {
 	static Set<String> permutations = new TreeSet<String>();
 
 	public static void main(String[] args) {
 		for (String perm : get("this is an example")) {
-			System.out.println(perm);
+			Main.logger.debug(perm);
 		}
-		System.out.println("#perms=" + permutations.size());
+		Main.logger.debug("#perms=" + permutations.size());
 	}
 
 	public static Set<String> get(String phrase) {
