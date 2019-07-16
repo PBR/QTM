@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -654,16 +655,17 @@ public class QtlDb {
 
 	public static JSONObject processSolrOutputtoJson(String output) {
 		Main.logger.debug("\n" + output);
-		JSONObject j = new JSONObject();
-		String[] s = output.split(Pattern.quote("|"));
-		
-		j.put("icd", s[0]);
-		j.put("matchingText", s[1]);
-		j.put("prefTerm", s[2]);
-		j.put("Term", s[3]);
-		j.put("start", s[4]);
-		j.put("end", s[5]);
-		j.put("Uuid", s[6]);
+		String[] s = output.split(Pattern.quote("|"));	
+		//use HashMap to parameterize for JSONObject
+		HashMap<String,Object> jm = new HashMap<String,Object>();				
+		jm.put("icd", s[0]);
+		jm.put("matchingText", s[1]);
+		jm.put("prefTerm", s[2]);
+		jm.put("Term", s[3]);
+		jm.put("start", s[4]);
+		jm.put("end", s[5]);
+		jm.put("Uuid", s[6]);
+		JSONObject j = new JSONObject(jm);
 		return j;
 	}
 
