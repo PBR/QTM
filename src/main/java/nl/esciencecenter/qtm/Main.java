@@ -12,7 +12,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.commons.io.FilenameUtils;
 
@@ -30,26 +34,70 @@ public class Main {
 	public static boolean doXMLInput = false;
 	public static final Logger logger = Logger.getLogger(Main.class.getName());
 	private static final long megabyte = 1024L * 1024L;
+	
+	private static final int VERBOSITY_OFF = 0;
+	private static final int VERBOSITY_FATAL = 1;
+	private static final int VERBOSITY_ERROR = 2;
+	private static final int VERBOSITY_WARN = 3;
+	private static final int VERBOSITY_INFO = 4;
+	private static final int VERBOSITY_DEBUG = 5;
+	private static final int VERBOSITY_TRACE = 6;
+	private static final int VERBOSITY_ALL = 7;
+
 
 	public static void main(String[] args) throws IOException {
 		ArgumentParser parser = ArgumentParsers.newFor("QTM").build()
 				.defaultHelp(true)
 				.description("Software to extract QTL data from full-text articles.")
 				.version(Main.class.getPackage().getImplementationVersion());
-
+				
 		parser.addArgument("-v", "--version").action(Arguments.version())
 				.help("show version and exit");
 		parser.addArgument("-o", "--output").setDefault("qtl").help("filename prefix for output in SQLite and CSV formats {.db,.csv}");
 		parser.addArgument("FILE").help("input list of articles (PMCIDs)");
 		parser.addArgument("-c", "--config").help("config file").setDefault("config.properties");
-	 	
-	
+		parser.addArgument("-V", "--verbose").type(Integer.class).help("verbosity console output: "+
+				VERBOSITY_OFF+"-"+VERBOSITY_ALL+" for OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE or ALL");	 	
+		
 		try {
 			Namespace res = parser.parseArgs(args);
 			String inputArticles = res.get("FILE");
 			String configFile = res.get("config");
 			String outputFile = res.get("output");
-	
+			if(res.get("verbose")!=null) {
+				//get level
+			    int verbosityLevel = (Integer) res.get("verbose");			  							
+				//try to find console appender in log4j properties
+				Logger rootLogger = Logger.getRootLogger();		
+				if(rootLogger!=null) {
+					@SuppressWarnings("unchecked")
+					Enumeration<AppenderSkeleton> loggerAppenders = rootLogger.getAllAppenders();
+					while(loggerAppenders.hasMoreElements()) {
+						AppenderSkeleton appender = loggerAppenders.nextElement();					
+						if(appender.getClass()==org.apache.log4j.ConsoleAppender.class) {
+							if(verbosityLevel==VERBOSITY_OFF) {
+							    appender.setThreshold(Level.OFF);
+							} else if(verbosityLevel==VERBOSITY_FATAL) {
+								appender.setThreshold(Level.FATAL);
+							} else if(verbosityLevel==VERBOSITY_ERROR) {
+								appender.setThreshold(Level.ERROR);
+							} else if(verbosityLevel==VERBOSITY_WARN) {
+								appender.setThreshold(Level.WARN);
+							} else if(verbosityLevel==VERBOSITY_INFO) {
+								appender.setThreshold(Level.INFO);
+							} else if(verbosityLevel==VERBOSITY_DEBUG) {
+								appender.setThreshold(Level.DEBUG);
+							} else if(verbosityLevel==VERBOSITY_TRACE) {
+								appender.setThreshold(Level.TRACE);
+							} else if(verbosityLevel==VERBOSITY_ALL) {
+								appender.setThreshold(Level.ALL);
+							} else {
+								logger.warn("incorrect verbosity level "+verbosityLevel);
+							}
+						}
+					}
+				}
+			}
 			run(inputArticles, configFile, outputFile);
 		} catch (ArgumentParserException e) {
 			parser.handleError(e);
@@ -129,7 +177,7 @@ public class Main {
 		nl.esciencecenter.solr.abbreviator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 		controlSolr("restart");
 
-		// STEP3 Inserting enteries into the database
+		// STEP3 Inserting entries into the database
 		logger.info("Inserting entries to the database");
 		for (int i = 0; i < articles.length; i++) {
 			try {
