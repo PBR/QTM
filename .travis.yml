@@ -1,7 +1,12 @@
 language: java
-dist: trusty
+matrix:
+  include:
+  - os: linux
+  - os: osx
 install:
   - mvn install
   - solr/install_solr.sh
 script:
-  - ./QTM articles.txt
+  - ./QTM -v
+  - ./QTM -V 7 articles.txt
+
