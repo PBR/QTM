@@ -1,12 +1,18 @@
 language: java
-matrix:
-  include:
-  - os: linux
-  - os: osx
+os:
+  - linux
+  - osx
+env:
+  global:
+    - QTM_BIN=./QTM
+    - INFILE=articles.txt
+    - OUTFILE=qtl.csv
 install:
   - mvn install
   - solr/install_solr.sh
 script:
-  - ./QTM -v
-  - ./QTM -V 7 articles.txt
+  - $QTM_BIN -v
+  - $QTM_BIN -V 7 $INFILE
+  - |
+    [[ -s "$OUTFILE" ]]
 
