@@ -16,12 +16,15 @@ import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.apache.commons.io.FilenameUtils;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -56,44 +59,108 @@ public class Main {
 		parser.addArgument("-o", "--output").setDefault("qtl").help("filename prefix for output in SQLite and CSV formats {.db,.csv}");
 		parser.addArgument("FILE").help("input list of articles (PMCIDs)");
 		parser.addArgument("-c", "--config").help("config file").setDefault("config.properties");
-		parser.addArgument("-V", "--verbose").type(Integer.class).help("verbosity console output: "+
-				VERBOSITY_OFF+"-"+VERBOSITY_ALL+" for OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE or ALL");	 	
+		
+		
+		Logger rootLogger = Logger.getRootLogger();	
+		
+		//check for console handler
+		Boolean addVerboseArgument = Boolean.FALSE;
+		String verboseDefault = null;
+		//only add verbose argument if 
+		if(rootLogger!=null) {
+			@SuppressWarnings("unchecked")
+			Enumeration<AppenderSkeleton> loggerAppenders = rootLogger.getAllAppenders();
+			while(loggerAppenders.hasMoreElements()) {
+				AppenderSkeleton appender = loggerAppenders.nextElement();					
+				if(appender.getClass()==org.apache.log4j.ConsoleAppender.class) {
+					addVerboseArgument = Boolean.TRUE;
+					ConsoleAppender consoleAppender = (ConsoleAppender) appender;
+					Priority priority = consoleAppender.getThreshold();
+					switch(priority.toInt()) {
+						case Level.OFF_INT:
+							verboseDefault = "0 ["+Level.OFF+"]";
+							break;
+						case Level.FATAL_INT:
+							verboseDefault = "1 ["+Level.FATAL+"]";
+							break;
+						case Level.ERROR_INT:
+							verboseDefault = "2 ["+Level.ERROR+"]";
+							break;
+						case Level.WARN_INT:
+							verboseDefault = "3 ["+Level.WARN+"]";
+							break;
+						case Level.INFO_INT:
+							verboseDefault = "4 ["+Level.INFO+"]";
+							break;
+						case Level.DEBUG_INT:
+							verboseDefault = "5 ["+Level.DEBUG+"]";
+							break;
+						case Level.TRACE_INT:
+							verboseDefault = "6 ["+Level.TRACE+"]";
+							break;
+						case Level.ALL_INT:
+							verboseDefault = "7 ["+Level.ALL+"]";
+							break;
+						default:
+							verboseDefault = null;
+					}
+				}
+			}				
+		}	
+		//only add verboseArgument if console handler has been found (set in log4j.properties)
+		//use default argument derived from this definition
+		if(addVerboseArgument) {
+			String helpText = "verbosity console output: "+
+					VERBOSITY_OFF+"-"+VERBOSITY_ALL+" for "+Level.OFF+", "+Level.FATAL+", "+Level.ERROR+", "+Level.WARN+", "+Level.INFO+", "+Level.DEBUG+", "+Level.TRACE+" or "+Level.ALL;
+			if(verboseDefault!=null) {
+				helpText += " (default: "+verboseDefault+")";
+			}
+			parser.addArgument("-V", "--verbose").type(Integer.class).help(helpText);						
+		}
 		
 		try {
 			Namespace res = parser.parseArgs(args);
 			String inputArticles = res.get("FILE");
 			String configFile = res.get("config");
 			String outputFile = res.get("output");
-			if(res.get("verbose")!=null) {
+			if(addVerboseArgument && res.get("verbose")!=null) {
 				//get level
 			    int verbosityLevel = (Integer) res.get("verbose");			  							
 				//try to find console appender in log4j properties
-				Logger rootLogger = Logger.getRootLogger();		
 				if(rootLogger!=null) {
 					@SuppressWarnings("unchecked")
 					Enumeration<AppenderSkeleton> loggerAppenders = rootLogger.getAllAppenders();
 					while(loggerAppenders.hasMoreElements()) {
 						AppenderSkeleton appender = loggerAppenders.nextElement();					
 						if(appender.getClass()==org.apache.log4j.ConsoleAppender.class) {
-							if(verbosityLevel==VERBOSITY_OFF) {
-							    appender.setThreshold(Level.OFF);
-							} else if(verbosityLevel==VERBOSITY_FATAL) {
-								appender.setThreshold(Level.FATAL);
-							} else if(verbosityLevel==VERBOSITY_ERROR) {
-								appender.setThreshold(Level.ERROR);
-							} else if(verbosityLevel==VERBOSITY_WARN) {
-								appender.setThreshold(Level.WARN);
-							} else if(verbosityLevel==VERBOSITY_INFO) {
-								appender.setThreshold(Level.INFO);
-							} else if(verbosityLevel==VERBOSITY_DEBUG) {
-								appender.setThreshold(Level.DEBUG);
-							} else if(verbosityLevel==VERBOSITY_TRACE) {
-								appender.setThreshold(Level.TRACE);
-							} else if(verbosityLevel==VERBOSITY_ALL) {
-								appender.setThreshold(Level.ALL);
-							} else {
-								logger.warn("incorrect verbosity level "+verbosityLevel);
-							}
+							switch(verbosityLevel) {
+								case VERBOSITY_OFF:
+									appender.setThreshold(Level.OFF);
+									break;
+								case VERBOSITY_FATAL:
+									appender.setThreshold(Level.FATAL);
+									break;
+								case VERBOSITY_ERROR:
+									appender.setThreshold(Level.ERROR);
+									break;
+								case VERBOSITY_WARN:
+									appender.setThreshold(Level.WARN);
+									break;
+								case VERBOSITY_INFO:
+									appender.setThreshold(Level.INFO);
+									break;
+								case VERBOSITY_DEBUG:
+									appender.setThreshold(Level.DEBUG);
+									break;
+								case VERBOSITY_TRACE:
+									appender.setThreshold(Level.TRACE);
+									break;
+								case VERBOSITY_ALL:
+									appender.setThreshold(Level.ALL);
+									break;
+							    default:
+							    	logger.warn("incorrect verbosity level "+verbosityLevel);
+							}														
 						}
 					}
 				}
