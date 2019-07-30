@@ -36,7 +36,6 @@ public class Main {
 
 	public static boolean doXMLInput = false;
 	public static final Logger logger = Logger.getLogger(Main.class.getName());
-	private static final long megabyte = 1024L * 1024L;
 	
 	private static final int VERBOSITY_OFF = 0;
 	private static final int VERBOSITY_FATAL = 1;
@@ -308,10 +307,6 @@ public class Main {
 
 		// finally stop Solr server
 		controlSolr("stop");
-	}
-
-	public static long bytesToMegabytes(long bytes) {
-		return bytes / megabyte;
 	}
 
 	public static void controlSolr(String cmd) {
