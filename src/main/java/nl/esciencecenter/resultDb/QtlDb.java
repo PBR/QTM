@@ -318,11 +318,11 @@ public class QtlDb {
 				Statement stmtSelectTrait = null;
 				stmtSelectTrait = conn.createStatement();
 
-				List<String> cores_genes=new ArrayList<String>();
-				List<String> cores_markers=new ArrayList<String>();
+				List<String> coreGenes = new ArrayList<String>();
+				List<String> coreMarkers = new ArrayList<String>();
 
-				cores_genes= (Arrays.asList(Configs.getPropertyQTM("cores_genes").split(";")));
-				cores_markers= (Arrays.asList(Configs.getPropertyQTM("cores_markers").split(";")));
+				coreGenes = (Arrays.asList(Configs.getPropertyQTM("coreGenes").split(";")));
+				coreMarkers = (Arrays.asList(Configs.getPropertyQTM("coreMarkers").split(";")));
 
 				// List<Trait> traits = articles[i].getTrait();
 
@@ -409,7 +409,7 @@ public class QtlDb {
 
 							try {
 
-								for (String core : cores_markers) {
+								for (String core : coreMarkers) {
 									TagResponse markerAnno = new TagResponse();
 									markerAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
 											.processString(cellValue, core,
@@ -439,7 +439,7 @@ public class QtlDb {
 
 							try {
 
-								for (String core : cores_genes) {
+								for (String core : coreGenes) {
 									TagResponse geneAnno = new TagResponse();
 									geneAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
 											.processString(cellValue, core,
