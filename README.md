@@ -55,5 +55,5 @@ named arguments:
                          config file (default: config.properties)
   -V VERBOSE, --verbose VERBOSE
                          verbosity of the console output: 0-7 for OFF, FATAL,
-                         ERROR, WARN, INFO, DEBUG, TRACE or ALL (default: 4)
+                         ERROR, WARN, INFO, DEBUG, TRACE or ALL (default: [INFO])
 ```
