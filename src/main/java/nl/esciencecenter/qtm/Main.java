@@ -1,8 +1,3 @@
-/**
- * @author gurnoor
- * The main file of the QTLTableminer++
- */
-
 package nl.esciencecenter.qtm;
 
 import java.io.BufferedReader;
@@ -36,7 +31,7 @@ public class Main {
 
 	public static boolean doXMLInput = false;
 	public static final Logger logger = Logger.getLogger(Main.class.getName());
-	
+
 	private static final int VERBOSITY_OFF = 0;
 	private static final int VERBOSITY_FATAL = 1;
 	private static final int VERBOSITY_ERROR = 2;
@@ -46,120 +41,119 @@ public class Main {
 	private static final int VERBOSITY_TRACE = 6;
 	private static final int VERBOSITY_ALL = 7;
 
-
 	public static void main(String[] args) throws IOException {
-		ArgumentParser parser = ArgumentParsers.newFor("QTM").build()
-				.defaultHelp(true)
+		ArgumentParser parser = ArgumentParsers.newFor("QTM").build().defaultHelp(true)
 				.description("Software to extract QTL data from full-text articles.")
 				.version(Main.class.getPackage().getImplementationVersion());
-				
-		parser.addArgument("-v", "--version").action(Arguments.version())
-				.help("show version and exit");
-		parser.addArgument("-o", "--output").setDefault("qtl").help("filename prefix for output in SQLite and CSV formats {.db,.csv}");
+
+		parser.addArgument("-v", "--version").action(Arguments.version()).help("show version and exit");
+		parser.addArgument("-o", "--output").setDefault("qtl")
+				.help("filename prefix for output in SQLite and CSV formats {.db,.csv}");
 		parser.addArgument("FILE").help("input list of articles (PMCIDs)");
 		parser.addArgument("-c", "--config").help("config file").setDefault("config.properties");
-		
-		
-		Logger rootLogger = Logger.getRootLogger();	
-		
-		//check for console handler
+
+		Logger rootLogger = Logger.getRootLogger();
+		// check for console handler
 		Boolean addVerboseArgument = Boolean.FALSE;
 		String verboseDefault = null;
-		//only add verbose argument if 
-		if(rootLogger!=null) {
+		// only add verbose argument if
+		if (rootLogger != null) {
 			@SuppressWarnings("unchecked")
 			Enumeration<AppenderSkeleton> loggerAppenders = rootLogger.getAllAppenders();
-			while(loggerAppenders.hasMoreElements()) {
-				AppenderSkeleton appender = loggerAppenders.nextElement();					
-				if(appender.getClass()==org.apache.log4j.ConsoleAppender.class) {
+			while (loggerAppenders.hasMoreElements()) {
+				AppenderSkeleton appender = loggerAppenders.nextElement();
+				if (appender.getClass() == org.apache.log4j.ConsoleAppender.class) {
 					addVerboseArgument = Boolean.TRUE;
 					ConsoleAppender consoleAppender = (ConsoleAppender) appender;
 					Priority priority = consoleAppender.getThreshold();
-					switch(priority.toInt()) {
-						case Level.OFF_INT:
-							verboseDefault = "0 ["+Level.OFF+"]";
+					switch (priority.toInt()) {
+						case Level.OFF_INT :
+							verboseDefault = "0 [" + Level.OFF + "]";
 							break;
-						case Level.FATAL_INT:
-							verboseDefault = "1 ["+Level.FATAL+"]";
+						case Level.FATAL_INT :
+							verboseDefault = "1 [" + Level.FATAL + "]";
 							break;
-						case Level.ERROR_INT:
-							verboseDefault = "2 ["+Level.ERROR+"]";
+						case Level.ERROR_INT :
+							verboseDefault = "2 [" + Level.ERROR + "]";
 							break;
-						case Level.WARN_INT:
-							verboseDefault = "3 ["+Level.WARN+"]";
+						case Level.WARN_INT :
+							verboseDefault = "3 [" + Level.WARN + "]";
 							break;
-						case Level.INFO_INT:
-							verboseDefault = "4 ["+Level.INFO+"]";
+						case Level.INFO_INT :
+							verboseDefault = "4 [" + Level.INFO + "]";
 							break;
-						case Level.DEBUG_INT:
-							verboseDefault = "5 ["+Level.DEBUG+"]";
+						case Level.DEBUG_INT :
+							verboseDefault = "5 [" + Level.DEBUG + "]";
 							break;
-						case Level.TRACE_INT:
-							verboseDefault = "6 ["+Level.TRACE+"]";
+						case Level.TRACE_INT :
+							verboseDefault = "6 [" + Level.TRACE + "]";
 							break;
-						case Level.ALL_INT:
-							verboseDefault = "7 ["+Level.ALL+"]";
+						case Level.ALL_INT :
+							verboseDefault = "7 [" + Level.ALL + "]";
 							break;
-						default:
+						default :
 							verboseDefault = null;
 					}
 				}
-			}				
-		}	
-		//only add verboseArgument if console handler has been found (set in log4j.properties)
-		//use default argument derived from this definition
-		if(addVerboseArgument) {
-			String helpText = "verbosity console output: "+
-					VERBOSITY_OFF+"-"+VERBOSITY_ALL+" for "+Level.OFF+", "+Level.FATAL+", "+Level.ERROR+", "+Level.WARN+", "+Level.INFO+", "+Level.DEBUG+", "+Level.TRACE+" or "+Level.ALL;
-			if(verboseDefault!=null) {
-				helpText += " (default: "+verboseDefault+")";
 			}
-			parser.addArgument("-V", "--verbose").type(Integer.class).help(helpText);						
 		}
-		
+		// only add verboseArgument if console handler has been found (set in
+		// log4j.properties)
+		// use default argument derived from this definition
+		if (addVerboseArgument) {
+			String helpText = "verbosity console output: " + VERBOSITY_OFF + "-" + VERBOSITY_ALL + " for " + Level.OFF
+					+ ", " + Level.FATAL + ", " + Level.ERROR + ", " + Level.WARN + ", " + Level.INFO + ", "
+					+ Level.DEBUG + ", " + Level.TRACE + " or " + Level.ALL;
+			if (verboseDefault != null) {
+				helpText += " (default: " + verboseDefault + ")";
+			}
+			parser.addArgument("-V", "--verbose").type(Integer.class).help(helpText);
+		}
+
 		try {
 			Namespace res = parser.parseArgs(args);
 			String inputArticles = res.get("FILE");
 			String configFile = res.get("config");
 			String outputFile = res.get("output");
-			if(addVerboseArgument && res.get("verbose")!=null) {
-				//get level
-			    int verbosityLevel = (Integer) res.get("verbose");			  							
-				//try to find console appender in log4j properties
-				if(rootLogger!=null) {
+
+			if (addVerboseArgument && res.get("verbose") != null) {
+				// get level
+				int verbosityLevel = (Integer) res.get("verbose");
+				// try to find console appender in log4j properties
+				if (rootLogger != null) {
 					@SuppressWarnings("unchecked")
 					Enumeration<AppenderSkeleton> loggerAppenders = rootLogger.getAllAppenders();
-					while(loggerAppenders.hasMoreElements()) {
-						AppenderSkeleton appender = loggerAppenders.nextElement();					
-						if(appender.getClass()==org.apache.log4j.ConsoleAppender.class) {
-							switch(verbosityLevel) {
-								case VERBOSITY_OFF:
+					while (loggerAppenders.hasMoreElements()) {
+						AppenderSkeleton appender = loggerAppenders.nextElement();
+						if (appender.getClass() == org.apache.log4j.ConsoleAppender.class) {
+							switch (verbosityLevel) {
+								case VERBOSITY_OFF :
 									appender.setThreshold(Level.OFF);
 									break;
-								case VERBOSITY_FATAL:
+								case VERBOSITY_FATAL :
 									appender.setThreshold(Level.FATAL);
 									break;
-								case VERBOSITY_ERROR:
+								case VERBOSITY_ERROR :
 									appender.setThreshold(Level.ERROR);
 									break;
-								case VERBOSITY_WARN:
+								case VERBOSITY_WARN :
 									appender.setThreshold(Level.WARN);
 									break;
-								case VERBOSITY_INFO:
+								case VERBOSITY_INFO :
 									appender.setThreshold(Level.INFO);
 									break;
-								case VERBOSITY_DEBUG:
+								case VERBOSITY_DEBUG :
 									appender.setThreshold(Level.DEBUG);
 									break;
-								case VERBOSITY_TRACE:
+								case VERBOSITY_TRACE :
 									appender.setThreshold(Level.TRACE);
 									break;
-								case VERBOSITY_ALL:
+								case VERBOSITY_ALL :
 									appender.setThreshold(Level.ALL);
 									break;
-							    default:
-							    	logger.warn("incorrect verbosity level "+verbosityLevel);
-							}														
+								default :
+									logger.warn("incorrect verbosity level " + verbosityLevel);
+							}
 						}
 					}
 				}
@@ -168,24 +162,20 @@ public class Main {
 		} catch (ArgumentParserException e) {
 			parser.handleError(e);
 		}
-	
 	}
 
-	public static void run(String inputArticlesFile, String configFile,
-			String outputFile) throws IOException {
-		long startTime = System.currentTimeMillis();// to calculate run-time
+	public static void run(String inputArticlesFile, String configFile, String outputFile) throws IOException {
+		long startTime = System.currentTimeMillis();
 
-		Configs.configFileName=configFile;
-
+		Configs.configFileName = configFile;
 		if (outputFile.endsWith(".db")) {
 			QtlDb.dbFile = outputFile;
 		} else {
 			QtlDb.dbFile = outputFile + ".db";
 		}
 
-
-	// (re)start Solr server
-	controlSolr("restart");
+		// (re)start Solr server
+		controlSolr("restart");
 
 		ArrayList<String> pmcIds = new ArrayList<String>();
 		BufferedReader reader = null;
@@ -205,46 +195,36 @@ public class Main {
 			e.printStackTrace();
 		}
 		reader.close();
-		
-		logger.info("===============");
-		logger.info("QTLTableMiner++");
-		logger.info("===============");
+		logger.info("=== QTLTableMiner++ ====");
+		logger.info("Input list of articles:\n\t" + pmcIds.toString());
 
-		logger.info("Input List: " + pmcIds.toString());
-
-		// intialisation
+		// init db
 		QtlDb.createTables();
 
-		// Step1: reading xml files with pmc ids
+		// download/read articles in XML
 		File[] xmlFiles = new File[pmcIds.size()];
 		Article[] articles = new Article[pmcIds.size()];
-
 		for (int i = 0; i < pmcIds.size(); i++) {
 			if (QtlDb.isPmcIdAlredyInDb(pmcIds.get(i)) == false) {
-
 				xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
-
 				PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
-
-				// Parsing meta-data, cell entries and finding the abbreviations
-				logger.info("- Processing article " + pmcIds.get(i));
+				// parse metadata
+				logger.info("Processing " + pmcIds.get(i) + "...");
 				articles[i] = pmcMetaReader.read();
 			} else {
-				logger.info("- Article "+pmcIds.get(i)+" already exists");
+				logger.info("Article with " + pmcIds.get(i) + " already exists.");
 				if (pmcIds.size() == i + 1)
 					return;
 				else
 					continue;
 			}
-		}		
+		}
 
-		// STEP2 Add abbreviations to Solr synonyms files in all 4 cores and
-		// restart
+		// add abbreviations to Solr synonyms files
 		nl.esciencecenter.solr.abbreviator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 		controlSolr("restart");
 
-		// STEP3 Inserting entries into the database
-		logger.info("Inserting entries to the database");
+		logger.info("Storing article entries in the database.");
 		for (int i = 0; i < articles.length; i++) {
 			try {
 				if (articles[i] != null)
@@ -253,38 +233,35 @@ public class Main {
 					continue;
 			} catch (Exception e) {
 				System.exit(1);
-
 			}
 		}
 
-		logger.info("Searching QTL in tables");
+		logger.info("Storing QTL data.");
 		QtlDb.insertQTLEntry();
 
 		String csvFile = "";
 		try {
 			csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
 			logger.info("Writing results into " + csvFile + "");
-			String[] cmdline = {"bash", "-c", "sqlite3 -header -csv " + QtlDb.dbFile +
-                         " \"SELECT * FROM V_QTL\" 	>" + csvFile};
+			String[] cmdline = {"bash", "-c",
+					"sqlite3 -header -csv " + QtlDb.dbFile + " \"SELECT * FROM V_QTL\" 	>" + csvFile};
 			logger.debug(String.join(" ", cmdline));
 			Process p = Runtime.getRuntime().exec(cmdline);
 			p.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		logger.info("=======");
-		logger.info("RESULTS");
-		logger.info("=======");
-		logger.info("Total number of processed articles: " + articles.length);
-		logger.info("Total number of trait tables: " + QtlDb.numberofTraitTable());
-		logger.info("Total number of QTL statements: " + QtlDb.numberofQTL());
+		logger.info("=== Summary ===");
+		logger.info("Number of processed articles: " + articles.length);
+		logger.info("Number of trait tables: " + QtlDb.numberofTraitTable());
+		logger.info("Number of QTL statements: " + QtlDb.numberofQTL());
 		logger.info("SQLite file: " + QtlDb.dbFile);
 		logger.info("CSV file: " + csvFile);
 
 		try {
 			QtlDb.conn.close();
 		} catch (SQLException e) {
-			logger.warn("SQL Exception is closing the connection");
+			logger.warn("SQL Exception is closing the connection.");
 			e.printStackTrace();
 		}
 
@@ -293,15 +270,11 @@ public class Main {
 		long memory = (runtime.totalMemory() - runtime.freeMemory()) / 1024;
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
-
-		String eTime = String.format("%02d:%02d:%02d",
-				TimeUnit.MILLISECONDS.toHours(elapsedTime),
-				TimeUnit.MILLISECONDS.toMinutes(elapsedTime) - TimeUnit.HOURS
-						.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedTime)),
+		String eTime = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(elapsedTime),
+				TimeUnit.MILLISECONDS.toMinutes(elapsedTime)
+						- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedTime)),
 				TimeUnit.MILLISECONDS.toSeconds(elapsedTime)
-						- TimeUnit.MINUTES.toSeconds(
-								TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
-
+						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(elapsedTime)));
 		logger.info("Memory used (KB): " + memory);
 		logger.info("Total runtime (HH:MM:SS): " + eTime);
 
@@ -312,15 +285,13 @@ public class Main {
 	public static void controlSolr(String cmd) {
 		logger.info("Solr server has been " + cmd + "ed.");
 		try {
-			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd,
-					Configs.getPropertyQTM("solrPort"),
+			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd, Configs.getPropertyQTM("solrPort"),
 					Configs.getPropertyQTM("solrCorePath")};
 			logger.debug(String.join(" ", cmdline));
 			Process p = Runtime.getRuntime().exec(cmdline);
 			p.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
-
 }
