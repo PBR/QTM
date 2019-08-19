@@ -209,9 +209,6 @@ public class Evaluate {
 					+ "/tag?fl=uuid,code,prefterm,term&overlaps="
 					+ URLEncoder.encode(match, "UTF-8")
 					+ "&matchText=true&tagsLimit=5000&wt=json";
-
-
-
 			String content = getStringContent(request, input, headers);
 
 			response = parse(content);
@@ -339,7 +336,7 @@ public class Evaluate {
 
 		try{
 		JsonElement jelement;
-		jelement = new JsonParser().parse(jsonLine);
+		jelement = new JsonParser().parse(jsonLine.trim());
 		JsonObject jobject = jelement.getAsJsonObject();
 		JsonArray tags = jobject.getAsJsonArray("tags");
 
