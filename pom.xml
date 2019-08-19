@@ -1,209 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>nl.esciencecenter</groupId>
-	<artifactId>QTM</artifactId>
-	<packaging>jar</packaging>
-	<version>1.1.0</version>
-	<name>QTLTableMiner++</name>
-    <description>Extract Quantitative Trait Loci (QTL) from tables in scientific articles.</description>
-    <url>https://research-software.nl/software/qtl-tableminer</url>
-    <developers>
-        <developer>
-            <name>Gurnoor Singh</name>
-            <email>gurnoor.singh@wur.nl</email>
-        </developer>
-    </developers>
-    <contributors>
-        <contributor>
-            <name>Arnold Kuzniar</name>
-            <email>a.kuzniar@esciencecenter.nl</email>
-        </contributor>
-    </contributors>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-	<build>
-		<defaultGoal>clean install</defaultGoal>
-		<directory>${basedir}/target</directory>
-		<finalName>${project.artifactId}-${project.version}</finalName>
-		<resources>
-		  <resource>
-		    <directory>src/main/resources</directory>
-		    <targetPath>${project.build.directory}</targetPath>
-		    <includes>
-		      <include>log4j.properties</include>
-		    </includes>
-		  </resource>
-		</resources>		
-		<plugins>
-		    <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>nl.esciencecenter.qtm.Main</mainClass>
-							<classpathPrefix>dependency-jars/</classpathPrefix>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>nl.esciencecenter</groupId>
+  <artifactId>QTM</artifactId>
+  <packaging>jar</packaging>
+  <version>1.1.0</version>
+  <name>QTLTableMiner++</name>
+  <description>Extract Quantitative Trait Loci (QTL) from tables in scientific articles.</description>
+  <url>https://research-software.nl/software/qtl-tableminer</url>
+  <developers>
+    <developer>
+      <name>Gurnoor Singh</name>
+      <email>gurnoor.singh@wur.nl</email>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Arnold Kuzniar</name>
+      <email>a.kuzniar@esciencecenter.nl</email>
+    </contributor>
+  </contributors>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <build>
+    <defaultGoal>clean install</defaultGoal>
+    <directory>${basedir}/target</directory>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <targetPath>${project.build.directory}</targetPath>
+        <includes>
+          <include>log4j.properties</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>nl.esciencecenter.qtm.Main</mainClass>
+              <classpathPrefix>dependency-jars/</classpathPrefix>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>
 								${project.build.directory}/dependency-jars/
 							</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin><groupId>com.diffplug.spotless</groupId>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
         <version>1.24.0</version>
         <configuration>
           <java>
-						<eclipse>
+            <eclipse>
               <version>4.7.1</version>
             </eclipse>
           </java>
         </configuration>
       </plugin>
-		</plugins>
-	</build>
-	<scm>
-		<url>https://github.com/PBR/QTM/</url>
-		<connection>scm:git:https://github.com/PBR/QTM.git</connection>
-		<developerConnection>scm:git:git@github.com:PBR/QTM.git</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/PBR/QTM/issues</url>
-	</issueManagement>
-	<ciManagement>
-		<system>Travis CI</system>
-		<url>http://travis-ci.org/PBR/QTM</url>
-	</ciManagement>
-	<dependencies>
-		<!-- <dependency> -->
-		<!-- <groupId>wur.breeText</groupId> -->
-		<!-- <artifactId>jwnl</artifactId> -->
-		<!-- <version>1</version> -->
-		<!-- </dependency> -->
-		<dependency>
-			<groupId>net.sf.jwordnet</groupId>
-			<artifactId>jwnl</artifactId>
-			<version>1.4_rc3</version>
-		</dependency>
-
-		<dependency>
-		<groupId>org.xerial</groupId>
-		<artifactId>sqlite-jdbc</artifactId>
-		<version>3.8.11.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sourceforge.jexcelapi</groupId>
-			<artifactId>jxl</artifactId>
-			<version>2.6.12</version>
-		</dependency>
-
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.json</groupId> -->
-		<!-- <artifactId>json</artifactId> -->
-		<!-- <version>20160212</version> -->
-		<!-- </dependency> -->
-
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.9</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.6.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-solrj</artifactId>
-			<version>6.2.1</version>
-		</dependency>
-
-
-
-
-
-
-
-
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-core</artifactId>
-			<version>3.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-arq</artifactId>
-			<version>2.9.2</version>
-		</dependency>
-
-        <dependency>
-			<groupId>net.sourceforge.argparse4j</groupId>
-			<artifactId>argparse4j</artifactId>
-			<version>0.8.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.directory.studio</groupId>
-			<artifactId>org.apache.commons.io</artifactId>
-			<version>2.4</version>
-		</dependency>
-
-
-
-
-	</dependencies>
-	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.target>1.7</maven.compiler.target>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.organization>pbr</sonar.organization>
-	</properties>
+    </plugins>
+  </build>
+  <scm>
+    <url>https://github.com/PBR/QTM/</url>
+    <connection>scm:git:https://github.com/PBR/QTM.git</connection>
+    <developerConnection>scm:git:git@github.com:PBR/QTM.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/PBR/QTM/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Travis CI</system>
+    <url>http://travis-ci.org/PBR/QTM</url>
+  </ciManagement>
+  <dependencies>
+    <!-- <dependency> -->
+    <!-- <groupId>wur.breeText</groupId> -->
+    <!-- <artifactId>jwnl</artifactId> -->
+    <!-- <version>1</version> -->
+    <!-- </dependency> -->
+    <dependency>
+      <groupId>net.sf.jwordnet</groupId>
+      <artifactId>jwnl</artifactId>
+      <version>1.4_rc3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>sqlite-jdbc</artifactId>
+      <version>3.8.11.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.jexcelapi</groupId>
+      <artifactId>jxl</artifactId>
+      <version>2.6.12</version>
+    </dependency>
+    <!-- <dependency> -->
+    <!-- <groupId>org.json</groupId> -->
+    <!-- <artifactId>json</artifactId> -->
+    <!-- <version>20160212</version> -->
+    <!-- </dependency> -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.6.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+      <version>6.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>2.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.argparse4j</groupId>
+      <artifactId>argparse4j</artifactId>
+      <version>0.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.studio</groupId>
+      <artifactId>org.apache.commons.io</artifactId>
+      <version>2.4</version>
+    </dependency>
+  </dependencies>
+  <properties>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.organization>pbr</sonar.organization>
+  </properties>
 </project>
