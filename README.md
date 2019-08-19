@@ -7,10 +7,10 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 
 ## Requirements
 
-* [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html) 1.7 or later
+* Oracle/OpenJDK8
 * [Apache Maven](https://maven.apache.org/) 3.x
 * [SQLite](https://sqlite.org/) 3.x
-* [Apache Solr](https://lucene.apache.org/solr/) 6.x with domain-specific vocabularies and ontologies (_Solr cores_):
+* [Apache Solr](https://lucene.apache.org/solr/) 6.x with cores based on domain-specific vocabularies and ontologies (_Solr cores_):
   * [Gene Ontology](http://www.ontobee.org/ontology/GO) (GO)
   * [Plant Trait Ontology](http://www.ontobee.org/ontology/TO) (TO)
   * [Phenotypic quality ontology](http://www.ontobee.org/ontology/PATO) (PATO)
@@ -38,7 +38,7 @@ solr/install_solr.sh
 `./QTM -h`
 
 ```
-usage: QTM [-h] [-v] [-o OUTPUT] [-c CONFIG] FILE
+usage: QTM [-h] [-v] [-o OUTPUT] [-c CONFIG] [-V VERBOSE] FILE
 
 Software to extract QTL data from full-text articles.
 
@@ -49,9 +49,11 @@ named arguments:
   -h, --help             show this help message and exit
   -v, --version          show version and exit
   -o OUTPUT, --output OUTPUT
-                         filename prefix  for  output  in  SQLite  and  CSV  formats {.db,.csv}
-                         (default: qtl)
+                         filename  prefix  for  output  in  SQLite  and  CSV
+                         formats {.db,.csv} (default: qtl)
   -c CONFIG, --config CONFIG
                          config file (default: config.properties)
-
+  -V VERBOSE, --verbose VERBOSE
+                         verbosity of the console output: 0-7 for OFF, FATAL,
+                         ERROR, WARN, INFO, DEBUG, TRACE or ALL (default: 4)
 ```
