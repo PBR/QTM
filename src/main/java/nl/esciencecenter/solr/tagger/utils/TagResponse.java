@@ -14,7 +14,6 @@ public class TagResponse {
 
 	}
 
-
 	public List<TagItem> getItems() {
 		return items;
 	}
@@ -26,9 +25,6 @@ public class TagResponse {
 	public void add(TagItem item) {
 		this.items.add(item);
 	}
-
-
-
 
 	@Override
 	public String toString() {

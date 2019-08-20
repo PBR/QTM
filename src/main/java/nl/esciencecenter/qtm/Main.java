@@ -283,7 +283,7 @@ public class Main {
 	}
 
 	public static void controlSolr(String cmd) {
-		logger.info("Solr server has been " + cmd + "ed.");
+		logger.info("Solr server " + cmd + "ed.");
 		try {
 			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd, Configs.getPropertyQTM("solrPort"),
 					Configs.getPropertyQTM("solrCorePath")};

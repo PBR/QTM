@@ -12,14 +12,12 @@ public class Configs {
 
 	public static void setPropertyQTM(String title, String value) {
 		try {
-			FileInputStream in = new FileInputStream(
-					configFileName);
+			FileInputStream in = new FileInputStream(configFileName);
 			Properties props = new Properties();
 			props.load(in);
 			in.close();
 
-			FileOutputStream out = new FileOutputStream(
-					"config/configQtm.properties");
+			FileOutputStream out = new FileOutputStream("config/configQtm.properties");
 			props.setProperty(title, value);
 			props.store(out, null);
 			out.close();
@@ -42,7 +40,5 @@ public class Configs {
 		}
 		return value;
 	}
-
-
 
 }

@@ -31,8 +31,7 @@ public class Permutations {
 		c[pos2] = temp;
 	}
 
-	public static void compute(Set<String> permutations, String[] c,
-			int start) {
+	public static void compute(Set<String> permutations, String[] c, int start) {
 		if (start != 0) {
 			permutations.add(StringUtils.join(c, " "));
 		}

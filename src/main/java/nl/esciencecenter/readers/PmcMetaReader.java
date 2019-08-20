@@ -88,8 +88,8 @@ public class PmcMetaReader {
 	/**
 	 * This method is the main method for reading PMC XML files. It uses
 	 * {@link #ParseMetaData} and {@link #ParseTables} methods. It returns
-	 * {@link Article} object that contains structured data from article,
-	 * including tables.
+	 * {@link Article} object that contains structured data from article, including
+	 * tables.
 	 *
 	 * @return Article
 	 */
@@ -100,8 +100,7 @@ public class PmcMetaReader {
 
 		try {
 			@SuppressWarnings("resource")
-			BufferedReader reader = new BufferedReader(
-					new FileReader(fileName));
+			BufferedReader reader = new BufferedReader(new FileReader(fileName));
 			String line = null;
 			String xmlString = "";
 
@@ -112,8 +111,7 @@ public class PmcMetaReader {
 			}
 			// Main.logger.trace(xmlString);
 
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 			factory.setNamespaceAware(true);
 			factory.setValidating(false);
@@ -132,15 +130,13 @@ public class PmcMetaReader {
 			this.abbreviator = new Abbreviator();
 			HashMap<String, String> abbreviationsFound = new HashMap<String, String>();
 
-			abbreviationsFound = abbreviator
-					.extractAbbrPairs(art.getPlain_text());
+			abbreviationsFound = abbreviator.extractAbbrPairs(art.getPlain_text());
 
 			art.setAbbreviations(abbreviationsFound);
 
 			Main.logger.debug("\nList of abbreviations in " + art.getPmc());
 			for (String key : art.getAbbreviations().keySet()) {
-				Main.logger.debug(
-						key + "\t->\t" + art.getAbbreviations().get(key));
+				Main.logger.debug(key + "\t->\t" + art.getAbbreviations().get(key));
 
 			}
 			// Tables
@@ -191,29 +187,23 @@ public class PmcMetaReader {
 			String surname = "";
 			String email = "";
 
-			for (int k = 0; k < authors.item(j).getChildNodes()
-					.getLength(); k++) {
-				if (authors.item(j).getChildNodes().item(k)
-						.getNodeName() == "name") {
-					NodeList name = authors.item(j).getChildNodes().item(k)
-							.getChildNodes();
+			for (int k = 0; k < authors.item(j).getChildNodes().getLength(); k++) {
+				if (authors.item(j).getChildNodes().item(k).getNodeName() == "name") {
+					NodeList name = authors.item(j).getChildNodes().item(k).getChildNodes();
 					if (name.item(1) != null)
 						surname = Utilities.getString(name.item(0));
 					if (name.item(1) != null)
 						givenName = Utilities.getString(name.item(1));
 					auth.name = surname + ", " + givenName;
 				}
-				if (authors.item(j).getChildNodes().item(k)
-						.getNodeName() == "email") {
-					NodeList name = authors.item(j).getChildNodes().item(k)
-							.getChildNodes();
+				if (authors.item(j).getChildNodes().item(k).getNodeName() == "email") {
+					NodeList name = authors.item(j).getChildNodes().item(k).getChildNodes();
 					if (name.item(0) != null)
 						email = Utilities.getString(name.item(0));
 					auth.email = email;
 				}
 
-				if (authors.item(j).getChildNodes().item(k)
-						.getNodeName() == "xref") {
+				if (authors.item(j).getChildNodes().item(k).getNodeName() == "xref") {
 					Node name = authors.item(j).getChildNodes().item(k);
 					NamedNodeMap attr = name.getAttributes();
 					if (null != attr) {
@@ -225,18 +215,11 @@ public class PmcMetaReader {
 						NodeList affis = parse.getElementsByTagName("aff");
 						for (int s = 0; s < affis.getLength(); s++) {
 							if (affis.item(s).getAttributes() != null
-									&& affis.item(s).getAttributes()
-											.getNamedItem("id") != null
-									&& affis.item(s).getAttributes()
-											.getNamedItem("id").getNodeValue()
-											.equals(affId)) {
-								String affName = Utilities
-										.getString(affis.item(s));
-								if (affName.contains("1")
-										|| affName.contains("2")
-										|| affName.contains("3")
-										|| affName.contains("4")
-										|| affName.contains("5"))
+									&& affis.item(s).getAttributes().getNamedItem("id") != null
+									&& affis.item(s).getAttributes().getNamedItem("id").getNodeValue().equals(affId)) {
+								String affName = Utilities.getString(affis.item(s));
+								if (affName.contains("1") || affName.contains("2") || affName.contains("3")
+										|| affName.contains("4") || affName.contains("5"))
 									affName = affName.substring(1);
 								auth.affiliation.add(affName);
 							}
@@ -304,10 +287,9 @@ public class PmcMetaReader {
 		String title = "";
 		String journal = "";
 
-		if (parse.getElementsByTagName("article-title") != null && parse
-				.getElementsByTagName("article-title").item(0) != null) {
-			title = parse.getElementsByTagName("article-title").item(0)
-					.getTextContent();
+		if (parse.getElementsByTagName("article-title") != null
+				&& parse.getElementsByTagName("article-title").item(0) != null) {
+			title = parse.getElementsByTagName("article-title").item(0).getTextContent();
 			title = title.replaceAll("\n", "");
 			title = title.replaceAll("\t", "");
 			Main.logger.debug("Titel of the Article: " + title);
@@ -320,33 +302,27 @@ public class PmcMetaReader {
 		}
 
 		// journal-title
-		if (parse.getElementsByTagName("journal-title") != null && parse
-				.getElementsByTagName("journal-title").item(0) != null) {
-			journal = parse.getElementsByTagName("journal-title").item(0)
-					.getTextContent();
+		if (parse.getElementsByTagName("journal-title") != null
+				&& parse.getElementsByTagName("journal-title").item(0) != null) {
+			journal = parse.getElementsByTagName("journal-title").item(0).getTextContent();
 			journal = journal.replaceAll("\n", "");
 			journal = journal.replaceAll("\t", "");
 		}
 
 		NodeList issn = parse.getElementsByTagName("issn");
 		for (int j = 0; j < issn.getLength(); j++) {
-			if (issn == null || issn.item(j) == null
-					|| issn.item(j).getAttributes() == null
-					|| issn.item(j).getAttributes()
-							.getNamedItem("pub-type") == null
-					|| issn.item(j).getAttributes().getNamedItem("pub-type")
-							.getNodeValue() == null)
+			if (issn == null || issn.item(j) == null || issn.item(j).getAttributes() == null
+					|| issn.item(j).getAttributes().getNamedItem("pub-type") == null
+					|| issn.item(j).getAttributes().getNamedItem("pub-type").getNodeValue() == null)
 				continue;
-			if (issn.item(j).getAttributes().getNamedItem("pub-type")
-					.getNodeValue().equals("ppub")) {
+			if (issn.item(j).getAttributes().getNamedItem("pub-type").getNodeValue().equals("ppub")) {
 				String issnp = issn.item(j).getTextContent();
 				art.setPissn(issnp);
 				if (issnp != null) {
 					// Main.logger.debug(issnp);
 				}
 			}
-			if (issn.item(j).getAttributes().getNamedItem("pub-type")
-					.getNodeValue().equals("epub")) {
+			if (issn.item(j).getAttributes().getNamedItem("pub-type").getNodeValue().equals("epub")) {
 				String issne = issn.item(j).getTextContent();
 				art.setPissn(issne);
 				if (issne != null) {
@@ -359,11 +335,8 @@ public class PmcMetaReader {
 
 		for (int j = 0; j < article_id.getLength(); j++) {
 			if (article_id.item(j).getAttributes() != null
-					&& article_id.item(j).getAttributes()
-							.getNamedItem("pub-id-type") != null
-					&& article_id.item(j).getAttributes()
-							.getNamedItem("pub-id-type").getNodeValue()
-							.equals("pmid")) {
+					&& article_id.item(j).getAttributes().getNamedItem("pub-id-type") != null
+					&& article_id.item(j).getAttributes().getNamedItem("pub-id-type").getNodeValue().equals("pmid")) {
 				String pmid = article_id.item(j).getTextContent();
 				art.setPmid(pmid);
 				if (pmid != null) {
@@ -371,11 +344,8 @@ public class PmcMetaReader {
 				}
 			}
 			if (article_id.item(j).getAttributes() != null
-					&& article_id.item(j).getAttributes()
-							.getNamedItem("pub-id-type") != null
-					&& article_id.item(j).getAttributes()
-							.getNamedItem("pub-id-type").getNodeValue()
-							.equals("pmcid")) {
+					&& article_id.item(j).getAttributes().getNamedItem("pub-id-type") != null
+					&& article_id.item(j).getAttributes().getNamedItem("pub-id-type").getNodeValue().equals("pmcid")) {
 				String pmc = "PMC" + article_id.item(j).getTextContent();
 				art.setPmc(pmc);
 				art.setSpec_id(pmc);
@@ -384,11 +354,8 @@ public class PmcMetaReader {
 				}
 			}
 			if (article_id.item(j).getAttributes() != null
-					&& article_id.item(j).getAttributes()
-							.getNamedItem("pub-id-type") != null
-					&& article_id.item(j).getAttributes()
-							.getNamedItem("pub-id-type").getNodeValue()
-							.equals("doi")) {
+					&& article_id.item(j).getAttributes().getNamedItem("pub-id-type") != null
+					&& article_id.item(j).getAttributes().getNamedItem("pub-id-type").getNodeValue().equals("doi")) {
 				art.setDoi(article_id.item(j).getTextContent());
 			}
 		}
@@ -400,11 +367,8 @@ public class PmcMetaReader {
 		NodeList art_abstract = parse.getElementsByTagName("abstract");
 
 		for (int j = 0; j < art_abstract.getLength(); j++) {
-			if (art_abstract.item(j).getAttributes()
-					.getNamedItem("abstract-type") != null
-					&& art_abstract.item(j).getAttributes()
-							.getNamedItem("abstract-type").getNodeValue()
-							.equals("short")) {
+			if (art_abstract.item(j).getAttributes().getNamedItem("abstract-type") != null && art_abstract.item(j)
+					.getAttributes().getNamedItem("abstract-type").getNodeValue().equals("short")) {
 				art.setShort_abstract(art_abstract.item(j).getTextContent());
 			} else {
 				art.setAbstract(art_abstract.item(j).getTextContent());
@@ -416,15 +380,13 @@ public class PmcMetaReader {
 
 		String publisher_name = "";
 		if (parse.getElementsByTagName("publisher-name").item(0) != null)
-			publisher_name = parse.getElementsByTagName("publisher-name")
-					.item(0).getTextContent();
+			publisher_name = parse.getElementsByTagName("publisher-name").item(0).getTextContent();
 		art.setPublisher_name(publisher_name);
 		if (publisher_name != null)
 			Main.logger.debug("Publisher: " + publisher_name);
 		String publisher_loc = "";
 		if (parse.getElementsByTagName("publisher-loc").item(0) != null)
-			publisher_loc = parse.getElementsByTagName("publisher-loc").item(0)
-					.getTextContent();
+			publisher_loc = parse.getElementsByTagName("publisher-loc").item(0).getTextContent();
 		art.setPublisher_loc(publisher_loc);
 		if (publisher_loc != null)
 			// Main.logger.debug(publisher_loc);
@@ -448,26 +410,20 @@ public class PmcMetaReader {
 	 * @return Article - populated art
 	 */
 
-	public Article parsePlainText(Article art, Document parse,
-			String xmlString) {
+	public Article parsePlainText(Article art, Document parse, String xmlString) {
 
 		String text = "";
 
 		if (parse.getElementsByTagName("article-title").item(0) != null) {
-			text += "\n\n\n[TITLE]"
-					+ parse.getElementsByTagName("article-title").item(0)
-							.getTextContent()
-					+ "\n\n";
+			text += "\n\n\n[TITLE]" + parse.getElementsByTagName("article-title").item(0).getTextContent() + "\n\n";
 		}
 
 		if (parse.getElementsByTagName("abstract").item(0) != null) {
-			text += "\n\n\n[Abstract]" + parse.getElementsByTagName("abstract")
-					.item(0).getTextContent() + "\n";
+			text += "\n\n\n[Abstract]" + parse.getElementsByTagName("abstract").item(0).getTextContent() + "\n";
 		}
 
 		if (parse.getElementsByTagName("body").item(0) != null) {
-			text += "\n\n\n[MainText]" + parse.getElementsByTagName("body")
-					.item(0).getTextContent() + "\n";
+			text += "\n\n\n[MainText]" + parse.getElementsByTagName("body").item(0).getTextContent() + "\n";
 
 		}
 
@@ -477,9 +433,8 @@ public class PmcMetaReader {
 
 			String textFiles = Configs.getPropertyQTM("textFiles");
 
-			Writer writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(textFiles + art.getPmc() + ".txt"),
-					"utf-8"));
+			Writer writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(textFiles + art.getPmc() + ".txt"), "utf-8"));
 			writer.write(text);
 			writer.close();
 		} catch (Exception e) {
@@ -499,38 +454,29 @@ public class PmcMetaReader {
 	 */
 	public static List<Node> getChildrenByTagName(Node parent, String name) {
 		List<Node> nodeList = new ArrayList<Node>();
-		for (Node child = parent.getFirstChild(); child != null; child = child
-				.getNextSibling()) {
-			if (child.getNodeType() == Node.ELEMENT_NODE
-					&& name.equals(child.getNodeName())) {
+		for (Node child = parent.getFirstChild(); child != null; child = child.getNextSibling()) {
+			if (child.getNodeType() == Node.ELEMENT_NODE && name.equals(child.getNodeName())) {
 				nodeList.add(child);
 			}
 		}
-
 		return nodeList;
 	}
 
-	public static File pmcDowloadXml(String pmcId)
-			throws IOException, MalformedURLException {
+	public static File pmcDowloadXml(String pmcId) throws IOException, MalformedURLException {
 
 		File xmlfile = new File(pmcId + ".xml");
 
-		try{
+		try {
 			if (!xmlfile.exists() || xmlfile.length() == 0) {
 				xmlfile.createNewFile();
-
-				String pmcWebserviceUrl = Configs.getPropertyQTM(
-						"epmcWebService") + pmcId + "/fullTextXML";
-
+				String pmcWebserviceUrl = Configs.getPropertyQTM("epmcWebService") + pmcId + "/fullTextXML";
 				URL url = new URL(pmcWebserviceUrl);
 				FileUtils.copyURLToFile(url, xmlfile);
-
 			}
 			return xmlfile;
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
 		return xmlfile;
-	}}
+	}
+}

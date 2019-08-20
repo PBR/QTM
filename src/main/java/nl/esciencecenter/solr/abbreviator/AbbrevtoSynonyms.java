@@ -23,11 +23,9 @@ import nl.esciencecenter.utils.Configs;
 public class AbbrevtoSynonyms {
 
 	public static void abbrevToSolrSynonyms(Article articles[])
-			throws FileNotFoundException, UnsupportedEncodingException,
-			IOException {
-		String coreTraitDescSynonmsFile = Configs.getPropertyQTM("solrCorePath")
-				+ "/" + Configs.getPropertyQTM("coreTraitDescriptors")
-				+ "/conf/synonyms.txt";
+			throws FileNotFoundException, UnsupportedEncodingException, IOException {
+		String coreTraitDescSynonmsFile = Configs.getPropertyQTM("solrCorePath") + "/"
+				+ Configs.getPropertyQTM("coreTraitDescriptors") + "/conf/synonyms.txt";
 
 		// HashMap<String, String> oldAbbrev = new HashMap<String, String>();
 		// Properties properties = new Properties();
@@ -40,38 +38,33 @@ public class AbbrevtoSynonyms {
 		// oldAbbrev.put(key.toString(), properties.get(key).toString());
 		// }
 
-
-
 		FileWriter fw = new FileWriter(coreTraitDescSynonmsFile, true);
 		BufferedWriter bw = new BufferedWriter(fw);
 		PrintWriter writer = new PrintWriter(bw);
 
-
 		HashMap<String, String> allAbbreviation = new HashMap<String, String>();
 
-
-
-		try{
-		for (int i = 0; i < articles.length; i++) {
-			HashMap<String, String> abbrevin1article = articles[i].getAbbreviations();
-			if (abbrevin1article.isEmpty()) {
-				continue;
-			} else {
-				Set<String> totalkeys = abbrevin1article.keySet();
-				Iterator<String> keys = totalkeys.iterator();
-				while (keys.hasNext()) {
-					String shortform = keys.next();
-					if (allAbbreviation.containsKey(shortform)) {
-						allAbbreviation.put(shortform, allAbbreviation.get(shortform) + "," + abbrevin1article.get(shortform));
-					} else {
-						allAbbreviation.put(shortform, abbrevin1article.get(shortform));
+		try {
+			for (int i = 0; i < articles.length; i++) {
+				HashMap<String, String> abbrevin1article = articles[i].getAbbreviations();
+				if (abbrevin1article.isEmpty()) {
+					continue;
+				} else {
+					Set<String> totalkeys = abbrevin1article.keySet();
+					Iterator<String> keys = totalkeys.iterator();
+					while (keys.hasNext()) {
+						String shortform = keys.next();
+						if (allAbbreviation.containsKey(shortform)) {
+							allAbbreviation.put(shortform,
+									allAbbreviation.get(shortform) + "," + abbrevin1article.get(shortform));
+						} else {
+							allAbbreviation.put(shortform, abbrevin1article.get(shortform));
+						}
 					}
-				}
 
+				}
 			}
-		}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			Main.logger.error("No Abbreviations, detected or copied");
 		}
 
@@ -79,13 +72,11 @@ public class AbbrevtoSynonyms {
 		Iterator<String> keys = totalkeys.iterator();
 		while (keys.hasNext()) {
 			String shortform = keys.next();
-			writer.println(shortform + " => "
-					+ allAbbreviation.get(shortform));
-			//Main.logger.debug(shortform + " => "
-			//		+ allAbbreviation.get(shortform));
+			writer.println(shortform + " => " + allAbbreviation.get(shortform));
+			// Main.logger.debug(shortform + " => "
+			// + allAbbreviation.get(shortform));
 
 		}
-
 
 		writer.close();
 

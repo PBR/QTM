@@ -36,7 +36,6 @@ public class Cell {
 	 */
 	public Cell(int i) {
 		row_number = i;
-
 	}
 
 	public Cell(int i, String cell_value) {
@@ -130,7 +129,6 @@ public class Cell {
 		}
 		this.cell_type = "Others";
 		return this.cell_type;
-
 	}
 
 	/**
@@ -157,5 +155,4 @@ public class Cell {
 		if (cell_type == null)
 			cell_type = this.getCell_type();
 	}
-
 }

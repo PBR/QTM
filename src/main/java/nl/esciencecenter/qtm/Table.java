@@ -105,8 +105,7 @@ public class Table {
 	 * @param Rows
 	 *            the rows
 	 */
-	public Table(String label, String Caption, String Footer, int Columns,
-			int Rows) {
+	public Table(String label, String Caption, String Footer, int Columns, int Rows) {
 		table_label = label;
 		table_caption = Caption;
 		table_footer = Footer;
@@ -121,23 +120,18 @@ public class Table {
 		// String word3="Quantitavie Trait loci";
 
 		if (this.table_caption.toLowerCase().indexOf(word1.toLowerCase()) != -1
-				|| this.table_caption.toLowerCase()
-						.indexOf(word2.toLowerCase()) != -1)
+				|| this.table_caption.toLowerCase().indexOf(word2.toLowerCase()) != -1)
 			return true;
 		if (this.table_footer.toLowerCase().indexOf(word1.toLowerCase()) != -1
-				|| this.table_footer.toLowerCase()
-						.indexOf(word2.toLowerCase()) != -1)
+				|| this.table_footer.toLowerCase().indexOf(word2.toLowerCase()) != -1)
 			return true;
 		Columns tc[] = this.getTableCol();
 		String word3 = "phenotype";
 		for (Columns col : tc) {
 			if (col.getColumns_type().indexOf("QTL value") == -1) {
-				if (col.getHeader().toLowerCase()
-						.indexOf(word1.toLowerCase()) != -1
-						|| col.getHeader().toLowerCase()
-								.indexOf(word2.toLowerCase()) != -1
-						|| col.getHeader().toLowerCase()
-								.indexOf(word3.toLowerCase()) != -1) {
+				if (col.getHeader().toLowerCase().indexOf(word1.toLowerCase()) != -1
+						|| col.getHeader().toLowerCase().indexOf(word2.toLowerCase()) != -1
+						|| col.getHeader().toLowerCase().indexOf(word3.toLowerCase()) != -1) {
 					return true;
 				}
 			}
@@ -425,7 +419,7 @@ public class Table {
 
 	// public void printTable() throws Exception {
 	//
-	// StringBuffer sb = new StringBuffer();	
+	// StringBuffer sb = new StringBuffer();
 	// int hrows = 0;
 	// while (hrows < this.header_cells.length) {
 	// for (int cols = 0; cols < this.num_of_columns; cols++) {
@@ -455,20 +449,18 @@ public class Table {
 	public void printTable2() throws Exception {
 
 		StringBuffer sb = new StringBuffer();
-		
+
 		for (Columns c : this.getTableCol()) {
-			sb.append(
-					c.getHeader() + "(" + c.getColumns_type() + ")" + "\t\t");
+			sb.append(c.getHeader() + "(" + c.getColumns_type() + ")" + "\t\t");
 		}
 		Main.logger.debug(sb.toString());
-		
+
 		int i = 0;
 		while (i < this.num_of_rows) {
 			sb = new StringBuffer();
 			for (Columns c : this.getTableCol()) {
 				try {
-					sb.append(c.getcelz()[i].getcell_value() + "("
-							+ c.getcelz()[i].getCell_type() + ")" + "\t\t");
+					sb.append(c.getcelz()[i].getcell_value() + "(" + c.getcelz()[i].getCell_type() + ")" + "\t\t");
 				} catch (Exception e) {
 					sb.append("Null(Null" + "\t\t");
 				}
@@ -504,10 +496,8 @@ public class Table {
 					// tc[l].getRowcell()[k].getcell_value());
 					if (tc[l].getcelz()[k].getCell_type() == "Numeric") {
 						ColTypes.put("Numeric", ColTypes.get("Numeric") + 1);
-					} else if (tc[l].getcelz()[k]
-							.getCell_type() == "Partially Numeric") {
-						ColTypes.put("Partially Numeric",
-								ColTypes.get("Partially Numeric") + 1);
+					} else if (tc[l].getcelz()[k].getCell_type() == "Partially Numeric") {
+						ColTypes.put("Partially Numeric", ColTypes.get("Partially Numeric") + 1);
 					} else if (tc[l].getcelz()[k].getCell_type() == "Text") {
 
 						ColTypes.put("Text", ColTypes.get("Text") + 1);
@@ -528,11 +518,9 @@ public class Table {
 
 			float totalNumeric = (float) ColTypes.get("Numeric")
 					/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
-			float totalPartiallyNumeric = (float) ColTypes
-					.get("Partially Numeric")
+			float totalPartiallyNumeric = (float) ColTypes.get("Partially Numeric")
 					/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
-			float totalText = (float) ColTypes.get("Text")
-					/ (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
+			float totalText = (float) ColTypes.get("Text") / (float) (tc[l].getcelz().length - ColTypes.get("Empty"));
 
 			if (totalNumeric >= 0.60)
 				tc[l].setColumns_type("QTL value");
@@ -558,26 +546,20 @@ public class Table {
 				if (tc[l].getColumns_type().equals("QTL property")) {
 
 					for (int k = 0; k < tc[l].getcelz().length; k++) {
-						if (tc[l].getcelz()[k].getcell_value().toLowerCase()
-								.indexOf(word1) != -1
-								|| tc[l].getcelz()[k].getcell_value()
-										.toLowerCase().indexOf(word2) != -1
-								|| tc[l].getcelz()[k].getcell_value()
-										.toLowerCase().indexOf(word3) != -1) {
+						if (tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word1) != -1
+								|| tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word2) != -1
+								|| tc[l].getcelz()[k].getcell_value().toLowerCase().indexOf(word3) != -1) {
 							countwords++;
 						}
 					}
 
 					if (tc[l].getHeader().toLowerCase().indexOf(word1) != -1
-							|| tc[l].getHeader().toLowerCase().toLowerCase()
-									.indexOf(word2) != -1
-							|| tc[l].getHeader().toLowerCase().toLowerCase()
-									.indexOf(word3) != -1)
+							|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word2) != -1
+							|| tc[l].getHeader().toLowerCase().toLowerCase().indexOf(word3) != -1)
 						countwords++;
 				}
 			} catch (NullPointerException e) {
-				Main.logger.warn(
-						"*cannot classify heading on " + l + "column\n");
+				Main.logger.warn("*cannot classify heading on " + l + "column\n");
 			}
 
 			if (countwords > 0)
@@ -611,13 +593,10 @@ public class Table {
 					tc[j].setColumns_type("QTL property");
 					for (int k = 0; k < tc[j].getcelz().length; k++) {
 
-						TagResponse QTLannotation = nl.esciencecenter.solr.tagger.recognize.Evaluate
-								.processString(
-										tc[j].getcelz()[k].getcell_value()
-												.toLowerCase(),
-										Configs.getPropertyQTM("coreTraitDescriptors"),
-										Configs.getPropertyQTM("match"),
-										Configs.getPropertyQTM("type"));
+						TagResponse QTLannotation = nl.esciencecenter.solr.tagger.recognize.Evaluate.processString(
+								tc[j].getcelz()[k].getcell_value().toLowerCase(),
+								Configs.getPropertyQTM("coreTraitDescriptors"), Configs.getPropertyQTM("match"),
+								Configs.getPropertyQTM("type"));
 
 						if (QTLannotation.getItems().size() != 0) {
 							numofannotatedTerms++;
@@ -634,9 +613,6 @@ public class Table {
 				e.printStackTrace();
 			}
 		}
-
 		return this;
-
 	}
-
 }

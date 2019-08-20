@@ -281,5 +281,4 @@ public class Article {
 	public void setCotainingTraitTables(boolean CotainsTraitTables) {
 		this.hasTraitTables = CotainsTraitTables;
 	}
-
 }
