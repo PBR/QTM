@@ -93,8 +93,6 @@ public class QtlDb {
 
 	public static void insertArticleEntry(Article article) {
 
-		// Main.logger.debug("Article length is" + articles.length);
-		// Main.logger.debug("Article pmcid is" + articles[i].getPmc());
 		try {
 			if (connectionDB() & isArticleEntryAlredyIn(article) == false) {
 
@@ -136,7 +134,7 @@ public class QtlDb {
 					Main.logger.error("*************************************************");
 				}
 
-				String insertAbrevTable = "INSERT INTO ABBREVIATION VALUES (?, ?, ?)";
+				String insertAbrevTable = "INSERT INTO ABBREVIATION abbrev,expansion,pmc_id) VALUES (?,?,?)";
 				PreparedStatement abbrevTableStmt = conn.prepareStatement(insertAbrevTable);
 				for (String key : article.getAbbreviations().keySet()) {
 					abbrevTableStmt.setString(1, key);
@@ -155,7 +153,7 @@ public class QtlDb {
 							Main.logger.debug("Inserting entries into TRAIT_TABLE for table " + t.getTabnum() + " of "
 									+ article.getPmc());
 
-							String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_lb, pmc_id) VALUES (?,?)";
+							String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_lb,pmc_id) VALUES (?,?)";
 							PreparedStatement traitTableStmt = conn.prepareStatement(insertTraitTable);
 
 							traitTableStmt.setInt(1, t.getTabnum());
@@ -188,7 +186,7 @@ public class QtlDb {
 									Main.logger.error("Error in column Annotation" + colHeader);
 								}
 
-								String insertColTable = "INSERT INTO COLUMN_ENTRY (tab_id, header,type, annot) VALUES (?,?,?,?)";
+								String insertColTable = "INSERT INTO COLUMN_ENTRY (tab_id,header,type,annot) VALUES (?,?,?,?)";
 								PreparedStatement colStmt = conn.prepareStatement(insertColTable);
 								colStmt.setInt(1, tab_id);
 
@@ -228,10 +226,10 @@ public class QtlDb {
 								colStmt.executeUpdate();
 								colStmt.close();
 
-								String getColid = "SELECT MAX(col_id) FROM COLUMN_ENTRY;";
+								String getColid = "SELECT MAX(col_id) AS cid FROM COLUMN_ENTRY;";
 
 								ResultSet rs2 = getRowidStmt.executeQuery(getColid);
-								int col_id = rs2.getInt("max(col_id)");
+								int col_id = rs2.getInt("cid");
 
 								for (Cell cel : col.getcelz()) {
 
@@ -241,7 +239,7 @@ public class QtlDb {
 									if (cel.getcell_value().equals("") || cel.getcell_value().equals(" "))
 										cel.setcell_values(null);
 
-									String insertCellTable = "INSERT INTO CELL_ENTRY (row_id, col_id, value) VALUES (?, ?, ?)";
+									String insertCellTable = "INSERT INTO CELL_ENTRY (row_id,col_id,value) VALUES (?,?,?)";
 
 									PreparedStatement cellStmt = conn.prepareStatement(insertCellTable);
 
