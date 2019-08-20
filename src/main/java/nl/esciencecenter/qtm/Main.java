@@ -48,8 +48,8 @@ public class Main {
 
 		parser.addArgument("-v", "--version").action(Arguments.version()).help("show version and exit");
 		parser.addArgument("-o", "--output").setDefault("qtl")
-				.help("filename prefix for output in SQLite and CSV formats {.db,.csv}");
-		parser.addArgument("FILE").help("input list of articles (PMCIDs)");
+				.help("filename prefix for output in SQLite (.db) and text (.csv) files");
+		parser.addArgument("FILE").help("input list of articles (PMCIDs, one per line)");
 		parser.addArgument("-c", "--config").help("config file").setDefault("config.properties");
 
 		Logger rootLogger = Logger.getRootLogger();
