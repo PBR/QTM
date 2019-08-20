@@ -101,20 +101,17 @@ public class Evaluate {
 					}
 				}
 				Main.logger.debug(tagUri);
-
-				// processArray("sgn_potato_markers","LONGEST_DOMINANT_RIGHT", type);
 				out.close();
 			} else {
 				new HelpFormatter().printHelp(Evaluate.class.getCanonicalName(), options);
 			}
 
 		} catch (ParseException e) {
-			System.err.println("Parsing failed.  Reason: " + e.getMessage());
-			e.printStackTrace();
+			Main.logger.debug(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Main.logger.debug(e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Main.logger.debug(e);
 		}
 	}
 
@@ -148,9 +145,8 @@ public class Evaluate {
 				for (TagItem item : response.getItems()) {
 					Main.logger.debug(item.getMatchText() + "\t" + item.getPrefTerm() + "\t" + item.getIcd10());
 				}
-				Main.logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Main.logger.debug(e);
 			}
 		}
 	}
@@ -158,7 +154,6 @@ public class Evaluate {
 	public static TagResponse processString(String input, String core, String match, String type)
 			throws UnsupportedEncodingException, FileNotFoundException, IOException {
 
-		// Main.logger.debug("Input is: \t "+input);
 		TagResponse response = new TagResponse();
 
 		try {
@@ -169,8 +164,7 @@ public class Evaluate {
 			response = parse(content);
 
 		} catch (Exception e) {
-			e.printStackTrace();
-
+			Main.logger.debug(e);
 		}
 		return response;
 	}
@@ -182,17 +176,13 @@ public class Evaluate {
 		TagResponse response = new TagResponse();
 
 		try {
-
 			URI uri = new URI("http", "localhost:8983", "/solr/" + core + "/tag", "fl=uuid,code,prefterm,term&overlaps="
 					+ URLEncoder.encode(match, "UTF-8") + "&matchText=true&tagsLimit=5000&wt=json", null);
-
 			String content = getStringContent(uri, input, headers);
 
 			response = parse(content);
-
 		} catch (Exception e) {
-			e.printStackTrace();
-
+			Main.logger.debug(e);
 		}
 		return response;
 	}
@@ -200,25 +190,15 @@ public class Evaluate {
 	public static String getStringContent(URI uri, String postData, HashMap<String, String> headers) throws Exception {
 
 		HttpPost request = new HttpPost(uri);
-
-		// Main.logger.trace("postdata is: \t"+postData);
-		// Main.logger.trace("request is: \t"+request.toString());
-
 		request.setEntity(new StringEntity(ClientUtils.escapeQueryChars(postData), "UTF-8"));
-
-		// Main.logger.trace("Request is: \t" + request + "\n");
 
 		for (Entry<String, String> s : headers.entrySet()) {
 			request.setHeader(s.getKey(), s.getValue());
 		}
 
 		HttpResponse response = client.execute(request);
-
-		// Main.logger.trace("Response is:" + response + "\n");
-
 		InputStream ips = response.getEntity().getContent();
 		BufferedReader buf = new BufferedReader(new InputStreamReader(ips, "UTF-8"));
-
 		StringBuilder sb = new StringBuilder();
 		String s;
 		while (true) {
@@ -230,7 +210,6 @@ public class Evaluate {
 		buf.close();
 		ips.close();
 		return sb.toString();
-
 	}
 
 	public static String getStringContent(String uri, String postData, HashMap<String, String> headers)
@@ -238,23 +217,15 @@ public class Evaluate {
 
 		HttpPost request = new HttpPost(uri);
 
-		// Main.logger.trace("postdata is: \t"+postData);
-
 		request.setEntity(new StringEntity(ClientUtils.escapeQueryChars(postData), "UTF-8"));
-
-		// Main.logger.trace("Request is:" + request + "\n");
 
 		for (Entry<String, String> s : headers.entrySet()) {
 			request.setHeader(s.getKey(), s.getValue());
 		}
 
 		HttpResponse response = client.execute(request);
-
-		// Main.logger.trace("Response is:" + response + "\n");
-
 		InputStream ips = response.getEntity().getContent();
 		BufferedReader buf = new BufferedReader(new InputStreamReader(ips, "UTF-8"));
-
 		StringBuilder sb = new StringBuilder();
 		String s;
 		while (true) {
@@ -266,19 +237,15 @@ public class Evaluate {
 		buf.close();
 		ips.close();
 		return sb.toString();
-
 	}
 
 	public static TagResponse parse(String jsonLine) {
-
-		// Main.logger.trace("Json Response is:" + jsonLine.toString() + "\n");
 
 		Map<String, List<Position>> positions = new HashMap<String, List<Position>>();
 		TagResponse result = new TagResponse();
 
 		try {
-			JsonElement jelement;
-			jelement = new JsonParser().parse(jsonLine.trim());
+			JsonElement jelement = new JsonParser().parse(jsonLine);
 			JsonObject jobject = jelement.getAsJsonObject();
 			JsonArray tags = jobject.getAsJsonArray("tags");
 
@@ -325,9 +292,9 @@ public class Evaluate {
 					result.add(item);
 				}
 			}
-			return result;
-		} catch (NullPointerException e) {
-			return result;
+		} catch (Exception e) {
+			Main.logger.debug("Not a valid JSON: " + jsonLine, e);
 		}
+		return result;
 	}
 }

@@ -23,6 +23,7 @@ import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+
 import nl.esciencecenter.readers.PmcMetaReader;
 import nl.esciencecenter.resultDb.QtlDb;
 import nl.esciencecenter.utils.Configs;
@@ -174,9 +175,6 @@ public class Main {
 			QtlDb.dbFile = outputFile + ".db";
 		}
 
-		// (re)start Solr server
-		controlSolr("restart");
-
 		ArrayList<String> pmcIds = new ArrayList<String>();
 		BufferedReader reader = null;
 
@@ -198,8 +196,11 @@ public class Main {
 		logger.info("=== QTLTableMiner++ ====");
 		logger.info("Input list of articles:\n\t" + pmcIds.toString());
 
-		// init db
+		// populate db
 		QtlDb.createTables();
+
+		// (re)start Solr server
+		controlSolr("restart");
 
 		// download/read articles in XML
 		File[] xmlFiles = new File[pmcIds.size()];
@@ -213,10 +214,11 @@ public class Main {
 				articles[i] = pmcMetaReader.read();
 			} else {
 				logger.info("Article with " + pmcIds.get(i) + " already exists.");
-				if (pmcIds.size() == i + 1)
+				if (pmcIds.size() == i + 1) {
 					return;
-				else
+				} else {
 					continue;
+				}
 			}
 		}
 
@@ -243,13 +245,13 @@ public class Main {
 		try {
 			csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
 			logger.info("Writing results into " + csvFile + "");
-			String[] cmdline = {"bash", "-c",
+			String[] cmdLine = {"bash", "-c",
 					"sqlite3 -header -csv " + QtlDb.dbFile + " \"SELECT * FROM V_QTL\" 	>" + csvFile};
-			logger.debug(String.join(" ", cmdline));
-			Process p = Runtime.getRuntime().exec(cmdline);
+			logger.debug(String.join(" ", cmdLine));
+			Process p = Runtime.getRuntime().exec(cmdLine);
 			p.waitFor();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 		logger.info("=== Summary ===");
 		logger.info("Number of processed articles: " + articles.length);
@@ -261,8 +263,7 @@ public class Main {
 		try {
 			QtlDb.conn.close();
 		} catch (SQLException e) {
-			logger.warn("SQL Exception is closing the connection.");
-			e.printStackTrace();
+			logger.warn("SQL Exception is closing the connection: ", e);
 		}
 
 		Runtime runtime = Runtime.getRuntime();
@@ -285,13 +286,13 @@ public class Main {
 	public static void controlSolr(String cmd) {
 		logger.info("Solr server " + cmd + "ed.");
 		try {
-			String[] cmdline = {Configs.getPropertyQTM("solrRun"), cmd, Configs.getPropertyQTM("solrPort"),
+			String[] cmdLine = {Configs.getPropertyQTM("solrRun"), cmd, Configs.getPropertyQTM("solrPort"),
 					Configs.getPropertyQTM("solrCorePath")};
-			logger.debug(String.join(" ", cmdline));
-			Process p = Runtime.getRuntime().exec(cmdline);
+			logger.debug(String.join(" ", cmdLine));
+			Process p = Runtime.getRuntime().exec(cmdLine);
 			p.waitFor();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 }

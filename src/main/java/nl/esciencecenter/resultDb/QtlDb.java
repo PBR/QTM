@@ -51,36 +51,28 @@ public class QtlDb {
 
 	public static boolean connectionDB() {
 		if (conn == null) {
-
 			try {
-
-				Class.forName("org.sqlite.JDBC");
-
 				String sDBUrl = dbDriver + ":" + dbFile;
 				conn = DriverManager.getConnection(sDBUrl);
-
 			} catch (Exception e) {
-				Main.logger.error("Error in connecting to the output database");
-				e.printStackTrace();
-				Main.logger.error(e.getClass().getName() + ": " + e.getMessage());
-				System.exit(0);
+				Main.logger.error("Can't connect to the database: ", e);
+				System.exit(1);
 			}
-			return true;
-		} else
-			return true;
+		}
+		return true;
 	}
 
 	public static void createTables() {
 		try {
+			Main.logger.info("Populating '" + dbFile + "' database...");
 			if (connectionDB()) {
-				Process p = Runtime.getRuntime()
-						.exec(new String[]{"bash", "-c", "sqlite3 " + QtlDb.dbFile + "< db_schema.sql"});
+				String[] cmdLine = new String[]{"bash", "-c", "sqlite3 " + dbFile + "< db_schema.sql"};
+				Process p = Runtime.getRuntime().exec(cmdLine);
 				p.waitFor();
-
 			}
 		} catch (Exception e) {
-			Main.logger.error("Error in creating database tables");
-			e.printStackTrace();
+			Main.logger.error("Failed to populate '" + dbFile + "' database: ", e);
+			System.exit(1);
 		}
 	}
 
@@ -92,13 +84,10 @@ public class QtlDb {
 	}
 
 	public static void insertArticleEntry(Article article) {
-
 		try {
 			if (connectionDB() & isArticleEntryAlredyIn(article) == false) {
-
 				Statement abbrevstmt = null;
 				abbrevstmt = conn.createStatement();
-
 				Statement getRowidStmt = null;
 				getRowidStmt = conn.createStatement();
 
@@ -106,12 +95,9 @@ public class QtlDb {
 				Scanner id = new Scanner(article.getPmc()).useDelimiter("[^0-9]+");
 				int pmc_id = id.nextInt();
 				String pmc_tittle = article.getTitle();
-
 				try {
-
 					String insertArticleTable = "INSERT INTO ARTICLE VALUES (?,?,?)";
 					PreparedStatement articlestmt = conn.prepareStatement(insertArticleTable);
-
 					articlestmt.setInt(1, pmc_id);
 					try {
 						articlestmt.setString(2, pmc_tittle);
@@ -128,13 +114,10 @@ public class QtlDb {
 					articlestmt.executeUpdate();
 					articlestmt.close();
 				} catch (SQLException e) {
-					// e.printStackTrace();
-					Main.logger.error("*************************************************");
-					Main.logger.error("Article already exits! Please provide unique entries.");
-					Main.logger.error("*************************************************");
+					Main.logger.error("Article with " + pmc_id + " exists already!", e);
 				}
 
-				String insertAbrevTable = "INSERT INTO ABBREVIATION abbrev,expansion,pmc_id) VALUES (?,?,?)";
+				String insertAbrevTable = "INSERT INTO ABBREVIATION (abbrev,expansion,pmc_id) VALUES (?,?,?)";
 				PreparedStatement abbrevTableStmt = conn.prepareStatement(insertAbrevTable);
 				for (String key : article.getAbbreviations().keySet()) {
 					abbrevTableStmt.setString(1, key);
@@ -182,8 +165,7 @@ public class QtlDb {
 												.processString(colHeader, coreTraitProperties, match, type);
 									}
 								} catch (Exception e) {
-									e.getStackTrace();
-									Main.logger.error("Error in column Annotation" + colHeader);
+									Main.logger.error("Error in column annotation " + colHeader, e);
 								}
 
 								String insertColTable = "INSERT INTO COLUMN_ENTRY (tab_id,header,type,annot) VALUES (?,?,?,?)";
@@ -349,8 +331,7 @@ public class QtlDb {
 									}
 								}
 							} catch (Exception e) {
-								e.getStackTrace();
-								Main.logger.error("Error in Marker annotations in apache solr");
+								Main.logger.error("Error in annotating markers: ", e);
 							}
 
 							try {
@@ -372,8 +353,7 @@ public class QtlDb {
 									}
 								}
 							} catch (Exception e) {
-								e.getStackTrace();
-								Main.logger.error("Error in Gene annotations in apache solr");
+								Main.logger.error("Error in annotating genes: ", e);
 							}
 						}
 					}
@@ -468,7 +448,7 @@ public class QtlDb {
 						try {
 							stmtInsertQTL.executeUpdate();
 						} catch (SQLException e) {
-							e.getStackTrace();
+							Main.logger.error("Exception is :::", e);
 						}
 						stmtInsertQTL.close();
 					}
@@ -476,8 +456,7 @@ public class QtlDb {
 				stmtSelectTrait.close();
 			}
 		} catch (Exception e) {
-			Main.logger.error("Error in QTLDB.insertQTLdata entry function ");
-			e.printStackTrace();
+			Main.logger.error("Error is :::", e);
 		}
 	}
 
@@ -501,7 +480,7 @@ public class QtlDb {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Main.logger.error("Error is :::", e);
 		}
 		return check;
 	}
@@ -527,7 +506,7 @@ public class QtlDb {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Main.logger.error("Error is :::", e);
 		}
 		return check;
 	}
@@ -560,7 +539,7 @@ public class QtlDb {
 				tables = rs.getInt("n");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Main.logger.error("Error is :::", e);
 		}
 		return tables;
 	}
@@ -577,7 +556,7 @@ public class QtlDb {
 				numQTL = rs.getInt("n");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Main.logger.error("Error is :::", e);
 		}
 		return numQTL;
 	}

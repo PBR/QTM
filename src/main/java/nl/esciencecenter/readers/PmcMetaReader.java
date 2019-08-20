@@ -46,9 +46,9 @@ public class PmcMetaReader {
 
 	private String fileName;
 
-	private Abbreviator abbreviator;
-
 	private String pmcId;
+
+	private Abbreviator abbreviator;
 
 	private File f1;
 
@@ -60,9 +60,9 @@ public class PmcMetaReader {
 		Main.logger.debug(fileName);
 	}
 
-	public PmcMetaReader(String fName) {
+	public PmcMetaReader(String fileName) {
 		super();
-		this.fileName = fName;
+		this.fileName = fileName;
 	}
 
 	public String getPmcId() {
@@ -77,12 +77,12 @@ public class PmcMetaReader {
 		return fileName;
 	}
 
-	public void setFileName(String fName) {
-		this.fileName = fName;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
-	public void init(String file_name) {
-		setFileName(file_name);
+	public void init(String fileName) {
+		setFileName(fileName);
 	}
 
 	/**
@@ -140,8 +140,7 @@ public class PmcMetaReader {
 
 			}
 			// Tables
-			Main.logger.debug("\n");
-			Main.logger.debug("Parsing tables in " + art.getPmc() + "now");
+			Main.logger.debug("\nParsing tables in " + art.getPmc() + "now");
 
 			art = TableParser.parseTables(art, parse);
 
@@ -226,7 +225,6 @@ public class PmcMetaReader {
 						}
 					}
 				}
-
 			}
 			auths.add(auth);
 		}
