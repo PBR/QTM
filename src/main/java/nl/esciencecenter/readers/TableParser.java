@@ -33,24 +33,24 @@ public class TableParser {
 	public static Article parseTables(Article article, Document parse) throws Exception {
 
 		// read table-wrap in xml
-		NodeList tablesxml = parse.getElementsByTagName("table-wrap");
+		NodeList tablesXml = parse.getElementsByTagName("table-wrap");
 
-		int numOfTables = getNumOfTablesInArticle(tablesxml);
+		int nTables = getNumOfTablesInArticle(tablesXml);
 
-		// Table[] tables = new Table[tablesxml.getLength()];
-		Table[] tables = new Table[numOfTables];
+		int tabIdx = 0;
+
+		Table[] tables = new Table[nTables];
+
 		article.setTables(tables);
-		int tableindex = 0;
-
 		// Iterate over <table-wrap></table-wrap>
-		for (int i = 0; i < tablesxml.getLength(); i++) {
+		for (int i = 0; i < tablesXml.getLength(); i++) {
 
-			List<Node> tableTags = getChildrenByTagName(tablesxml.item(i), "table");
+			List<Node> tableTags = getChildrenByTagName(tablesXml.item(i), "table");
 			// Main.logger.trace("---------"+tableTags.size());
 
 			if (tableTags.size() == 0) {
 				tableTags.clear();
-				List<Node> alternative = getChildrenByTagName(tablesxml.item(i), "alternatives");
+				List<Node> alternative = getChildrenByTagName(tablesXml.item(i), "alternatives");
 				// Main.logger.trace("---------alternative"+alternative.size());
 
 				if (alternative.size() > 0) {
@@ -65,99 +65,89 @@ public class TableParser {
 
 			for (int s = 0; s < tableTags.size(); s++) {
 
-				String label = readTableLabel(tablesxml.item(i));
+				String label = readTableLabel(tablesXml.item(i));
 
-				tables[tableindex] = new Table(label);
+				tables[tabIdx] = new Table(label);
 
-				tables[tableindex].setDocumentFileName(article.getPmc());
+				tables[tabIdx].setDocumentFileName(article.getPmcid());
 
 				// table in xml
-				tables[tableindex].setXml(Utilities.createXMLStringFromSubNode(tablesxml.item(i)));
+				tables[tabIdx].setXml(Utilities.createXMLStringFromSubNode(tablesXml.item(i)));
 
-				Main.logger.debug("Table label: " + tables[tableindex].getTable_label());
+				Main.logger.debug("Table label: " + tables[tabIdx].getTable_label());
 
-				Scanner tlable = new Scanner(tables[tableindex].getTable_label()).useDelimiter("[^0-9]+");
+				Scanner tlable = new Scanner(tables[tabIdx].getTable_label()).useDelimiter("[^0-9]+");
 				int tid = tlable.nextInt();
 
-				// Main.logger.debug("sssssssssssssssssssssssssssssss is "+s);
 				if (tableTags.size() > 1) {
-
-					// Main.logger.debug("sssssssssssssssssssssssssssssss is
-					// "+s);
-					// Main.logger.debug("s is "+s%10);
-
-					tables[tableindex].setTableid(tid);
+					tables[tabIdx].setTableid(tid);
 				} else {
-					tables[tableindex].setTableid(tid);
+					tables[tabIdx].setTableid(tid);
 				}
 
-				String caption = readTableCaption(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
-				Main.logger.debug("Caption: " + caption);
-				tables[tableindex].setTable_caption(caption);
+				String caption = readTableCaption(tablesXml.item(i)).replaceAll("\n", "").replace("\r", "");
+				tables[tabIdx].setTable_caption(caption);
+				Main.logger.debug("Table caption: " + caption);
 
-				String foot = readTableFooter(tablesxml.item(i)).replaceAll("\n", "").replace("\r", "");
-				tables[tableindex].setTable_footer(foot);
-				// Main.logger.debug("Foot: " + foot);
+				String foot = readTableFooter(tablesXml.item(i)).replaceAll("\n", "").replace("\r", "");
+				tables[tabIdx].setTable_footer(foot);
+				Main.logger.debug("Table footer: " + foot);
 
 				List<Node> thead = getChildrenByTagName(tableTags.get(s), "thead");
 				List<Node> tbody = getChildrenByTagName(tableTags.get(s), "tbody");
 
-				int numofCol = countColumns(tbody, thead);
+				int nCols = countColumns(tbody, thead);
 
-				if (numofCol == 0) {
-					Main.logger.debug("Table cannot be processed as number of colums are zero");
-					tables[tableindex].setisTraitTable(false);
-					tables[tableindex].setNum_of_rows(0);
-					tables[tableindex].setNum_of_columns(0);
-					Main.logger.debug(tables[tableindex].getisTraitTable() + " " + tables[tableindex].getTabnum()
-							+ " is not a trait table");
-					tableindex++;
+				if (nCols == 0) {
+					tables[tabIdx].setisTraitTable(false);
+					tables[tabIdx].setNum_of_rows(0);
+					tables[tabIdx].setNum_of_columns(0);
+					tabIdx++;
 					break;
 				}
 
-				tables[tableindex] = processTableHeader(tables[tableindex], numofCol, thead);
-				tables[tableindex] = processTableBody(tables[tableindex], numofCol, tbody);
+				tables[tabIdx] = processTableHeader(tables[tabIdx], nCols, thead);
+				tables[tabIdx] = processTableBody(tables[tabIdx], nCols, tbody);
 
-				tables[tableindex] = parseTableCaptionandTableHeadingsforTraitRelatedWords(tables[tableindex]);
+				tables[tabIdx] = parseTableCaptionandTableHeadingsforTraitRelatedWords(tables[tabIdx]);
 
-				if (tables[tableindex].isaTraitTable()) {
+				if (tables[tabIdx].isaTraitTable()) {
 					// entering table values of num of rows and cols
-					int numOfRows = 0;
-					for (Columns col : tables[tableindex].getTableCol()) {
-						if (numOfRows < col.getcelz().length) {
-							numOfRows = col.getcelz().length;
+					int nRows = 0;
+					for (Columns col : tables[tabIdx].getTableCol()) {
+						if (nRows < col.getcelz().length) {
+							nRows = col.getcelz().length;
 						}
 					}
-					tables[tableindex].setNum_of_rows(numOfRows);
-					tables[tableindex].setNum_of_columns(numofCol);
+					tables[tabIdx].setNum_of_rows(nRows);
+					tables[tabIdx].setNum_of_columns(nCols);
 
-					Main.logger.debug("Number of Rows in " + tables[tableindex].getTable_label() + " is: "
-							+ tables[tableindex].getNum_of_rows());
-					Main.logger.debug("Number of Columns in " + tables[tableindex].getTable_label() + " is: "
-							+ tables[tableindex].getNum_of_columns());
+					Main.logger.debug("Number of rows in '" + tables[tabIdx].getTable_label() + "': "
+							+ tables[tabIdx].getNum_of_rows());
+					Main.logger.debug("Number of columns in '" + tables[tabIdx].getTable_label() + "': "
+							+ tables[tabIdx].getNum_of_columns());
 
 					// table classification
-					tables[tableindex] = tables[tableindex].tableClassification();
-					tables[tableindex].printTable2();
-					Main.logger.debug("______________________");
-					tableindex++;
+					tables[tabIdx] = tables[tabIdx].tableClassification();
+					tables[tabIdx].printTable2();
+					tabIdx++;
 				}
 			}
 		}
 		return article;
 	}
 
-	public static int getNumOfTablesInArticle(NodeList tablesxml) {
+	public static int getNumOfTablesInArticle(NodeList tablesXml) {
 
-		int numOfTables = 0;
-		for (int i = 0; i < tablesxml.getLength(); i++) {
-			List<Node> tb = getChildrenByTagName(tablesxml.item(i), "table");
-			numOfTables += tb.size();
+		int nTables = 0;
+		for (int i = 0; i < tablesXml.getLength(); i++) {
+			List<Node> tb = getChildrenByTagName(tablesXml.item(i), "table");
+			nTables += tb.size();
 		}
-		if (numOfTables < tablesxml.getLength()) {
-			numOfTables = tablesxml.getLength();
+		if (nTables < tablesXml.getLength()) {
+			nTables = tablesXml.getLength();
 		}
-		return numOfTables;
+		return nTables;
 	}
 
 	/**
@@ -203,13 +193,13 @@ public class TableParser {
 	/**
 	 * Read table footer.
 	 *
-	 * @param tablesxmlNode
-	 *            the tablesxml node
+	 * @param tablesXmlNode
+	 *            the tablesXml node
 	 * @return the string
 	 */
-	public static String readTableFooter(Node tablesxmlNode) {
+	public static String readTableFooter(Node tablesXmlNode) {
 		String foot = "";
-		List<Node> nl = getChildrenByTagName(tablesxmlNode, "table-wrap-foot");
+		List<Node> nl = getChildrenByTagName(tablesXmlNode, "table-wrap-foot");
 		if (nl.size() >= 1) {
 			foot = Utilities.getString(nl.get(0));
 		}
@@ -472,7 +462,7 @@ public class TableParser {
 												+ " "
 												+ td.get(l).getTextContent().replaceAll("\n", "").replace("\r", "");
 									}
-									Main.logger.trace("Row span entry" + td.get(l).getTextContent());
+									Main.logger.debug("Row span entry: " + td.get(l).getTextContent());
 								}
 								colLine++;
 							} else if (rowspan == 1 && colspan > 1) {
@@ -535,20 +525,20 @@ public class TableParser {
 			for (int j = 0; j < wordlist.length; j++) {
 				if (table.getTable_caption().toLowerCase().indexOf(wordlist[j]) != -1) {
 					table.setisTraitTable(true);
-					Main.logger.debug(table.getTabnum() + " is a QTL table");
+					// Main.logger.debug(table.getTabnum() + " is a QTL table");
 					return table;
 				}
 				for (String h : HeaderList) {
 					if (h.indexOf(wordlist[j]) != -1) {
 						table.setisTraitTable(true);
-						Main.logger.debug(table.getTabnum() + " is a QTL table");
+						// Main.logger.debug(table.getTabnum() + " is a QTL table");
 						return table;
 					} else {
 						continue;
 					}
 				}
 			}
-			Main.logger.debug(table.getTabnum() + " is NOT a QTL table");
+			// Main.logger.debug(table.getTabnum() + " is not a QTL table");
 		} catch (Exception e) {
 		}
 		return table;

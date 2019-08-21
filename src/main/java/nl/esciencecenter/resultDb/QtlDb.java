@@ -92,7 +92,7 @@ public class QtlDb {
 				getRowidStmt = conn.createStatement();
 
 				// Article Table entry
-				Scanner id = new Scanner(article.getPmc()).useDelimiter("[^0-9]+");
+				Scanner id = new Scanner(article.getPmcid()).useDelimiter("[^0-9]+");
 				int pmc_id = id.nextInt();
 				String pmc_tittle = article.getTitle();
 				try {
@@ -134,7 +134,7 @@ public class QtlDb {
 					try {
 						if (t.isaTraitTable()) {
 							Main.logger.debug("Inserting entries into TRAIT_TABLE for table " + t.getTabnum() + " of "
-									+ article.getPmc());
+									+ article.getPmcid());
 
 							String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_lb,pmc_id) VALUES (?,?)";
 							PreparedStatement traitTableStmt = conn.prepareStatement(insertTraitTable);
@@ -245,7 +245,7 @@ public class QtlDb {
 				}
 
 			} else {
-				Main.logger.debug(article.getPmc() + " already exists!");
+				Main.logger.debug(article.getPmcid() + " already exists!");
 			}
 		} catch (Exception e) {
 			Main.logger.error("Error in Insert Article Function");
@@ -497,7 +497,7 @@ public class QtlDb {
 			while (rs.next()) {
 				int pmcId = rs.getInt("pmc_id");
 
-				Scanner id = new Scanner(a.getPmc()).useDelimiter("[^0-9]+");
+				Scanner id = new Scanner(a.getPmcid()).useDelimiter("[^0-9]+");
 				int pid = id.nextInt();
 
 				if (pmcId == pid) {

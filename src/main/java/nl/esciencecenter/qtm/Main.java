@@ -167,6 +167,9 @@ public class Main {
 
 	public static void run(String inputArticlesFile, String configFile, String outputFile) throws IOException {
 		long startTime = System.currentTimeMillis();
+		ArrayList<String> pmcIds = new ArrayList<String>();
+		BufferedReader reader = null;
+		String line = null;
 
 		Configs.configFileName = configFile;
 		if (outputFile.endsWith(".db")) {
@@ -175,26 +178,23 @@ public class Main {
 			QtlDb.dbFile = outputFile + ".db";
 		}
 
-		ArrayList<String> pmcIds = new ArrayList<String>();
-		BufferedReader reader = null;
-
 		try {
 			reader = new BufferedReader(new FileReader(inputArticlesFile));
-			String pmcIdline = null;
-			while ((pmcIdline = reader.readLine()) != null) {
-				pmcIdline = pmcIdline.trim();
-				if (!pmcIdline.equals(""))
-					pmcIds.add(pmcIdline);
+			while ((line = reader.readLine()) != null) {
+				line = line.trim();
+				if (!(line.equals("") || line.startsWith("#"))) {
+					pmcIds.add(line);
+				}
 			}
 		} catch (FileNotFoundException e) {
 			logger.error("Input file '" + inputArticlesFile + "' not found.");
 			System.exit(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 		reader.close();
 		logger.info("=== QTLTableMiner++ ====");
-		logger.info("Input list of articles:\n\t" + pmcIds.toString());
+		logger.info("Input list of articles: " + pmcIds.toString());
 
 		// populate db
 		QtlDb.createTables();
@@ -226,7 +226,6 @@ public class Main {
 		nl.esciencecenter.solr.abbreviator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 		controlSolr("restart");
 
-		logger.info("Storing article entries in the database.");
 		for (int i = 0; i < articles.length; i++) {
 			try {
 				if (articles[i] != null)
@@ -238,13 +237,12 @@ public class Main {
 			}
 		}
 
-		logger.info("Storing QTL data.");
 		QtlDb.insertQTLEntry();
 
 		String csvFile = "";
 		try {
 			csvFile = FilenameUtils.getBaseName(QtlDb.dbFile) + ".csv";
-			logger.info("Writing results into " + csvFile + "");
+			logger.info("Writing QTLs into '" + csvFile + "'.");
 			String[] cmdLine = {"bash", "-c",
 					"sqlite3 -header -csv " + QtlDb.dbFile + " \"SELECT * FROM V_QTL\" 	>" + csvFile};
 			logger.debug(String.join(" ", cmdLine));
@@ -292,7 +290,7 @@ public class Main {
 			Process p = Runtime.getRuntime().exec(cmdLine);
 			p.waitFor();
 		} catch (Exception e) {
-			logger.error(e);
+			logger.debug(e);
 		}
 	}
 }
