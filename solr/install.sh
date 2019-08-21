@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
-# Install Solr version (6.2.1)
-URL=http://archive.apache.org/dist/lucene/solr/6.2.1/solr-6.2.1.tgz
+# Install Solr
+VERSION=6.6.6
+URL=http://archive.apache.org/dist/lucene/solr/$VERSION/solr-$VERSION.tgz
 wget -qO- $URL | tar xvz --strip=1 -C solr
