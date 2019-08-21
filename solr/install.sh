@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
+set -xe
 
 # Install Solr
 VERSION=6.2.1
