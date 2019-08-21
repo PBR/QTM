@@ -29,21 +29,17 @@ public class Table {
 	};
 
 	private String sectionOfTable;
-	/** The num_of_rows. */
+
 	private int num_of_rows;
 
 	public int tableInTable;
 
-	/** The num_of_columns. */
 	private int num_of_columns;
 
-	/** The table_title. */
 	private String table_label;
 
-	/** The table_caption. */
 	private String table_caption;
 
-	/** The table_footer. */
 	private String table_footer;
 
 	private boolean hasHeader = true;
@@ -55,8 +51,8 @@ public class Table {
 	private boolean isRowSpanning = false;
 
 	private boolean isColSpanning = false;
-	private int structureClass = 0; // 0 - no class,1- simplest, 2 - simple, 3 -
-									// medium, 4 - complex
+	private int structureClass = 0; // 0 - no class,1- simplest, 2 - simple,
+																	// 3 - medium, 4 - complex
 	private StructureType tableStructureType;
 
 	// Constructors

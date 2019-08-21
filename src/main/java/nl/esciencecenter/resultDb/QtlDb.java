@@ -29,7 +29,9 @@ import nl.esciencecenter.qtm.Table;
 import nl.esciencecenter.qtm.Trait;
 import nl.esciencecenter.solr.tagger.utils.TagItem;
 import nl.esciencecenter.solr.tagger.utils.TagResponse;
+import nl.esciencecenter.solr.tagger.recognize.Evaluate;
 import nl.esciencecenter.utils.Configs;
+
 
 /**
  *
@@ -101,13 +103,13 @@ public class QtlDb {
 					articlestmt.setInt(1, pmc_id);
 					try {
 						articlestmt.setString(2, pmc_tittle);
-					} catch (NullPointerException e) {
+					} catch (SQLException e) {
 						articlestmt.setNull(2, java.sql.Types.VARCHAR);
 					}
 
 					try {
 						articlestmt.setString(3, article.getDoi());
-					} catch (NullPointerException e) {
+					} catch (SQLException e) {
 						articlestmt.setNull(3, java.sql.Types.VARCHAR);
 					}
 
@@ -129,127 +131,120 @@ public class QtlDb {
 
 				// QTL table entries
 				for (Table t : article.getTables()) {
-
-					// checking if table exists
 					try {
 						if (t.isaTraitTable()) {
-							Main.logger.debug("Inserting entries into TRAIT_TABLE for table " + t.getTabnum() + " of "
-									+ article.getPmcid());
+							String importTraitTable = "INSERT INTO TRAIT_TABLE (tab_lb,pmc_id) VALUES (?,?)";
+							try (PreparedStatement ps = conn.prepareStatement(importTraitTable)) {
+								ps.setInt(1, t.getTabnum());
+								ps.setInt(2, pmc_id);
+								ps.executeUpdate();
+							} catch (SQLException e) {
+								Main.logger.error("Failed to '" + importTraitTable + "'", e);
+							}
 
-							String insertTraitTable = "INSERT INTO TRAIT_TABLE (tab_lb,pmc_id) VALUES (?,?)";
-							PreparedStatement traitTableStmt = conn.prepareStatement(insertTraitTable);
-
-							traitTableStmt.setInt(1, t.getTabnum());
-							traitTableStmt.setInt(2, pmc_id);
-
-							traitTableStmt.executeUpdate();
-
-							traitTableStmt.close();
-
-							String getTabid = "SELECT MAX(tab_id) AS tid FROM TRAIT_TABLE";
-
-							ResultSet rs1 = getRowidStmt.executeQuery(getTabid);
-							int tab_id = rs1.getInt("tid");
+							String getTableId = "SELECT MAX(tab_id) AS tid FROM TRAIT_TABLE";
+							int tabId = 0;
+							try (PreparedStatement ps = conn.prepareStatement(getTableId)) {
+								ResultSet rs = ps.executeQuery();
+								tabId = rs.getInt("tid");
+							}
 
 							for (Columns col : t.getTableCol()) {
-
-								TagResponse colAnno = new TagResponse();
-								String colHeader = col.getHeader().replaceAll("[^\\w]", "");
+								TagResponse annot = new TagResponse();
+								String header = col.getHeader().replaceAll("^\\s+", "");
 								try {
 									if (col.getColumns_type() == "QTL value") {
-										colAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
-												.processString(colHeader, coreTraitValues, match, type);
+										annot = Evaluate
+												.processString(header, coreTraitValues, match, type);
 
 									} else if (col.getColumns_type() == "QTL property") {
-										colAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
-												.processString(colHeader, coreTraitProperties, match, type);
+										annot = Evaluate
+												.processString(header, coreTraitProperties, match, type);
 									}
 								} catch (Exception e) {
-									Main.logger.error("Error in column annotation " + colHeader, e);
+									Main.logger.error("Failed to annotate column '" + header + "'", e);
 								}
 
-								String insertColTable = "INSERT INTO COLUMN_ENTRY (tab_id,header,type,annot) VALUES (?,?,?,?)";
-								PreparedStatement colStmt = conn.prepareStatement(insertColTable);
-								colStmt.setInt(1, tab_id);
-
-								try {
-									if (colHeader == "" | colHeader == " ")
-										colHeader = null;
-									colStmt.setString(2, colHeader);
-								} catch (NullPointerException e) {
-									colStmt.setNull(2, java.sql.Types.VARCHAR);
-								}
-
-								try {
-									colStmt.setString(3, col.getColumns_type());
-								} catch (NullPointerException e) {
-									colStmt.setNull(3, java.sql.Types.VARCHAR);
-								}
-
-								String colAnnoUri = "";
-								if (colAnno.getItems().size() == 1)
-									colAnnoUri = colAnno.getItems().get(0).getIcd10();
-								else {
-									for (TagItem item : colAnno.getItems()) {
-										colAnnoUri += item.getIcd10() + ";";
-										// Main.logger.trace("%%%" +
-										// item.getIcd10());
-									}
-								}
-
-								try {
-									if (colAnnoUri == "")
-										colAnnoUri = null;
-									colStmt.setString(4, colAnnoUri);
-								} catch (NullPointerException e) {
-									colStmt.setNull(4, java.sql.Types.VARCHAR);
-								}
-
-								colStmt.executeUpdate();
-								colStmt.close();
-
-								String getColid = "SELECT MAX(col_id) AS cid FROM COLUMN_ENTRY;";
-
-								ResultSet rs2 = getRowidStmt.executeQuery(getColid);
-								int col_id = rs2.getInt("cid");
-
-								for (Cell cel : col.getcelz()) {
-
-									if (cel.getcell_value().indexOf("'") != -1)
-										cel.setcell_values(cel.getcell_value().replace("'", "''"));
-
-									if (cel.getcell_value().equals("") || cel.getcell_value().equals(" "))
-										cel.setcell_values(null);
-
-									String insertCellTable = "INSERT INTO CELL_ENTRY (row_id,col_id,value) VALUES (?,?,?)";
-
-									PreparedStatement cellStmt = conn.prepareStatement(insertCellTable);
-
-									cellStmt.setInt(1, cel.getRow_number() + 1);
-									cellStmt.setInt(2, col_id);
+								String insertColumnEntry= "INSERT INTO COLUMN_ENTRY (tab_id,header,type,annot) VALUES (?,?,?,?)";
+								try (PreparedStatement ps = conn.prepareStatement(insertColumnEntry)) {
+									ps.setInt(1, tabId);
 
 									try {
-										cellStmt.setString(3, cel.getcell_value());
-									} catch (NullPointerException e) {
-										cellStmt.setNull(3, java.sql.Types.VARCHAR);
+										if (header.equals("")) {	
+											header = null;
+										}
+										ps.setString(2, header);
+									} catch (SQLException e) {
+										ps.setNull(2, java.sql.Types.VARCHAR);
 									}
 
-									cellStmt.executeUpdate();
-									cellStmt.close();
+									try {
+										ps.setString(3, col.getColumns_type());
+									} catch (SQLException e) {
+										ps.setNull(3, java.sql.Types.VARCHAR);
+									}
+
+									String annotUri = "";
+									if (annot.getItems().size() == 1) {
+										annotUri = annot.getItems().get(0).getIcd10();
+									} else {
+										for (TagItem item : annot.getItems()) {
+											annotUri += item.getIcd10() + ";";
+										}
+									}
+
+									try {
+										if (annotUri.equals("")) {
+											annotUri = null;
+										}
+										ps.setString(4, annotUri);
+									} catch (SQLException e) {
+										ps.setNull(4, java.sql.Types.VARCHAR);
+									}
+									ps.executeUpdate();
+								}
+								
+								String getColumnId = "SELECT MAX(col_id) AS cid FROM COLUMN_ENTRY";
+								int colId = 0;
+								try (PreparedStatement ps = conn.prepareStatement(getColumnId)) {
+									ResultSet rs = ps.executeQuery();
+									colId = rs.getInt("cid");
+								}
+
+								for (Cell cel : col.getcelz()) {
+									if (cel.getcell_value().indexOf("'") != -1) {
+										cel.setcell_values(cel.getcell_value().replace("'", "''"));
+									}  // FIXME
+
+									if (cel.getcell_value().equals("") || cel.getcell_value().equals(" ")) {
+										cel.setcell_values(null);
+									} // FIXME
+
+									String insertCellEntry = "INSERT INTO CELL_ENTRY (row_id,col_id,value) VALUES (?,?,?)";
+									try (PreparedStatement ps = conn.prepareStatement(insertCellEntry)) {
+										ps.setInt(1, cel.getRow_number() + 1);
+										ps.setInt(2, colId);
+
+										try {
+											ps.setString(3, cel.getcell_value());
+										} catch (SQLException e) {
+											ps.setNull(3, java.sql.Types.VARCHAR);
+										}
+										ps.executeUpdate();
+									}
 								}
 							}
 						}
-					} catch (NullPointerException e) {
+					} catch (SQLException e) {
+						Main.logger.error(e);
 						continue;
 					}
 				}
-
 			} else {
 				Main.logger.debug(article.getPmcid() + " already exists!");
 			}
 		} catch (Exception e) {
-			Main.logger.error("Error in Insert Article Function");
-			e.printStackTrace();
+			Main.logger.error(e);
 		}
 	}
 
