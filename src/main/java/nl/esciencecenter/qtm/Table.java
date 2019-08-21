@@ -52,7 +52,7 @@ public class Table {
 
 	private boolean isColSpanning = false;
 	private int structureClass = 0; // 0 - no class,1- simplest, 2 - simple,
-																	// 3 - medium, 4 - complex
+									// 3 - medium, 4 - complex
 	private StructureType tableStructureType;
 
 	// Constructors

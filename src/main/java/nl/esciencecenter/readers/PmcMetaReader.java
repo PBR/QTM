@@ -124,18 +124,18 @@ public class PmcMetaReader {
 
 			// abbreviations
 			this.abbreviator = new Abbreviator();
-			HashMap<String, String> abbreviationsFound = new HashMap<String, String>();
+			HashMap<String, String> abbrevs = new HashMap<String, String>();
+			abbrevs = abbreviator.getAbbrevPairs(art.getPlainText());
 
-			abbreviationsFound = abbreviator.extractAbbrPairs(art.getPlainText());
-
-			art.setAbbreviations(abbreviationsFound);
-			Main.logger.debug("List of abbreviations:");
-			for (String key : art.getAbbreviations().keySet()) {
-				Main.logger.debug("\t" + key + "\t->\t" + art.getAbbreviations().get(key));
+			art.setAbbreviations(abbrevs);
+			Main.logger.debug("List abbreviation->expansion pairs:");
+			for (String abbrev : art.getAbbreviations().keySet()) {
+				String expansion = art.getAbbreviations().get(abbrev);
+				Main.logger.debug(" " + abbrev + "\t->\t" + expansion);
 			}
 
 			// Tables
-			Main.logger.debug("Parsing tables:");
+			Main.logger.debug("Parsing tables...");
 
 			art = TableParser.parseTables(art, parse);
 

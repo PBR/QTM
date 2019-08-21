@@ -57,7 +57,7 @@ public class Abbreviator {
 		return false;
 	}
 
-	public HashMap<String, String> extractAbbrPairs(String text) {
+	public HashMap<String, String> getAbbrevPairs(String text) {
 
 		HashMap<String, String> abbrev = new HashMap<String, String>();
 

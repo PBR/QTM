@@ -197,7 +197,7 @@ public class Main {
 		logger.info("Input list of articles: " + pmcIds.toString());
 
 		// populate db
-		QtlDb.createTables();
+		QtlDb.createDb();
 
 		// (re)start Solr server
 		controlSolr("restart");

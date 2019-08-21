@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,19 +20,22 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+
 import org.json.simple.JSONObject;
 
+import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.qtm.Article;
 import nl.esciencecenter.qtm.Cell;
 import nl.esciencecenter.qtm.Columns;
-import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.qtm.Table;
 import nl.esciencecenter.qtm.Trait;
 import nl.esciencecenter.solr.tagger.utils.TagItem;
 import nl.esciencecenter.solr.tagger.utils.TagResponse;
 import nl.esciencecenter.solr.tagger.recognize.Evaluate;
 import nl.esciencecenter.utils.Configs;
-
 
 /**
  *
@@ -64,13 +68,20 @@ public class QtlDb {
 		return true;
 	}
 
-	public static void createTables() {
+	public static void createDb() {
 		try {
 			Main.logger.info("Populating '" + dbFile + "' database...");
 			if (connectionDB()) {
-				String[] cmdLine = new String[]{"bash", "-c", "sqlite3 " + dbFile + "< db_schema.sql"};
+				String line;
+				String[] cmdLine = new String[]{"bash", "-c", "sqlite3 -echo " + dbFile + "< db_schema.sql"};
 				Process p = Runtime.getRuntime().exec(cmdLine);
+				InputStream in = p.getInputStream();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
 				p.waitFor();
+				while ((line = reader.readLine()) != null) {
+					Main.logger.debug(line);
+				}
 			}
 		} catch (Exception e) {
 			Main.logger.error("Failed to populate '" + dbFile + "' database: ", e);
@@ -154,23 +165,21 @@ public class QtlDb {
 								String header = col.getHeader().replaceAll("^\\s+", "");
 								try {
 									if (col.getColumns_type() == "QTL value") {
-										annot = Evaluate
-												.processString(header, coreTraitValues, match, type);
+										annot = Evaluate.processString(header, coreTraitValues, match, type);
 
 									} else if (col.getColumns_type() == "QTL property") {
-										annot = Evaluate
-												.processString(header, coreTraitProperties, match, type);
+										annot = Evaluate.processString(header, coreTraitProperties, match, type);
 									}
 								} catch (Exception e) {
 									Main.logger.error("Failed to annotate column '" + header + "'", e);
 								}
 
-								String insertColumnEntry= "INSERT INTO COLUMN_ENTRY (tab_id,header,type,annot) VALUES (?,?,?,?)";
+								String insertColumnEntry = "INSERT INTO COLUMN_ENTRY (tab_id,header,type,annot) VALUES (?,?,?,?)";
 								try (PreparedStatement ps = conn.prepareStatement(insertColumnEntry)) {
 									ps.setInt(1, tabId);
 
 									try {
-										if (header.equals("")) {	
+										if (header.equals("")) {
 											header = null;
 										}
 										ps.setString(2, header);
@@ -203,7 +212,7 @@ public class QtlDb {
 									}
 									ps.executeUpdate();
 								}
-								
+
 								String getColumnId = "SELECT MAX(col_id) AS cid FROM COLUMN_ENTRY";
 								int colId = 0;
 								try (PreparedStatement ps = conn.prepareStatement(getColumnId)) {
@@ -214,7 +223,7 @@ public class QtlDb {
 								for (Cell cel : col.getcelz()) {
 									if (cel.getcell_value().indexOf("'") != -1) {
 										cel.setcell_values(cel.getcell_value().replace("'", "''"));
-									}  // FIXME
+									} // FIXME
 
 									if (cel.getcell_value().equals("") || cel.getcell_value().equals(" ")) {
 										cel.setcell_values(null);
