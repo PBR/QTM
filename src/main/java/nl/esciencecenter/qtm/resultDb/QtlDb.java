@@ -19,8 +19,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.simple.JSONObject;
-
 import nl.esciencecenter.qtm.Article;
 import nl.esciencecenter.qtm.Cell;
 import nl.esciencecenter.qtm.Columns;
@@ -54,17 +52,11 @@ public class QtlDb {
 		if (conn == null) {
 
 			try {
-
-				Class.forName("org.sqlite.JDBC");
-
-				String sDBUrl = dbDriver + ":" + dbFile;
-				conn = DriverManager.getConnection(sDBUrl);
-
+				String dbUrl = dbDriver + ":" + dbFile;
+				conn = DriverManager.getConnection(dbUrl);
 			} catch (Exception e) {
-				Main.logger.error("Error in connecting to the output database");
-				e.printStackTrace();
-				Main.logger.error(e.getClass().getName() + ": " + e.getMessage());
-				System.exit(0);
+				Main.logger.error("Failed to connect to the database: " + e);
+				System.exit(1);
 			}
 			return true;
 		} else
@@ -80,8 +72,8 @@ public class QtlDb {
 
 			}
 		} catch (Exception e) {
-			Main.logger.error("Error in creating database tables");
-			e.printStackTrace();
+			Main.logger.error("Error in creating database tables: " + e);
+			System.exit(1);
 		}
 	}
 
@@ -183,8 +175,7 @@ public class QtlDb {
 												.processString(colHeader, coreTraitProperties, match, type);
 									}
 								} catch (Exception e) {
-									e.getStackTrace();
-									Main.logger.error("Error in column Annotation" + colHeader);
+									Main.logger.error("Error in annotating column: " + e);
 								}
 
 								String insertColTable = "INSERT INTO COLUMN_ENTRY (tab_id, header,type, annot) VALUES (?,?,?,?)";
@@ -211,8 +202,6 @@ public class QtlDb {
 								else {
 									for (TagItem item : colAnno.getItems()) {
 										colAnnoUri += item.getIcd10() + ";";
-										// Main.logger.trace("%%%" +
-										// item.getIcd10());
 									}
 								}
 
@@ -252,7 +241,6 @@ public class QtlDb {
 									} catch (NullPointerException e) {
 										cellStmt.setNull(3, java.sql.Types.VARCHAR);
 									}
-
 									cellStmt.executeUpdate();
 									cellStmt.close();
 								}
@@ -262,13 +250,11 @@ public class QtlDb {
 						continue;
 					}
 				}
-
 			} else {
 				Main.logger.debug(article.getPmc() + " already exists!");
 			}
 		} catch (Exception e) {
-			Main.logger.error("Error in Insert Article Function");
-			e.printStackTrace();
+			Main.logger.error(e);
 		}
 	}
 
@@ -350,8 +336,7 @@ public class QtlDb {
 									}
 								}
 							} catch (Exception e) {
-								e.getStackTrace();
-								Main.logger.error("Error in Marker annotations in apache solr");
+								Main.logger.error("Error in annotating markers: " + e);
 							}
 
 							try {
@@ -372,8 +357,7 @@ public class QtlDb {
 									}
 								}
 							} catch (Exception e) {
-								e.getStackTrace();
-								Main.logger.error("Error in Gene annotations in apache solr");
+								Main.logger.error("Error in annotating genes: " + e);
 							}
 						}
 					}
@@ -532,21 +516,6 @@ public class QtlDb {
 		return check;
 	}
 
-	public static JSONObject processSolrOutputtoJson(String output) {
-		Main.logger.debug(output);
-		String[] s = output.split(Pattern.quote("|"));
-		// use HashMap to parameterize for JSONObject
-		HashMap<String, Object> jm = new HashMap<String, Object>();
-		jm.put("icd", s[0]);
-		jm.put("matchingText", s[1]);
-		jm.put("prefTerm", s[2]);
-		jm.put("Term", s[3]);
-		jm.put("start", s[4]);
-		jm.put("end", s[5]);
-		jm.put("Uuid", s[6]);
-		JSONObject j = new JSONObject(jm);
-		return j;
-	}
 
 	public static int numberofTraitTable() {
 		int tables = 0;
