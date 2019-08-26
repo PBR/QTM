@@ -405,53 +405,6 @@ public class Table {
 		sectionOfTable = secOfTable;
 	}
 
-	/**
-	 * public boolean ParseTableHeadingsforTraits(){
-	 *
-	 * boolean found=false; //String word1="QTL"; String word1="trait"; //String
-	 * word3="Quantitavie Trait loci"; if(hasHeader) {
-	 *
-	 * }
-	 *
-	 *
-	 * //found=(table_caption.toLowerCase().indexOf(word1.toLowerCase())!=-1) ||
-	 * (table_footer.toLowerCase().indexOf(word1.toLowerCase())!=-1) ||
-	 * (table_caption.toLowerCase().indexOf(word2.toLowerCase())!=-1) ||
-	 * (table_footer.toLowerCase().indexOf(word2.toLowerCase())!=-1) ;
-	 *
-	 * return(found); }
-	 *
-	 **/
-
-	// public void printTable() throws Exception {
-	//
-	// StringBuffer sb = new StringBuffer();	
-	// int hrows = 0;
-	// while (hrows < this.header_cells.length) {
-	// for (int cols = 0; cols < this.num_of_columns; cols++) {
-	// sb.append(this.header_cells[hrows][cols].getHeadercell_value() +
-	// "("
-	// + this.header_cells[hrows][cols].getHeaderCell_type() + ")" + "\t");
-	// }
-	// Main.logger.debug(sb.toString());
-	// hrows++;
-	// }
-	//
-	// int rows = 0;
-	// while (rows < this.cells.length) {
-	// for (int cols = 0; cols < this.num_of_columns; cols++) {
-	// sb = new StringBuffer();
-	// sb.append(this.cells[rows][cols].getcell_value() + "(" +
-	// this.cells[rows][cols].getCell_type()
-	// + ")" + "\t");
-	// }
-	// Main.logger.debug(sb.toString());
-	// rows++;
-	// }
-	//
-	// Main.logger.debug("********");
-	// }
-
 	public void printTable2() throws Exception {
 
 		StringBuffer sb = new StringBuffer();
@@ -476,7 +429,6 @@ public class Table {
 			Main.logger.debug(sb.toString());
 			i++;
 		}
-		Main.logger.debug("********");
 	}
 
 	public Table tableClassification() {

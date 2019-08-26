@@ -50,14 +50,12 @@ public class PmcMetaReader {
 
 	private String pmcId;
 
-	private File f1;
+	private File file;
 
-	public PmcMetaReader(File F1) {
+	public PmcMetaReader(File file) {
 		super();
-		this.f1 = F1;
-		Main.logger.debug(F1.getPath());
-		this.fileName = F1.getPath();
-		Main.logger.debug(fileName);
+		this.file = file;
+		this.fileName = file.getPath();
 	}
 
 	public PmcMetaReader(String fName) {
@@ -145,8 +143,7 @@ public class PmcMetaReader {
 			}
 			// Tables
 			Main.logger.debug("\n");
-			Main.logger.debug("Parsing tables in " + art.getPmc() + "now");
-
+			Main.logger.debug("Parsing tables...");
 			art = TableParser.parseTables(art, parse);
 
 		} catch (Exception ex) {
@@ -156,7 +153,7 @@ public class PmcMetaReader {
 
 		art.setNumQTLtables();
 
-		Main.logger.debug("NUMBER OF QTL TABLES:" + art.getNumQTLtables());
+		Main.logger.debug("Number of tables:" + art.getNumQTLtables());
 
 		if (art.getNumQTLtables() > 0) {
 			for (Table t : art.getTables()) {
@@ -310,7 +307,7 @@ public class PmcMetaReader {
 					.getTextContent();
 			title = title.replaceAll("\n", "");
 			title = title.replaceAll("\t", "");
-			Main.logger.debug("Titel of the Article: " + title);
+			Main.logger.debug("Title of the article: " + title);
 		}
 
 		// Authors List
@@ -341,17 +338,11 @@ public class PmcMetaReader {
 					.getNodeValue().equals("ppub")) {
 				String issnp = issn.item(j).getTextContent();
 				art.setPissn(issnp);
-				if (issnp != null) {
-					// Main.logger.debug(issnp);
-				}
 			}
 			if (issn.item(j).getAttributes().getNamedItem("pub-type")
 					.getNodeValue().equals("epub")) {
 				String issne = issn.item(j).getTextContent();
 				art.setPissn(issne);
-				if (issne != null) {
-					// Main.logger.debug(issne);
-				}
 			}
 		}
 
@@ -366,9 +357,7 @@ public class PmcMetaReader {
 							.equals("pmid")) {
 				String pmid = article_id.item(j).getTextContent();
 				art.setPmid(pmid);
-				if (pmid != null) {
-					// Main.logger.debug(pmid);
-				}
+
 			}
 			if (article_id.item(j).getAttributes() != null
 					&& article_id.item(j).getAttributes()
@@ -379,9 +368,6 @@ public class PmcMetaReader {
 				String pmc = "PMC" + article_id.item(j).getTextContent();
 				art.setPmc(pmc);
 				art.setSpec_id(pmc);
-				if (pmc != null) {
-					Main.logger.debug("PMC id: " + pmc);
-				}
 			}
 			if (article_id.item(j).getAttributes() != null
 					&& article_id.item(j).getAttributes()
@@ -419,17 +405,13 @@ public class PmcMetaReader {
 			publisher_name = parse.getElementsByTagName("publisher-name")
 					.item(0).getTextContent();
 		art.setPublisher_name(publisher_name);
-		if (publisher_name != null)
-			Main.logger.debug("Publisher: " + publisher_name);
+
 		String publisher_loc = "";
 		if (parse.getElementsByTagName("publisher-loc").item(0) != null)
 			publisher_loc = parse.getElementsByTagName("publisher-loc").item(0)
 					.getTextContent();
 		art.setPublisher_loc(publisher_loc);
-		if (publisher_loc != null)
-			// Main.logger.debug(publisher_loc);
-
-			art.setTitle(title);
+		art.setTitle(title);
 		art.setXML(xml);
 		art.setAuthors(auths);
 		art.setJournal_name(journal);
@@ -454,23 +436,21 @@ public class PmcMetaReader {
 		String text = "";
 
 		if (parse.getElementsByTagName("article-title").item(0) != null) {
-			text += "\n\n\n[TITLE]"
+			text += "[TITLE]"
 					+ parse.getElementsByTagName("article-title").item(0)
-							.getTextContent()
-					+ "\n\n";
+							.getTextContent() + "\n";
 		}
 
 		if (parse.getElementsByTagName("abstract").item(0) != null) {
-			text += "\n\n\n[Abstract]" + parse.getElementsByTagName("abstract")
+			text += "[Abstract]" + parse.getElementsByTagName("abstract")
 					.item(0).getTextContent() + "\n";
 		}
 
 		if (parse.getElementsByTagName("body").item(0) != null) {
-			text += "\n\n\n[MainText]" + parse.getElementsByTagName("body")
+			text += "[MainText]" + parse.getElementsByTagName("body")
 					.item(0).getTextContent() + "\n";
 
 		}
-
 		art.setPlain_text(text);
 
 		try {
@@ -479,7 +459,7 @@ public class PmcMetaReader {
 			writer.write(text);
 			writer.close();
 		} catch (Exception e) {
-			e.getMessage();
+			Main.logger.error(e);
 		}
 		return art;
 	}
@@ -502,7 +482,6 @@ public class PmcMetaReader {
 				nodeList.add(child);
 			}
 		}
-
 		return nodeList;
 	}
 
@@ -511,7 +490,7 @@ public class PmcMetaReader {
 
 		File xmlfile = new File(pmcId + ".xml");
 
-		try{
+		try {
 			if (!xmlfile.exists() || xmlfile.length() == 0) {
 				xmlfile.createNewFile();
 
@@ -520,13 +499,11 @@ public class PmcMetaReader {
 
 				URL url = new URL(pmcWebserviceUrl);
 				FileUtils.copyURLToFile(url, xmlfile);
-
 			}
 			return xmlfile;
 		} catch (Exception e) {
-
-			e.printStackTrace();
-
+			Main.logger.error(e);
 		}
 		return xmlfile;
-	}}
+	}
+}

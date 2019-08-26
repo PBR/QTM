@@ -131,9 +131,7 @@ public class QtlDb {
 					articlestmt.close();
 				} catch (SQLException e) {
 					// e.printStackTrace();
-					Main.logger.error("*************************************************");
-					Main.logger.error("Article already exits! Please provide unique entries.");
-					Main.logger.error("*************************************************");
+					Main.logger.error("Article already exits!");
 				}
 
 				String insertAbrevTable = "INSERT INTO ABBREVIATION VALUES (?, ?, ?)";
@@ -535,7 +533,7 @@ public class QtlDb {
 	}
 
 	public static JSONObject processSolrOutputtoJson(String output) {
-		Main.logger.debug("\n" + output);
+		Main.logger.debug(output);
 		String[] s = output.split(Pattern.quote("|"));
 		// use HashMap to parameterize for JSONObject
 		HashMap<String, Object> jm = new HashMap<String, Object>();

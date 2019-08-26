@@ -196,7 +196,7 @@ public class Main {
 		}
 		reader.close();
 		logger.info("=== QTLTableMiner++ ====");
-		logger.info("Input list of articles:\n\t" + pmcIds.toString());
+		logger.info("Input list of articles: " + pmcIds.toString());
 
 		// init db
 		QtlDb.createTables();

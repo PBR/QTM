@@ -167,8 +167,6 @@ public class Evaluate {
 						+ URLEncoder.encode(match, "UTF-8")
 						+ "&matchText=true&tagsLimit=5000&wt=json";
 
-				// Main.logger.debug(request);
-
 				URI uri=new URI("http"
 						,"localhost:8983",
 						"/solr/" + core + "/tag",
@@ -181,21 +179,11 @@ public class Evaluate {
 				for (TagItem item : response.getItems()) {
 					Main.logger.debug(item.getMatchText()+"\t"+item.getPrefTerm()+"\t"+item.getIcd10());
 				}
-				Main.logger.debug("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Main.logger.debug(e);
 			}
 		}
 	}
-
-
-
-
-
-
-
-
-
 
 	public static TagResponse processString(String input, String core,
 			String match, String type) throws UnsupportedEncodingException,
