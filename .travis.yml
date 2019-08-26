@@ -14,8 +14,8 @@ env:
     - INFILE=articles.txt
     - OUTFILE=qtl.csv
 install:
-  - mvn install
-  - solr/install_solr.sh
+  - mvn clean install
+  - solr/install.sh
 script:
   - $QTM_BIN -v
   - $QTM_BIN -V 7 $INFILE
