@@ -1,4 +1,4 @@
-package nl.esciencecenter.solr.abbreviator;
+package nl.esciencecenter.qtm.solr.abbreviator;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 import nl.esciencecenter.qtm.Article;
 import nl.esciencecenter.qtm.Main;
-import nl.esciencecenter.utils.Configs;
+import nl.esciencecenter.qtm.utils.Configs;
 
 /**
  *

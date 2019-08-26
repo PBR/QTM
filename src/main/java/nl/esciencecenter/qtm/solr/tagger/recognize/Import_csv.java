@@ -1,9 +1,10 @@
-package nl.esciencecenter.solr.tagger.recognize;
+package nl.esciencecenter.qtm.solr.tagger.recognize;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package nl.esciencecenter.solr.tagger.utils;
+package nl.esciencecenter.qtm.solr.tagger.utils;
 
 import java.util.ArrayList;
 import java.util.List;

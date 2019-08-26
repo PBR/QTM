@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.esciencecenter.resultDb;
+package nl.esciencecenter.qtm.resultDb;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,9 +27,10 @@ import nl.esciencecenter.qtm.Columns;
 import nl.esciencecenter.qtm.Main;
 import nl.esciencecenter.qtm.Table;
 import nl.esciencecenter.qtm.Trait;
-import nl.esciencecenter.solr.tagger.utils.TagItem;
-import nl.esciencecenter.solr.tagger.utils.TagResponse;
-import nl.esciencecenter.utils.Configs;
+import nl.esciencecenter.qtm.solr.tagger.recognize.Evaluate;
+import nl.esciencecenter.qtm.solr.tagger.utils.TagItem;
+import nl.esciencecenter.qtm.solr.tagger.utils.TagResponse;
+import nl.esciencecenter.qtm.utils.Configs;
 
 /**
  *
@@ -174,11 +175,11 @@ public class QtlDb {
 								String colHeader = col.getHeader().replaceAll("[^\\w]", "");
 								try {
 									if (col.getColumns_type() == "QTL value") {
-										colAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
+										colAnno = Evaluate
 												.processString(colHeader, coreTraitValues, match, type);
 
 									} else if (col.getColumns_type() == "QTL property") {
-										colAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
+										colAnno = Evaluate
 												.processString(colHeader, coreTraitProperties, match, type);
 									}
 								} catch (Exception e) {
@@ -299,7 +300,7 @@ public class QtlDb {
 					int colId = rs1.getInt("col_id");
 					int rowId = rs1.getInt("row_id");
 					Trait T = new Trait(possibleTrait);
-					TagResponse traitAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
+					TagResponse traitAnno = Evaluate
 							.processString(getOnlyStrings(T.getTraitName()), coreTraitDescriptors, match, type);
 					PreparedStatement stmtSelectPropertiesandValues = conn.prepareStatement(sql2);
 					stmtSelectPropertiesandValues.setInt(1, tabId);
@@ -334,7 +335,7 @@ public class QtlDb {
 
 								for (String core : coreMarkers) {
 									TagResponse markerAnno = new TagResponse();
-									markerAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate
+									markerAnno = Evaluate
 											.processString(cellValue, core, match, type);
 
 									if (!"".equals(markerAnno.toString())) {
@@ -357,14 +358,13 @@ public class QtlDb {
 
 								for (String core : coreGenes) {
 									TagResponse geneAnno = new TagResponse();
-									geneAnno = nl.esciencecenter.solr.tagger.recognize.Evaluate.processString(cellValue,
+									geneAnno = Evaluate.processString(cellValue,
 											core, match, type);
-
 									if (!"".equals(geneAnno.toString())) {
 										genes += cellValue;
-										if (geneAnno.getItems().size() == 1)
+										if (geneAnno.getItems().size() == 1) {
 											genesUri += geneAnno.getItems().get(0).getIcd10() + ";";
-										else if (geneAnno.getItems().size() > 1) {
+										} else if (geneAnno.getItems().size() > 1) {
 											for (TagItem item : geneAnno.getItems()) {
 												genesUri += item.getIcd10() + ";";
 											}

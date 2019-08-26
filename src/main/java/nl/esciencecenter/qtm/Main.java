@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
@@ -23,9 +25,11 @@ import net.sourceforge.argparse4j.inf.Argument;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-import nl.esciencecenter.readers.PmcMetaReader;
-import nl.esciencecenter.resultDb.QtlDb;
-import nl.esciencecenter.utils.Configs;
+
+import nl.esciencecenter.qtm.readers.PmcMetaReader;
+import nl.esciencecenter.qtm.resultDb.QtlDb;
+import nl.esciencecenter.qtm.utils.Configs;
+import nl.esciencecenter.qtm.solr.abbreviator.AbbrevtoSynonyms;
 
 public class Main {
 
@@ -221,7 +225,7 @@ public class Main {
 		}
 
 		// add abbreviations to Solr synonyms files
-		nl.esciencecenter.solr.abbreviator.AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
+		AbbrevtoSynonyms.abbrevToSolrSynonyms(articles);
 		controlSolr("restart");
 
 		logger.info("Storing article entries in the database.");

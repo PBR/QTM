@@ -22,7 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import nl.esciencecenter.qtm.Main;
-import nl.esciencecenter.solr.tagger.utils.Permutations;
+import nl.esciencecenter.qtm.solr.tagger.utils.Permutations;
 
 
 public class ImportJSON {

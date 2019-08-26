@@ -1,4 +1,4 @@
-package nl.esciencecenter.solr.tagger.recognize;
+package nl.esciencecenter.qtm.solr.tagger.recognize;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,9 +9,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,9 +40,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import nl.esciencecenter.qtm.Main;
-import nl.esciencecenter.solr.tagger.utils.Position;
-import nl.esciencecenter.solr.tagger.utils.TagItem;
-import nl.esciencecenter.solr.tagger.utils.TagResponse;
+import nl.esciencecenter.qtm.solr.tagger.utils.Position;
+import nl.esciencecenter.qtm.solr.tagger.utils.TagItem;
+import nl.esciencecenter.qtm.solr.tagger.utils.TagResponse;
 
 /**
  * @author gurnoor

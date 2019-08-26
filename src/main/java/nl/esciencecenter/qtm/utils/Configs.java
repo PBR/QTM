@@ -1,8 +1,9 @@
-package nl.esciencecenter.utils;
+package nl.esciencecenter.qtm.utils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.util.Properties;
 
 public class Configs {

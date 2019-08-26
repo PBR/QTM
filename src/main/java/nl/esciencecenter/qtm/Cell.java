@@ -8,7 +8,7 @@ package nl.esciencecenter.qtm;
 
 import org.json.simple.JSONObject;
 
-import nl.esciencecenter.utils.Utilities;
+import nl.esciencecenter.qtm.utils.Utilities;
 
 public class Cell {
 

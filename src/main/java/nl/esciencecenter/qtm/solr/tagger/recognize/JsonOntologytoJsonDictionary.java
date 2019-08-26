@@ -1,9 +1,10 @@
-package nl.esciencecenter.solr.tagger.recognize;
+package nl.esciencecenter.qtm.solr.tagger.recognize;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+
 import java.util.Map.Entry;
 
 import com.google.gson.JsonElement;

@@ -3,10 +3,11 @@
  * S & H algorithm
  */
 
-package nl.esciencecenter.abbreviation;
+package nl.esciencecenter.qtm.abbreviation;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.StringTokenizer;

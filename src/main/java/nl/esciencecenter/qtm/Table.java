@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import nl.esciencecenter.solr.tagger.utils.TagResponse;
-import nl.esciencecenter.utils.Configs;
+import nl.esciencecenter.qtm.solr.tagger.utils.TagResponse;
+import nl.esciencecenter.qtm.utils.Configs;
+import nl.esciencecenter.qtm.solr.tagger.recognize.Evaluate;
 
 public class Table {
 
@@ -562,14 +563,13 @@ public class Table {
 					Integer j = myListIterator.next();
 					tc[j].setColumns_type("QTL property");
 					for (int k = 0; k < tc[j].getcelz().length; k++) {
-
-						TagResponse QTLannotation = nl.esciencecenter.solr.tagger.recognize.Evaluate
-								.processString(
-										tc[j].getcelz()[k].getcell_value()
-												.toLowerCase(),
-										Configs.getPropertyQTM("coreTraitDescriptors"),
-										Configs.getPropertyQTM("match"),
-										Configs.getPropertyQTM("type"));
+						TagResponse QTLannotation = Evaluate.processString(tc[j]
+								.getcelz()[k]
+								.getcell_value()
+								.toLowerCase(),
+								Configs.getPropertyQTM("coreTraitDescriptors"),
+								Configs.getPropertyQTM("match"),
+								Configs.getPropertyQTM("type"));
 
 						if (QTLannotation.getItems().size() != 0) {
 							numofannotatedTerms++;

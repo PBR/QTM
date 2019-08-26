@@ -1,4 +1,4 @@
-package nl.esciencecenter.solr.tagger.utils;
+package nl.esciencecenter.qtm.solr.tagger.utils;
 
 public class Position {
 
