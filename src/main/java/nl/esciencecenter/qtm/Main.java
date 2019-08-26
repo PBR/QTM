@@ -178,9 +178,6 @@ public class Main {
 			QtlDb.dbFile = outputFile + ".db";
 		}
 
-		// (re)start Solr server
-		controlSolr("restart");
-
 		ArrayList<String> pmcIds = new ArrayList<String>();
 		BufferedReader reader = null;
 
@@ -196,7 +193,7 @@ public class Main {
 			logger.error("Input file '" + inputArticlesFile + "' not found.");
 			System.exit(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Main.logger.error(e);
 		}
 		reader.close();
 		logger.info("=== QTLTableMiner++ ====");
@@ -204,6 +201,9 @@ public class Main {
 
 		// init db
 		QtlDb.createTables();
+
+		// (re)start Solr server
+		controlSolr("restart");
 
 		// download/read articles in XML
 		File[] xmlFiles = new File[pmcIds.size()];
