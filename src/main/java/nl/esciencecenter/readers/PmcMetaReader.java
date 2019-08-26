@@ -474,12 +474,8 @@ public class PmcMetaReader {
 		art.setPlain_text(text);
 
 		try {
-
-			String textFiles = Configs.getPropertyQTM("textFiles");
-
 			Writer writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(textFiles + art.getPmc() + ".txt"),
-					"utf-8"));
+				new FileOutputStream(art.getPmc() + ".txt"), "utf-8"));
 			writer.write(text);
 			writer.close();
 		} catch (Exception e) {
