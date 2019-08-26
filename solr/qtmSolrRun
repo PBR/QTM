@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
+set -xe
 
 CMD=${1:-"start"}
 PORT=${2:-"8983"}
