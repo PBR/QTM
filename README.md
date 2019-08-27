@@ -1,17 +1,18 @@
 # QTL TableMiner++ (QTM)
 
-[![Build Status](https://travis-ci.org/candYgene/QTM.svg?branch=master)](https://travis-ci.org/candYgene/QTM) [![DOI](https://zenodo.org/badge/85691450.svg)](https://zenodo.org/badge/latestdoi/85691450)
+[![Build Status](https://travis-ci.org/candYgene/QTM.svg?branch=master)](https://travis-ci.org/candYgene/QTM)
+ [![DOI](https://zenodo.org/badge/85691450.svg)](https://doi.org/10.5281/zenodo.1193639)
 [![Published in BMC Bioinformatics](https://img.shields.io/badge/published%20in-BMC%20Bioinformatics-blue.svg)](https://doi.org/10.1186/s12859-018-2165-7)
 
 ## Description
-A significant amount of experimental information about [_Quantitative Trait Locus_](https://en.wikipedia.org/wiki/Quantitative_trait_locus) (QTL) studies are described in (heterogenous) tables of scientific articles. Briefly, a QTL is a genomic region that correlates with a trait of interest (phenotype). _QTM_ is a command-line tool to retrieve and semantically annotate results obtained from QTL mapping experiments. It takes full-text articles from the [Europe PMC](https://europepmc.org/) repository as input and outputs the extracted QTLs into a relational database (SQLite) and text file (CSV).
+A significant amount of experimental information about [_Quantitative Trait Locus_](https://en.wikipedia.org/wiki/Quantitative_trait_locus) (QTL) studies are described in (heterogenous) tables of scientific articles. Briefly, a QTL is a genomic region that correlates with a trait of interest (phenotype). _QTM_ is a command-line tool to retrieve and semantically annotate results obtained from QTL mapping experiments. It takes full-text articles from the [Europe PMC](https://europepmc.org/) repository as input and outputs QTLs in a relational database (SQLite, see the [ER diagram](doc/ER_diagram.png)) and a text file (CSV).
 
 ## Requirements
 
-* [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html) 1.7 or later
+* Oracle/OpenJDK8
 * [Apache Maven](https://maven.apache.org/) 3.x
 * [SQLite](https://sqlite.org/) 3.x
-* [Apache Solr](https://lucene.apache.org/solr/) 6.x with domain-specific vocabularies and ontologies (_Solr cores_):
+* [Apache Solr](https://lucene.apache.org/solr/) 6.x with cores based on domain-specific vocabularies and ontologies (_Solr cores_):
   * [Gene Ontology](http://www.ontobee.org/ontology/GO) (GO)
   * [Plant Trait Ontology](http://www.ontobee.org/ontology/TO) (TO)
   * [Phenotypic quality ontology](http://www.ontobee.org/ontology/PATO) (PATO)
@@ -25,37 +26,39 @@ A significant amount of experimental information about [_Quantitative Trait Locu
 ```
 git clone https://github.com/PBR/QTM.git
 cd QTM
-mvn install
-solr/install_solr.sh
+mvn clean install
+solr/install.sh
 ```
 
-## Example use
-
-- input: `articles.txt` with PMCIDs (one per line)
-- output: `qtl.csv` and `qtl.db` (see the database model or Entity-Relationship diagram [here](doc/ER_diagram.png))
-
-`./QTM articles.txt`
-
-`./QTM -h`
+## Usage
 
 ```
-...
-USAGE
-=====
-  QTM [-v|-h]
-  QTM [-o FILE_PREFIX] FILE
+./QTM -h
+usage: QTM [-h] [-v] [-o OUTPUT] [-c CONFIG] [-V VERBOSE] FILE
 
-ARGUMENTS
-=========
-  FILE				List of full-text articles from Europe PMC.
-				Enter one PMCID per line.
+Software to extract QTL data from full-text articles.
 
-OPTIONS
-=======
-  -o, --output FILE_PREFIX	Output files in SQLite/CSV formats.
-				(default: qtl.{db,csv})
-  -v, --version			Print software version.
-  -h, --help			Print this help message.
+positional arguments:
+  FILE                   input list of articles (PMCIDs, one per line)
+
+named arguments:
+  -h, --help             show this help message and exit
+  -v, --version          show version and exit
+  -o OUTPUT, --output OUTPUT
+                         filename prefix for output in SQLite (.db) and text (.csv) files (default: qtl)
+  -c CONFIG, --config CONFIG
+                         config file (default: config.properties)
+  -V VERBOSE, --verbose VERBOSE
+                         verbosity console output: 0-7 for OFF, FATAL,  ERROR,  WARN,  INFO,  DEBUG, TRACE or ALL (default: 4 [INFO])
+```
+
+## Example data
+
+- **input**: `articles.txt` and `config.properties` files
+- **output**: `qtl.csv` and `qtl.db` files
+
+```
+./QTM articles.txt
 ```
 
 Note: The example I/O files are provided in the [data](https://github.com/PBR/QTM/tree/master/data) directory. In case you don't have Internet access or the Europe PMC API does not work, please copy the articles (`.xml`) from this directory to the root of this repository.
