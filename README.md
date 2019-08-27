@@ -57,8 +57,9 @@ named arguments:
 - **input**: `articles.txt` and `config.properties` files
 - **output**: `qtl.csv` and `qtl.db` files
 
-```
+Note: If you don't have access to Internet or Europe PMC, you can still run _QTM_ on XML files stored in the [data](data/) directory.
+
+```bash
+# cp data/*.xml .
 ./QTM articles.txt
 ```
-
-Note: The example I/O files are provided in the [data](https://github.com/PBR/QTM/tree/master/data) directory. In case you don't have Internet access or the Europe PMC API does not work, please copy the articles (`.xml`) from this directory to the root of this repository.
