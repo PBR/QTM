@@ -442,19 +442,14 @@ public class Table {
 
 		HashMap<String, Integer> ColTypes = new HashMap<String, Integer>();
 
-		// Mian.logger.trace(tc[0].getRowcell()[61].getcell_value());
 		for (int l = 0; l < tc.length; l++) {
 			ColTypes.clear();
 			ColTypes.put("Partially Numeric", 0);
 			ColTypes.put("Numeric", 0);
 			ColTypes.put("Text", 0);
 			ColTypes.put("Empty", 0);
-			// Main.logger.trace("Row length is " + tc[l].getRowcell().length);
 			try {
 				for (int k = 0; k < tc[l].getcelz().length; k++) {
-					// Main.logger.trace("k is" + k);
-					// Main.logger.trace("l is" +l +"\t "+ k+"\t"+
-					// tc[l].getRowcell()[k].getcell_value());
 					if (tc[l].getcelz()[k].getCell_type() == "Numeric") {
 						ColTypes.put("Numeric", ColTypes.get("Numeric") + 1);
 					} else if (tc[l].getcelz()[k]
@@ -464,15 +459,12 @@ public class Table {
 					} else if (tc[l].getcelz()[k].getCell_type() == "Text") {
 
 						ColTypes.put("Text", ColTypes.get("Text") + 1);
-						// Main.logger.trace("$$$$ I am here now $$$$" + "\t" +
-						// ColTypes.get("Text"));
 					} else if (tc[l].getcelz()[k].getCell_type() == "Empty") {
 						ColTypes.put("Empty", ColTypes.get("Empty") + 1);
 					}
-
 				}
-			} catch (NullPointerException e) {
-
+			} catch (Exception e) {
+				Main.logger.debug(e);
 			}
 
 			String word1 = "qtl";
@@ -491,19 +483,6 @@ public class Table {
 				tc[l].setColumns_type("QTL value");
 			else
 				tc[l].setColumns_type("QTL property");
-
-			// if(totalText >= 0.75)
-			// tc[l].setColumns_type("QTL property");
-
-			// if (ColTypes.get("Empty") == tc[l].getRowcell().length)
-			// tc[l].setColumns_type("Empty");
-
-			// if (ColTypes.get("Numeric") == 0 && ColTypes.get("Partially
-			// Numeric") == 0)
-			// tc[l].setColumns_type("QTL property");
-
-			// if (ColTypes.get("Text") == 0)
-			// tc[l].setColumns_type("QTL value");
 
 			int countwords = 0;
 			try {
@@ -528,9 +507,9 @@ public class Table {
 									.indexOf(word3) != -1)
 						countwords++;
 				}
-			} catch (NullPointerException e) {
-				Main.logger.warn(
-						"*cannot classify heading on " + l + "column\n");
+			} catch (Exception e) {
+				Main.logger.warn("Failed to classify column #" + l + " header.");
+				Main.logger.debug(e);
 			}
 
 			if (countwords > 0)
@@ -539,7 +518,6 @@ public class Table {
 			if (tc[l].getColumns_type() == null) {
 				tc[l].setColumns_type("NotIdentified");
 			}
-
 		}
 
 		// filter out 1 QTL descriptor based on annotations
@@ -583,12 +561,9 @@ public class Table {
 				}
 				tc[bestmatch].setColumns_type("QTL descriptor");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Main.logger.debug(e);
 			}
 		}
-
 		return this;
-
 	}
-
 }
