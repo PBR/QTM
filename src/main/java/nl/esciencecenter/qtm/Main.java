@@ -213,10 +213,10 @@ public class Main {
 				xmlFiles[i] = PmcMetaReader.pmcDowloadXml(pmcIds.get(i));
 				PmcMetaReader pmcMetaReader = new PmcMetaReader(xmlFiles[i]);
 				// parse metadata
-				logger.info("Processing " + pmcIds.get(i) + "...");
+				logger.info("Processing article '" + pmcIds.get(i) + "'...");
 				articles[i] = pmcMetaReader.read();
 			} else {
-				logger.info("Article with " + pmcIds.get(i) + " already exists.");
+				logger.info("Article '" + pmcIds.get(i) + "' was processed already!");
 				if (pmcIds.size() == i + 1)
 					return;
 				else

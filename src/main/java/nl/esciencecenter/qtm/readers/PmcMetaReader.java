@@ -136,20 +136,13 @@ public class PmcMetaReader {
 
 			art.setAbbreviations(abbreviationsFound);
 
-			Main.logger.debug("\nList of abbreviations in " + art.getPmc());
-			for (String key : art.getAbbreviations().keySet()) {
-				Main.logger.debug(
-						key + "\t->\t" + art.getAbbreviations().get(key));
-
-			}
 			// Tables
-			Main.logger.debug("\n");
 			Main.logger.debug("Parsing tables...");
 			art = TableParser.parseTables(art, parse);
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			Main.logger.error("Problem in processing xml file");
+		} catch (Exception e) {
+			Main.logger.error("Failed to process file '" + fileName + "': " + e);
+			System.exit(1);
 		}
 
 		art.setNumQTLtables();
@@ -486,25 +479,24 @@ public class PmcMetaReader {
 		return nodeList;
 	}
 
-	public static File pmcDowloadXml(String pmcId)
-			throws IOException, MalformedURLException {
-
-		File xmlfile = new File(pmcId + ".xml");
-
+	public static File pmcDowloadXml(String pmcId) {
+		URL url = null;
+		File xmlFile = null;
+		String fileName = pmcId + ".xml";
+		String pmcWebserviceUrl = Configs.getPropertyQTM("epmcWebService")
+				+ pmcId + "/fullTextXML";
 		try {
-			if (!xmlfile.exists() || xmlfile.length() == 0) {
-				xmlfile.createNewFile();
-
-				String pmcWebserviceUrl = Configs.getPropertyQTM(
-						"epmcWebService") + pmcId + "/fullTextXML";
-
-				URL url = new URL(pmcWebserviceUrl);
-				FileUtils.copyURLToFile(url, xmlfile);
+			xmlFile = new File(fileName);
+			if (!xmlFile.exists() || xmlFile.length() == 0) {
+				url = new URL(pmcWebserviceUrl);
+				xmlFile.createNewFile();
+				Main.logger.info("Downloading article '" + pmcId + "'...");
+				FileUtils.copyURLToFile(url, xmlFile);
 			}
-			return xmlfile;
 		} catch (Exception e) {
-			Main.logger.error(e);
+			Main.logger.warn("Can't download the article from URL '" + url + "'.");
+			Main.logger.debug(e);
 		}
-		return xmlfile;
+		return xmlFile;
 	}
 }
