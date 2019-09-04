@@ -1,7 +1,7 @@
 # QTL TableMiner++ (QTM)
 
 [![Build Status](https://travis-ci.org/candYgene/QTM.svg?branch=master)](https://travis-ci.org/candYgene/QTM)
- [![DOI](https://zenodo.org/badge/85691450.svg)](https://doi.org/10.5281/zenodo.1193639)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1193639.svg)](https://doi.org/10.5281/zenodo.1193639)
 [![Published in BMC Bioinformatics](https://img.shields.io/badge/published%20in-BMC%20Bioinformatics-blue.svg)](https://doi.org/10.1186/s12859-018-2165-7)
 
 ## Description
